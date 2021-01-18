@@ -1,4 +1,4 @@
-import { SymbolTable, AssemblyParser, AInstruction, CInstruction } from '../src/Classes';
+import { AInstruction, AssemblyParser, CInstruction, SymbolTable } from '../src/Classes';
 import { InstructionType } from '../src/Interfaces';
 
 describe('AssemblyParser', () => {

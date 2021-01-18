@@ -1,4 +1,4 @@
-import { AInstruction, CInstruction } from '../src/Classes';
+import { CInstruction } from '../src/Classes';
 
 describe('C Instructions', () => {
   const parsedC = (comp: string, dest: string = "", jump: string = "") =>
