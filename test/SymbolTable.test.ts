@@ -1,4 +1,4 @@
-import { SymbolTable } from '../src/Classes';
+import { SymbolTable } from '../src/SymbolTable';
 
 describe('Symbol Table', () => {
   it("testInit", () => {

@@ -1,5 +1,7 @@
-import { AInstruction, AssemblyParser, CInstruction, SymbolTable } from '../src/Classes';
+import { AssemblyParser, CInstruction } from '../src/Classes';
 import { InstructionType } from '../src/Interfaces';
+import { SymbolTable } from '../src/SymbolTable';
+import { AInstruction } from '../src/AInstruction';
 
 describe('AssemblyParser', () => {
   let table: SymbolTable;
