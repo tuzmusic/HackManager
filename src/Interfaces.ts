@@ -25,5 +25,5 @@ export interface SymbolTableInterface {
 }
 
 export interface AssemblerInterface {
-  assemble: (textContent: string) => string;
+  assemble: (filename: string) => void;
 }
