@@ -1,9 +1,7 @@
 export enum InstructionType { A, C }
 
 export interface AssemblerInstructionInterface {
-
   getMachineCode(): string;
-
   getInstructionType(): InstructionType;
 }
 
@@ -24,4 +22,8 @@ export interface AssemblyParserInterface {
 export interface SymbolTableInterface {
   getValueFor: (entry: string) => number;
   add: (label: string, lineNum: number) => void;
+}
+
+export interface AssemblerInterface {
+  assemble: (textContent: string) => string;
 }
