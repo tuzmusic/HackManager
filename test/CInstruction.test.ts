@@ -1,32 +1,32 @@
-import { CInstruction } from '../src/Classes';
+import { CInstruction } from '../src/CInstruction';
 
 describe('C Instructions', () => {
-  const parsedC = (comp: string, dest: string = "", jump: string = "") =>
-    new CInstruction(comp, dest, jump).machineCode;
-
-  it("noJump", () => {
+  const parsedC = (comp: string, dest: string = '', jump: string = ''): string =>
+    new CInstruction(comp, dest, jump).getMachineCode();
+  
+  it('noJump', () => {
       // D=M
-      expect(parsedC("M", "D")).toEqual("1111110000010000");
+      expect(parsedC('M', 'D')).toEqual('111' + '1110000' + '010' + '000');
       // AD=1
-      expect(parsedC("1", "AD")).toEqual("1110111111110000");
+      expect(parsedC('1', 'AD')).toEqual('111' + '0111111' + '110' + '000');
     },
   );
-  it("noDest", () => {
+  it('noDest', () => {
       // 0;JMP
-      expect(parsedC("0", "", "JMP")).toEqual("1110101010000111");
+      expect(parsedC('0', '', 'JMP')).toEqual('111' + '0101010' + '000' + '111');
       // D+M;JEQ
-      expect(parsedC("D+M", "", "JEQ")).toEqual("1111000010000010");
+      expect(parsedC('D+M', '', 'JEQ')).toEqual('111' + '1000010' + '000' + '010');
       // A;JLT
-      expect(parsedC("A", "", "JLT")).toEqual("1110110000000100");
+      expect(parsedC('A', '', 'JLT')).toEqual('111' + '0110000' + '000' + '100');
     },
   );
-  it("fullInstruction", () => {
+  it('fullInstruction', () => {
     // M=0;JMP
-    expect(parsedC("0", "M", "JMP")).toEqual("1110101010001111");
+    expect(parsedC('0', 'M', 'JMP')).toEqual('111' + '0101010' + '001' + '111');
     // A=D+M;JEQ
-    expect(parsedC("D+M", "A", "JEQ")).toEqual("1111000010100010");
+    expect(parsedC('D+M', 'A', 'JEQ')).toEqual('111' + '1000010' + '100' + '010');
     // AD=A;JLT
-    expect(parsedC("A", "AD", "JLT")).toEqual("1110110000110100");
+    expect(parsedC('A', 'AD', 'JLT')).toEqual('111' + '0110000' + '110' + '100');
   });
-
+  
 });

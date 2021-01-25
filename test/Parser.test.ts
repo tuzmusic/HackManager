@@ -1,7 +1,8 @@
-import { AssemblyParser, CInstruction } from '../src/Classes';
+import { AssemblyParser} from '../src/Classes';
 import { InstructionType } from '../src/Interfaces';
 import { SymbolTable } from '../src/SymbolTable';
 import { AInstruction } from '../src/AInstruction';
+import { CInstruction } from '../src/CInstruction';
 
 describe('AssemblyParser', () => {
   let table: SymbolTable;
@@ -16,7 +17,7 @@ describe('AssemblyParser', () => {
     it("parsesAInstructionType", () => {
         // parse an a instruction and test its instruction type
         const p = new AssemblyParser("@1", table);
-        expect(p.instruction.instructionType).toEqual(InstructionType.A);
+        expect(p.instruction.getInstructionType()).toEqual(InstructionType.A);
       },
     );
     it("parsesBuiltInConstants", () => {
@@ -42,7 +43,7 @@ describe('AssemblyParser', () => {
     it("removesComments", () => {
         // parse an a C and test its instruction type
         const ptr = new AssemblyParser("A=D-1;JMP // plus some comments", table).instruction;
-        expect(ptr.instructionType).toEqual(InstructionType.C);
+        expect(ptr.getInstructionType()).toEqual(InstructionType.C);
 
         const c = ptr as CInstruction;
         expect(c.dest).toEqual("A");
@@ -53,7 +54,7 @@ describe('AssemblyParser', () => {
     it("parsesCInstructionTypeFull", () => {
         // parse an a C and test its instruction type
         const ptr = new AssemblyParser("A=D-1;JMP", table).instruction;
-        expect(ptr.instructionType).toEqual(InstructionType.C);
+        expect(ptr.getInstructionType()).toEqual(InstructionType.C);
 
         const c = ptr as CInstruction;
         expect(c.dest).toEqual("A");
@@ -64,7 +65,7 @@ describe('AssemblyParser', () => {
     it("parsesCInstructionTypeNoJump", () => {
         // parse an a C and test its instruction type
         const ptr = new AssemblyParser("D=D+M", table).instruction;
-        expect(ptr.instructionType).toEqual(InstructionType.C);
+        expect(ptr.getInstructionType()).toEqual(InstructionType.C);
 
         const c = ptr as CInstruction;
         expect(c.dest).toEqual("D");
@@ -75,7 +76,7 @@ describe('AssemblyParser', () => {
     it("parsesCInstructionTypeNoDest", () => {
       // parse an a C and test its instruction type
       const ptr = new AssemblyParser("A&M;JMP", table).instruction;
-      expect(ptr.instructionType).toEqual(InstructionType.C);
+      expect(ptr.getInstructionType()).toEqual(InstructionType.C);
 
       const c = ptr as CInstruction;
       expect(c.dest).toEqual("");

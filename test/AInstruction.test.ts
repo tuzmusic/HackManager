@@ -9,7 +9,8 @@ describe('AInstruction', () => {
     table = new SymbolTable();
   });
 
-  const parsedA = (line: string) => new AInstruction(line, table).getMachineCode();
+  const parsedA = (line: string) =>
+    new AInstruction(line, table).getMachineCode();
 
   xit("numericalConstant", () => {
       expect(parsedA("@16")).toEqual("0000000000010000");

@@ -25,7 +25,7 @@ export const SYMBOL_TABLE: Record<string, number> = {
 };
 // doesn't seem worth the trouble to combine the
 // A/M instructions and "calculate" the 'a' bit.
-export const COMP_CODES = {
+export const COMP_CODES: Record<string, string> = {
   '0': '0101010',
   '1': '0111111',
   '-1': '0111010',
@@ -57,7 +57,7 @@ export const COMP_CODES = {
   'D&M': '1000000',
   'D|M': '1010101',
 };
-export const DEST_CODES = {
+export const DEST_CODES: Record<string, string> = {
   '': '000',
   'M': '001',
   'D': '010',
@@ -67,7 +67,7 @@ export const DEST_CODES = {
   'AD': '110',
   'AMD': '111',
 };
-export const JUMP_CODES = {
+export const JUMP_CODES: Record<string, string> = {
   '': '000',
   'JGT': '001',
   'JEQ': '010',
