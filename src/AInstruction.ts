@@ -10,15 +10,19 @@ export class AInstruction extends AssemblerInstruction implements AInstructionIn
    */
   constructor(public readonly line: string, private table: SymbolTable) {
     super(InstructionType.A);
-    
+  
+    if (line.startsWith('@')) {
+      throw Error('A Instructions should be constructed WITHOUT the leading @.');
+    }
+  
     /* CREATE MACHINE CODE */
-    
+  
     const _line = this.line;
     let num = parseInt(_line);
-    
+  
     if (isNaN(num)) {             // if the line is a symbol (not a number),
       num = this.table.getValueFor(_line); // look up the symbol and use its value
-      
+    
       if (num === undefined) { // if it's not in the symbol table, store (and use) its value
         this.table.add(_line);
         num = this.table.getValueFor(_line); // the value is the next empty slot.}
