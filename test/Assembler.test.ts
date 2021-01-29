@@ -13,25 +13,18 @@ jest.mock('fs', () => ({
   writeFileSync: (filename: string, content: string) => result = content
 }));
 
-// const getAssembledLines = (lines: string[]): string[] => Assembler.assemble(lines.join('')).split('\n');
-
-// trusting the implementation of parser and instructions,
-// but this is an integration test anyway.
-const getCorrectLines = (lines: string[]): string[] => {
-  return lines.map(line => new AssemblyParser(line, new SymbolTable()).instruction.getMachineCode());
-};
-
-// when web
+// trusting the implementation of parser and instructions, but this is an integration test anyway.
+const getCorrectLines = (lines: string[]): string[] =>
+  lines.map(line => new AssemblyParser(line, new SymbolTable()).instruction.getMachineCode());
 
 function assembledLines(): string[] {
-  Assembler.assemble('xxx');
+  Assembler.assembleFile('xxx');
   return result.split('\n');
 }
 
-
 describe('Assembler', () => {
   describe('non-command lines', () => {
-  
+    
     it('stripsCommentsAndWhiteSpace', () => {
       lines = [
         '// a comment',
@@ -41,7 +34,7 @@ describe('Assembler', () => {
       ];
       expect(assembledLines()).toEqual(arrayContaining(['']));
     });
-  
+    
     it('removes markers (in parentheses)', () => {
       lines = [
         '(FIRST)', '(SECOND)'
@@ -70,7 +63,26 @@ describe('Assembler', () => {
     expect(assembledLines()).toEqual(arrayContaining(getCorrectLines(lines)));
   });
   
-  xdescribe('Test files', () => {
-    // todo
+  test('Simple sequences of commands, with markers and inline comments', () => {
+    lines = [
+      '@15 // comment',
+      '', // empty line
+      '// line comment',
+      'D=A',
+      '@R0',
+      'A=0;JLE',
+      '(LOOP)',
+      '@LOOP' // line 4
+      // the actual "jump" line would go here in a real program but we don't actually need it here.
+    ];
+    expect(assembledLines()).toEqual(arrayContaining(getCorrectLines([
+      // getCorrectLines doesn't do the removing of comments or blanks, or parsing/removal of markers
+      // so we have to give it the processed lines
+      '@15',
+      'D=A',
+      '@R0',
+      'A=0;JLE',
+      '@4' // line 4
+    ])));
   });
 });
