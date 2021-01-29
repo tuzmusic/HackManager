@@ -4,8 +4,8 @@ import { SymbolTable } from './SymbolTable';
 import { AssemblyParser } from './AssemblyParser';
 
 export const Assembler: AssemblerInterface = class {
-  static assemble(filepath: string): void {
-    let lines = fs.readFileSync(filepath).toString().split('\n');
+  static assembleText(text: string): string {
+    let lines = text.split('\n');
     const table = new SymbolTable();
     
     // The absolute optimum would be to read in one line at a time.
@@ -19,7 +19,9 @@ export const Assembler: AssemblerInterface = class {
       // first pass pt1: clear empty lines
       .filter(line => line.trim() != '')
       // first pass pt2: clear comment lines
-      .filter(line => !line.trim().startsWith('//'));
+      .filter(line => !line.trim().startsWith('//'))
+      // remove inline comments
+      .map(line => line.split('//')[0].trim());
     
     let currentLine = 0;
     
@@ -37,8 +39,15 @@ export const Assembler: AssemblerInterface = class {
     
     // convert lines to machine code
     lines = lines.map(line => new AssemblyParser(line, table).instruction.getMachineCode());
-    
-    fs.writeFileSync(filepath.replace('asm', 'hack'), lines.join('\n'));
+    return lines.join('\n');
+  }
+  
+  static assemble(filepath: string): void {
+    const assembled = this.assembleText(fs.readFileSync(filepath).toString());
+    const newFilePath = filepath.replace('asm', 'hack');
+    console.log('Creating', newFilePath.split('/').pop());
+    fs.writeFileSync(newFilePath, assembled);
+    console.log('Done');
   }
 };
 
