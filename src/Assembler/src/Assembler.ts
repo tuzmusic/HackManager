@@ -7,7 +7,7 @@ export const Assembler: AssemblerInterface = class {
   static assembleText(text: string): string {
     // The absolute optimum would be to read in one line at a time.
     // I just really don't feel like figuring that out, with readline etc.
-    // Instead, I'll save all the lines in an array,
+    // Insntead, I'll save all the lines in an array,
     // and then modify that array in place on both passes.
     // And anyway you need to do two passes.
   

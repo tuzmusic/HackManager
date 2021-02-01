@@ -9,4 +9,4 @@ if (!filename.endsWith('.asm')) {
 }
 
 const filepath = path.resolve(filename);
-Assembler.assemble(filepath);
+Assembler.assembleFile(filepath);
