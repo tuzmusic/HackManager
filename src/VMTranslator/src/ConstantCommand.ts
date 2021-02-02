@@ -1,17 +1,18 @@
-import Command, { CmdType } from './Command';
+import Command from './Command';
+import { CmdType } from './shared';
 
 export default class ConstantCommand extends Command {
-  constructor(private type: CmdType, private value: number) {
-    super();
-    this.lines = [
-      '@' + value,
-      'D=A',
-      '@SP',
-      'A=M',
-      'M=D',
-      '@SP',
-      'M=M+1',
-    ];
-    
+  constructor(type: CmdType, value: number) {
+    super(type, value);
+    this[type]();
   }
+  
+  // *SP = i; SP++
+  push = () => {
+    this.storeConstantValue(this.value);
+    this.placeStoredValueOnStack();
+    this.incrementStack();
+  };
+  
+  pop = () => {throw Error('Can\'t pop a constant!');};
 }
