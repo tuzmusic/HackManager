@@ -12,7 +12,7 @@ export default class LocationCommand extends Command {
     // addr=segment+i
     this.moveToSegmentOffset();
     // *SP=*addr
-    this.placeValueAtAddressOnStack();
+    this.place.valueAtCurrentAddress.ontoStack();
     // SP++
     this.incrementStack();
   };
@@ -22,10 +22,10 @@ export default class LocationCommand extends Command {
   // addr=seg+i (move to offset)
   private moveToSegmentOffset = () => {
     const offset = this.value;
-    this.moveTo(this.segment); // @segment
-    this.storeCurrentAddress(); // D=A
-    this.moveTo(offset); // @i
-    this.addValueOfAddressToStoredValue(); // D=D+A
-    this.moveUsingStoredValueAsAddress(); // A=D
+    this.move.to.variableOrValue(this.segment); // @segment
+    this.store.currentAddress(); // D=A
+    this.move.to.variableOrValue(offset); // @i
+    this.add.valueOfAddress.toStoredValue(); // D=D+A
+    this.move.using.storedValue.asAddress(); // A=D
   };
 }

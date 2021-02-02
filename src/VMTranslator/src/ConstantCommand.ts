@@ -9,8 +9,8 @@ export default class ConstantCommand extends Command {
   
   // *SP = i; SP++
   push = () => {
-    this.storeConstantValue(this.value);
-    this.placeStoredValueOnStack();
+    this.store.constantValue(this.value);
+    this.place.storedValue.ontoStack();
     this.incrementStack();
   };
   
