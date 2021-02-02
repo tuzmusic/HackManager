@@ -5,7 +5,7 @@ import arrayContaining = jasmine.arrayContaining;
 describe('Location Commands', () => {
   describe('push', () => {
     test('push local 8', () => {
-      const lines = new LocationCommand(MemorySegment.Local, 'push', 8).getLines();
+      const lines = new LocationCommand('push', MemorySegment.Local, 8).getLines();
       
       expect(lines).toEqual(arrayContaining([
         '@LCL',
