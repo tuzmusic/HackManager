@@ -11,7 +11,7 @@ import Command from './Command';
 * not
 *
 * */
-type BinaryCommand =
+export type BinaryCommand =
   | 'add'
   | 'sub'
   | 'eq'
@@ -25,7 +25,7 @@ const loc2 = 'loc2';
 // Stack-based arithmetic is a simple matter: the two top elements are popped
 // from the stack, the required operation is performed on them, and the result
 // is pushed back onto the stack.
-export default class BinaryArithmeticCommand extends Command {
+export class BinaryArithmeticCommand extends Command {
   lines: string[] = [];
   
   // OPERANDS HAVE ALREADY BEEN PUSHED ONTO THE STACK!!!
