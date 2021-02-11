@@ -1,29 +1,65 @@
 import TranslatorParser from '../src/TranslatorParser';
 import { BinaryArithmeticCommand, BinaryCommand } from '../src/BinaryArithmeticCommand';
 import { mocked } from 'ts-jest/utils';
+import { CmdType, MemorySegment } from '../src/shared';
+import { ConstantCommand } from '../src/ConstantCommand';
+import { LocationCommand } from '../src/LocationCommand';
 
-// the file
-jest.mock('../src/BinaryArithmeticCommand', () => {
-  return ({
-    // the class
-    BinaryArithmeticCommand: jest.fn().mockImplementation(() => {
-      return ({
-        // the class members
-        BinaryArithmeticCommand: (c: BinaryCommand) => {}
-      });
-    })
-  });
-});
+jest.mock('../src/BinaryArithmeticCommand', () => // the file
+  ({ // the class
+    BinaryArithmeticCommand: jest.fn().mockImplementation(() => ({
+      // the class members
+      BinaryArithmeticCommand: (c: BinaryCommand) => { /**/ }
+    }))
+  }));
+
+jest.mock('../src/ConstantCommand', () => // the file
+  ({ // the class
+    ConstantCommand: jest.fn().mockImplementation(() => ({
+      // the class members
+      ConstantCommand: (type: CmdType, value: number) => { /**/ }
+    }))
+  }));
+
+jest.mock('../src/LocationCommand', () => // the file
+  ({ // the class
+    LocationCommand: jest.fn().mockImplementation(() => ({
+      // the class members
+      LocationCommand: (type: CmdType, segment: MemorySegment, value: number) => { /**/ }
+    }))
+  }));
 
 describe('Translator Parser', () => {
-  const MockBinary = mocked(BinaryArithmeticCommand, true);
-  
-  beforeEach(() => {
-    // MockBinary.mockClear();
+  describe('BinaryArithmeticCommands', () => {
+    const MockBinary = mocked(BinaryArithmeticCommand, true);
+    
+    beforeEach(() => MockBinary.mockClear());
+    
+    it('creates the correct command', () => {
+      TranslatorParser.parseLine('add');
+      expect(MockBinary).toHaveBeenCalledWith('add');
+    });
   });
-  it('calls the constructor', () => {
-    const cmd = new TranslatorParser('add');
-    expect(MockBinary).toHaveBeenCalledTimes(1);
+  
+  describe('ConstantCommands', () => {
+    const MockConstant = mocked(ConstantCommand, true);
+    
+    beforeEach(() => MockConstant.mockClear());
+    
+    it('creates the correct command', () => {
+      TranslatorParser.parseLine('push constant 17');
+      expect(MockConstant).toHaveBeenCalledWith('push', '17');
+    });
   });
   
+  describe('LocationCommands', () => {
+    const MockLocation = mocked(LocationCommand, true);
+    
+    beforeEach(() => MockLocation.mockClear());
+    
+    it('creates the correct command', () => {
+      TranslatorParser.parseLine('pop local 17');
+      expect(MockLocation).toHaveBeenCalledWith('pop', 'local', '17');
+    });
+  });
 });

@@ -1,8 +1,8 @@
 import Command from './Command';
 import { CmdType, MemorySegment } from './shared';
 
-export default class LocationCommand extends Command {
-  constructor(type: CmdType, private segment: MemorySegment, value: number) {
+export class LocationCommand extends Command {
+  constructor(type: CmdType, private segment: MemorySegment, value: string) {
     super(type, value);
     this[type]();
   }

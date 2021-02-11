@@ -41,7 +41,7 @@ export default class Command {
     // D=M
     memoryValue: () => this.lines.push('D=M'),
     // D=i
-    constantValue: (val: number) => {
+    constantValue: (val: string) => {
       this.move.to.variableOrValue(val);
       this.store.currentAddress();
     },
@@ -74,7 +74,7 @@ export default class Command {
     },
   };
   
-  constructor(private type: CmdType, protected value: number) {}
+  constructor(private type: CmdType, protected value: string) {}
   
   public getLines = () => [...this.lines];
   

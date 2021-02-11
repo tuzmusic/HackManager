@@ -1,8 +1,8 @@
 import Command from './Command';
 import { CmdType } from './shared';
 
-export default class ConstantCommand extends Command {
-  constructor(type: CmdType, value: number) {
+export class ConstantCommand extends Command {
+  constructor(type: CmdType, value: string) {
     super(type, value);
     this[type]();
   }

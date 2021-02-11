@@ -1,7 +1,7 @@
-import LocationCommand from '../src/LocationCommand';
+import { LocationCommand } from '../src/LocationCommand';
 import { MemorySegment } from '../src/shared';
-import ConstantCommand from '../src/ConstantCommand';
-import BinaryArithmeticCommand from '../src/BinaryArithmeticCommand';
+import { ConstantCommand } from '../src/ConstantCommand';
+import { BinaryArithmeticCommand } from '../src/BinaryArithmeticCommand';
 import arrayContaining = jasmine.arrayContaining;
 
 describe('All Commands', () => {
@@ -9,7 +9,7 @@ describe('All Commands', () => {
   describe('Location Commands', () => {
     describe('push', () => {
       test('push local 8', () => {
-        const lines = new LocationCommand('push', MemorySegment.Local, 8).getLines();
+        const lines = new LocationCommand('push', MemorySegment.Local, '8').getLines();
         
         expect(lines).toEqual(arrayContaining([
           '@LCL',
@@ -31,7 +31,7 @@ describe('All Commands', () => {
   describe('ConstantCommand', () => {
     describe('push', () => {
       test('push constant 17', () => {
-        const lines = new ConstantCommand('push', 17).getLines();
+        const lines = new ConstantCommand('push', '17').getLines();
         
         expect(lines).toEqual(arrayContaining([
           '@17',
