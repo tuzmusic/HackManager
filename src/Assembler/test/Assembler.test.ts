@@ -18,7 +18,7 @@ const getCorrectLines = (lines: string[]): string[] =>
   lines.map(line => new AssemblyParser(line, new SymbolTable()).instruction.getMachineCode());
 
 function assembledLines(): string[] {
-  Assembler.assembleFile('xxx');
+  Assembler.processFile('xxx');
   return result.split('\n');
 }
 

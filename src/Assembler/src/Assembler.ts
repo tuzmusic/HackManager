@@ -1,14 +1,14 @@
-import { AssemblerInterface } from './Interfaces';
-import * as fs from 'fs';
 import { SymbolTable } from './SymbolTable';
 import { AssemblyParser } from './AssemblyParser';
+import { HackTask } from '../../common/HackTask';
 
 // TODO: Base class for Assembler/Translator/etc
-export const Assembler: AssemblerInterface = class {
+export class Assembler extends HackTask /*implements ProcessorInterface*/ {
   static inExtension = 'asm';
   static outExtension = 'hack';
+  static taskName = 'Assembler';
   
-  static assembleText(text: string): string {
+  static processText(text: string): string {
     // The absolute optimum would be to read in one line at a time.
     // I just really don't feel like figuring that out, with readline etc.
     // Instead, I'll save all the lines in an array,
@@ -17,7 +17,7 @@ export const Assembler: AssemblerInterface = class {
     
     const table = new SymbolTable();
     let currentLine = 0;
-  
+    
     return text.split('\n')
       // remove empty lines
       .filter(line => line.trim() != '')
@@ -37,12 +37,12 @@ export const Assembler: AssemblerInterface = class {
       .join('\n');
   }
   
-  static assembleFile(filepath: string): void {
-    const assembled = this.assembleText(fs.readFileSync(filepath).toString());
-    const newFilePath = filepath.replace(this.inExtension, this.outExtension);
-    console.log(' ASSEMBLER: Creating', newFilePath.split('/').pop());
-    fs.writeFileSync(newFilePath, assembled);
-    console.log('Done');
-  }
-};
+  // static processFile(filepath: string): void {
+  //   const assembled = this.processText(fs.readFileSync(filepath).toString());
+  //   const newFilePath = filepath.replace(this.inExtension, this.outExtension);
+  //   console.log(' ASSEMBLER: Creating', newFilePath.split('/').pop());
+  //   fs.writeFileSync(newFilePath, assembled);
+  //   console.log('Done');
+  // }
+}
 

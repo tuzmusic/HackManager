@@ -24,7 +24,9 @@ export interface SymbolTableInterface {
   add: (label: string, lineNum: number) => void;
 }
 
-export interface AssemblerInterface {
-  assembleFile: (filename: string) => void;
-  assembleText: (text: string) => string;
+export interface ProcessorInterface {
+  processFile: (filename: string) => void;
+  processText: (text: string) => string;
+  inExtension: string;
+  outExtension: string;
 }

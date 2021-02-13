@@ -9,4 +9,4 @@ if (!filename.endsWith('.vm')) {
 }
 
 const filepath = path.resolve(filename);
-VMTranslator.translateFile(filepath);
+VMTranslator.processFile(filepath);
