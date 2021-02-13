@@ -35,7 +35,7 @@ describe('Translator Parser', () => {
     
     beforeEach(() => MockBinary.mockClear());
     
-    it('creates the correct command', () => {
+    it('creates the correct arithemetic command', () => {
       TranslatorParser.parseLine('add');
       expect(MockBinary).toHaveBeenCalledWith('add');
     });
@@ -45,19 +45,19 @@ describe('Translator Parser', () => {
     const MockConstant = mocked(ConstantCommand, true);
     
     beforeEach(() => MockConstant.mockClear());
-    
-    it('creates the correct command', () => {
+  
+    it('creates the correct constant command', () => {
       TranslatorParser.parseLine('push constant 17');
       expect(MockConstant).toHaveBeenCalledWith('push', '17');
     });
   });
   
-  describe('LocationCommands', () => {
+  xdescribe('LocationCommands', () => {
     const MockLocation = mocked(LocationCommand, true);
     
     beforeEach(() => MockLocation.mockClear());
     
-    it('creates the correct command', () => {
+    it('creates the correct location command', () => {
       TranslatorParser.parseLine('pop local 17');
       expect(MockLocation).toHaveBeenCalledWith('pop', 'local', '17');
     });

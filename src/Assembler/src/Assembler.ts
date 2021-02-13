@@ -3,14 +3,18 @@ import * as fs from 'fs';
 import { SymbolTable } from './SymbolTable';
 import { AssemblyParser } from './AssemblyParser';
 
+// TODO: Base class for Assembler/Translator/etc
 export const Assembler: AssemblerInterface = class {
+  static inExtension = 'asm';
+  static outExtension = 'hack';
+  
   static assembleText(text: string): string {
     // The absolute optimum would be to read in one line at a time.
     // I just really don't feel like figuring that out, with readline etc.
-    // Insntead, I'll save all the lines in an array,
+    // Instead, I'll save all the lines in an array,
     // and then modify that array in place on both passes.
     // And anyway you need to do two passes.
-  
+    
     const table = new SymbolTable();
     let currentLine = 0;
   
@@ -35,8 +39,8 @@ export const Assembler: AssemblerInterface = class {
   
   static assembleFile(filepath: string): void {
     const assembled = this.assembleText(fs.readFileSync(filepath).toString());
-    const newFilePath = filepath.replace('asm', 'hack');
-    console.log('Creating', newFilePath.split('/').pop());
+    const newFilePath = filepath.replace(this.inExtension, this.outExtension);
+    console.log(' ASSEMBLER: Creating', newFilePath.split('/').pop());
     fs.writeFileSync(newFilePath, assembled);
     console.log('Done');
   }

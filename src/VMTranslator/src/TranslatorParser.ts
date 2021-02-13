@@ -15,7 +15,7 @@ export default class TranslatorParser {
     }
     
     if (parts.length === 3) {
-      const [type, segment, value] = parts as [CmdType, MemorySegment, string];
+      const [type, segment, value] = parts;// as [CmdType, MemorySegment, string];
       if (segment === 'constant') {
         return new ConstantCommand(type as CmdType, value);
       }
