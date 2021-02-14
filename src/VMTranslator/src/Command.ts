@@ -18,6 +18,10 @@ export default class Command {
       stackPointer: () => this.lines.push('@SP'),
       // "@i"
       variableOrValue: (v: string | number) => this.lines.push(`@${ v }`),
+      topOfStack: () => {
+        this.move.to.stackPointer();
+        this.move.using.currentMemoryValue.asAddress();
+      }
     },
     using: {
       storedValue: {
@@ -47,19 +51,17 @@ export default class Command {
     },
     // D=A
     currentAddress: () => this.lines.push('D=A'),
-    // D = *SP
+    // implements "D = *SP"
     topStackValue: () => {
-      this.move.to.stackPointer();
-      this.move.using.currentMemoryValue.asAddress();
+      this.move.to.topOfStack();
       this.store.memoryValue();
     }
   };
   protected place = {
     storedValue: {
-      // "*SP=*addr"
+      // "\*SP=*addr"
       ontoStack: () => {
-        this.move.to.stackPointer();
-        this.move.using.currentMemoryValue.asAddress(); // move to the value stored in the stack pointer (top of stack)
+        this.move.to.topOfStack();
         this.write.storedValue.toMemoryAtCurrentAddress(); // write stored value to top of stack
       }
     },
@@ -67,8 +69,7 @@ export default class Command {
       // "@SP, M=M+1"
       ontoStack: () => {
         this.store.memoryValue(); // D=M
-        this.move.to.stackPointer(); // @SP
-        this.move.using.currentMemoryValue.asAddress(); // A=M
+        this.move.to.topOfStack();
         this.write.storedValue.toMemoryAtCurrentAddress(); // M=D
       }
     },
@@ -86,7 +87,7 @@ export default class Command {
   protected readonly pushVariable = (variable: string) => {
     this.move.to.variableOrValue(variable);
     this.store.memoryValue();
-    this.incrementStack();
+    this.incrementStackPointer();
   };
   
   // *i=*SP
@@ -94,17 +95,17 @@ export default class Command {
     this.store.topStackValue();
     this.move.to.variableOrValue(variable);
     this.write.storedValue.toMemoryAtCurrentAddress();
-    this.decrementStack();
+    this.decrementStackPointer();
   };
   
   // "@SP, M=M+1"
-  protected incrementStack = () => {
+  protected incrementStackPointer = () => {
     this.move.to.stackPointer();
     this.lines.push('M=M+1'); // increment the value at the stack pointer
   };
   
   // "@SP; M=M-1"
-  protected decrementStack = () => {
+  protected decrementStackPointer = () => {
     this.move.to.stackPointer();
     this.lines.push('M=M-1'); // decrement the value at the stack pointer
   };

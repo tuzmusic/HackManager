@@ -14,7 +14,7 @@ export class LocationCommand extends Command {
     // *SP=*addr
     this.place.valueAtCurrentAddress.ontoStack();
     // SP++
-    this.incrementStack();
+    this.incrementStackPointer();
   };
   
   // `addr=LCL+i, *SP=*addr, SP++`

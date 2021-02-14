@@ -11,7 +11,7 @@ export class ConstantCommand extends Command {
   push = () => {
     this.store.constantValue(this.value);
     this.place.storedValue.ontoStack();
-    this.incrementStack();
+    this.incrementStackPointer();
   };
   
   pop = () => {throw Error('Can\'t pop a constant!');};
