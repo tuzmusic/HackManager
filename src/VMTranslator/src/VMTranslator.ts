@@ -1,16 +1,17 @@
 import TranslatorParser from './TranslatorParser';
-import fs from 'fs';
+import { HackTask } from '../../common/HackTask';
 
-export class VMTranslator {
+export class VMTranslator extends HackTask {
   
   static inExtension = 'vm';
   static outExtension = 'asm';
+  static taskName = 'Translator';
   
   static processText(text: string): string {
     // The absolute optimum would be to read in one line at a time.
     // I just really don't feel like figuring that out, with readline etc.
     // Instead, I'll save all the lines in an array,
-  
+    
     const filteredOrigLines = text.split('\n')
       // remove empty lines
       .filter(line => line.trim() != '')
@@ -30,13 +31,4 @@ export class VMTranslator {
     // join into a single string
     return translatedLines.join('\n');
   }
-  
-  static processFile(filepath: string): void {
-    const translated = this.processText(fs.readFileSync(filepath).toString());
-    const newFilePath = filepath.replace(this.inExtension, this.outExtension);
-    console.log('TRANSLATOR: Creating', newFilePath.split('/').pop());
-    fs.writeFileSync(newFilePath, translated);
-    console.log('Done');
-  }
-  
 }

@@ -36,13 +36,5 @@ export class Assembler extends HackTask /*implements ProcessorInterface*/ {
       // join into a single string
       .join('\n');
   }
-  
-  // static processFile(filepath: string): void {
-  //   const assembled = this.processText(fs.readFileSync(filepath).toString());
-  //   const newFilePath = filepath.replace(this.inExtension, this.outExtension);
-  //   console.log(' ASSEMBLER: Creating', newFilePath.split('/').pop());
-  //   fs.writeFileSync(newFilePath, assembled);
-  //   console.log('Done');
-  // }
 }
 
