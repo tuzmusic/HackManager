@@ -25,10 +25,9 @@ export type BinaryComparisonCommand =
 export class BinaryArithmeticCommand extends Command {
   lines: string[] = [];
   /**
-   * operate on top two elements of the stack.
+   * operate on top two values on the stack.
    * Y (*SP) stored in D
    * X (*[SP-1]) "prepped" as M.
-   * @private
    */
   private calculations = {
     // X+Y
@@ -36,18 +35,18 @@ export class BinaryArithmeticCommand extends Command {
     // X-Y
     sub: () => this.lines.push('D=M-D'),
   };
+  /**
+   * Compare the top two values on the stack
+   * Y (*SP) stored in D
+   * X (*[SP-1]) "prepped" as M.
+   */
   private comparisons = {
     // X == Y ? -1 : 0
-    eq: () => {
-      
-      this.lines.push('D=D-M');
-      this.lines.push('D=D-M');
-      
-    },
+    eq: () => this.lines.push('D;JEQ'),
     // X > Y ? -1 : 0
-    gt: () => {},
+    gt: () => this.lines.push('D;JGT'),
     // X < Y ? -1 : 0
-    lt: () => {}
+    lt: () => this.lines.push('D;JLT'),
   };
   
   // OPERANDS HAVE ALREADY BEEN PUSHED ONTO THE STACK!!!
@@ -55,19 +54,38 @@ export class BinaryArithmeticCommand extends Command {
     super('push', ''); // dummy arguments! we just want access to all the helper commands.
     this.prepareStack();
     
-    // perform the operation, storing the result in temp memory (D)
-    // this.calculations[command as BinaryCalculationCommand]();
-    
     const calculation = this.calculations[command as BinaryCalculationCommand];
+  
     if (calculation) {
+      // perform the operation, storing the result in temp memory (D)
+      // this.calculations[command as BinaryCalculationCommand]();
       calculation();
-      return;
+    } else {
+      this.handleComparison(command as BinaryComparisonCommand);
     }
-    
+  
     /* "push" result (stored in D) to stack */
     // replacing the value at the stack pointer
     // (the first operand) with the result of the operation.
     this.pushThe.storedValue.ontoStack();
+  }
+  
+  private handleComparison(command: BinaryComparisonCommand) {
+    const trueMarker = `TRUE_${ Math.random() }`;
+    
+    // store X-Y in D for comparison
+    this.calculations.sub();
+    // prepare jump location
+    this.lines.push(`@${ trueMarker }`);
+    // set up the comparison, which will jump if true
+    this.comparisons[command]();
+    
+    // if false, store 0 in D
+    this.lines.push('D=0');
+    
+    // add the marker
+    this.lines.push(`(${ trueMarker })`);
+    this.lines.push('D=-1');
   }
   
   private prepareStack() {
@@ -89,5 +107,8 @@ export class BinaryArithmeticCommand extends Command {
     /* prep FIRST operand as M */
     this.decrementStackPointer();
     this.move.to.topOfStack();
+    
+    // now we're pointing to the popped location
+    // which is where we'll need to write the result
   }
 }
