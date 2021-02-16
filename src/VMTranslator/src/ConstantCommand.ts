@@ -9,9 +9,8 @@ export class ConstantCommand extends Command {
   
   // *SP = i; SP++
   push = () => {
-    this.store.constantValue(this.value);
-    this.place.storedValue.ontoStack();
-    this.incrementStackPointer();
+    this.storeThe.constantValue(this.value);
+    this.pushThe.storedValue.ontoStack();
   };
   
   pop = () => {throw Error('Can\'t pop a constant!');};

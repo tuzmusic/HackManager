@@ -7,12 +7,24 @@ export class LocationCommand extends Command {
     this[type]();
   }
   
+  // for performing stack arithmetic
+  private add = {
+    valueOfAddress: {
+      // D=D+A
+      toStoredValue: () => this.lines.push('D=D+A')
+    },
+    storedValue: {
+      // M=M+D
+      toMemoryValue: () => this.lines.push('M=M+D')
+    }
+  };
+  
   // write value at segment+offset to the top of the stack
   push = (): void => {
     // addr=segment+i
     this.moveToSegmentOffset();
     // *SP=*addr
-    this.place.valueAtCurrentAddress.ontoStack();
+    this.pushThe.valueAtCurrentAddress.ontoStack();
     // SP++
     this.incrementStackPointer();
   };
@@ -23,7 +35,7 @@ export class LocationCommand extends Command {
   private moveToSegmentOffset = () => {
     const offset = this.value;
     this.move.to.variableOrValue(this.segment); // @segment
-    this.store.currentAddress(); // D=A
+    this.storeThe.currentAddress(); // D=A
     this.move.to.variableOrValue(offset); // @i
     this.add.valueOfAddress.toStoredValue(); // D=D+A
     this.move.using.storedValue.asAddress(); // A=D

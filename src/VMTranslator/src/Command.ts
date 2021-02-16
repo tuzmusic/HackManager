@@ -2,16 +2,6 @@ import { CmdType } from './shared';
 
 export default class Command {
   protected lines: string[] = [];
-  add = {
-    valueOfAddress: {
-      // D=D+A
-      toStoredValue: () => this.lines.push('D=D+A')
-    },
-    storedValue: {
-      // M=M+D
-      toMemoryValue: () => this.lines.push('M=M+D')
-    }
-  };
   protected move = {
     to: {
       // "@SP"
@@ -35,42 +25,44 @@ export default class Command {
       },
     }
   };
-  protected write = {
+  protected writeThe = {
     storedValue: {
       // M=D
       toMemoryAtCurrentAddress: () => this.lines.push('M=D')
     }
   };
-  protected store = {
+  protected storeThe = {
     // D=M
     memoryValue: () => this.lines.push('D=M'),
     // D=i
     constantValue: (val: string) => {
       this.move.to.variableOrValue(val);
-      this.store.currentAddress();
+      this.storeThe.currentAddress();
     },
     // D=A
     currentAddress: () => this.lines.push('D=A'),
     // implements "D = *SP"
     topStackValue: () => {
       this.move.to.topOfStack();
-      this.store.memoryValue();
+      this.storeThe.memoryValue();
     }
   };
-  protected place = {
+  protected pushThe = {
     storedValue: {
       // "\*SP=*addr"
       ontoStack: () => {
         this.move.to.topOfStack();
-        this.write.storedValue.toMemoryAtCurrentAddress(); // write stored value to top of stack
+        this.writeThe.storedValue.toMemoryAtCurrentAddress(); // write stored value to top of stack
+        this.incrementStackPointer();
       }
     },
     valueAtCurrentAddress: {
       // "@SP, M=M+1"
       ontoStack: () => {
-        this.store.memoryValue(); // D=M
+        this.storeThe.memoryValue(); // D=M
         this.move.to.topOfStack();
-        this.write.storedValue.toMemoryAtCurrentAddress(); // M=D
+        this.writeThe.storedValue.toMemoryAtCurrentAddress(); // M=D
+        this.incrementStackPointer();
       }
     },
   };
@@ -86,15 +78,15 @@ export default class Command {
   // *SP=*i
   protected readonly pushVariable = (variable: string) => {
     this.move.to.variableOrValue(variable);
-    this.store.memoryValue();
+    this.storeThe.memoryValue();
     this.incrementStackPointer();
   };
   
   // *i=*SP
   protected readonly popVariable = (variable: string) => {
-    this.store.topStackValue();
+    this.storeThe.topStackValue();
     this.move.to.variableOrValue(variable);
-    this.write.storedValue.toMemoryAtCurrentAddress();
+    this.writeThe.storedValue.toMemoryAtCurrentAddress();
     this.decrementStackPointer();
   };
   
