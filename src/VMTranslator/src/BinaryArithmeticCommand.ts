@@ -11,79 +11,83 @@ import Command from './Command';
 * not
 *
 * */
-export type BinaryCommand =
+export type BinaryCalculationCommand =
   | 'add'
   | 'sub'
+export type BinaryComparisonCommand =
   | 'eq'
   | 'gt'
   | 'lt'
-  | 'addOperation'
-
-const loc1 = 'loc1';
-const loc2 = 'loc2';
 
 // Stack-based arithmetic is a simple matter: the two top elements are popped
 // from the stack, the required operation is performed on them, and the result
 // is pushed back onto the stack.
 export class BinaryArithmeticCommand extends Command {
   lines: string[] = [];
+  /**
+   * operate on top two elements of the stack.
+   * Y (*SP) stored in D
+   * X (*[SP-1]) "prepped" as M.
+   * @private
+   */
+  private calculations = {
+    // X+Y
+    add: () => this.lines.push('D=M+D'),
+    // X-Y
+    sub: () => this.lines.push('D=M-D'),
+  };
+  private comparisons = {
+    // X == Y ? -1 : 0
+    eq: () => {
+      
+      this.lines.push('D=D-M');
+      this.lines.push('D=D-M');
+      
+    },
+    // X > Y ? -1 : 0
+    gt: () => {},
+    // X < Y ? -1 : 0
+    lt: () => {}
+  };
   
   // OPERANDS HAVE ALREADY BEEN PUSHED ONTO THE STACK!!!
-  constructor(command: BinaryCommand) {
-    super('push', ''); // not used! dummy arguments! we just want access to all the helper commands.
-    if (command === 'add') command = 'addOperation'; // because the base class has a member called "add"
-  
-    // the operands are on the stack.
-    // in VM parlance, they will be popped. However, PUSHING AND POPPING ARE AN ABSTRACTION
-    // and don't actually exist! on the low level of our actual implementation, all we care
-    // about is that the correct values are in the correct memory locations by the end. we
-    // don't care about any leftover unused values. no need to "actually pop"
-  
-    /*  // get and prepare to use the operands from memory
-      this.move.to.variableOrValue(loc1); // @loc1
-      this.store.memoryValue(); // D=M
-      this.move.to.variableOrValue(loc2); // @loc2 (operation will use *loc2)
-    */
-  
-    // after the push commands that prepare for these commands,
-    // the SP points to one beyond the stored operands.
-  
-    /* store SECOND operand in D */
-    this.decrementStackPointer();
-    this.store.topStackValue();
-  
-    /* prep FIRST operand as M */
-    this.decrementStackPointer();
-    this.move.to.topOfStack();
-  
+  constructor(command: BinaryCalculationCommand | BinaryComparisonCommand) {
+    super('push', ''); // dummy arguments! we just want access to all the helper commands.
+    this.prepareStack();
+    
     // perform the operation, storing the result in temp memory (D)
-    this[command]();
-  
+    // this.calculations[command as BinaryCalculationCommand]();
+    
+    const calculation = this.calculations[command as BinaryCalculationCommand];
+    if (calculation) {
+      calculation();
+      return;
+    }
+    
     /* "push" result (stored in D) to stack */
     // replacing the value at the stack pointer
     // (the first operand) with the result of the operation.
-    this.place.storedValue.ontoStack();
-    // "push" means incrementing the stack
-    this.incrementStackPointer();
+    this.pushThe.storedValue.ontoStack();
   }
   
-  addOperation = () => {
-    this.lines.push('D=M+D');
-  };
-  
-  sub = () => {
-    this.lines.push('D=M-D');
-  };
-  
-  eq = () => {
-  
-  };
-  
-  gt = () => {
-  
-  };
-  
-  lt = () => {
-  
-  };
+  private prepareStack() {
+    // the operands are on the stack.
+    // in VM parlance, they will be popped. However, PUSHING AND POPPING ARE AN ABSTRACTION
+    // and don't actually exist! on the low level of our actual implementation, all we care
+    // about is that the correct values are in the correct memory locations by the end, and
+    // that the stack pointer is pointing to the "top of the stack". we don't care about any
+    // leftover unused values. no need to "actually pop" (i.e. remove popped things)
+    
+    // after the push commands that prepare for these commands,
+    // the SP points to one beyond the stored operands.
+    // so, "reset" the pointer
+    this.decrementStackPointer();
+    
+    /* store SECOND operand in D */
+    this.storeThe.topStackValue();
+    
+    /* prep FIRST operand as M */
+    this.decrementStackPointer();
+    this.move.to.topOfStack();
+  }
 }

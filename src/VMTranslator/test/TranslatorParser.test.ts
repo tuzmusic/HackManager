@@ -1,5 +1,5 @@
 import TranslatorParser from '../src/TranslatorParser';
-import { BinaryArithmeticCommand, BinaryCommand } from '../src/BinaryArithmeticCommand';
+import { BinaryArithmeticCommand, BinaryCalculationCommand } from '../src/BinaryArithmeticCommand';
 import { mocked } from 'ts-jest/utils';
 import { CmdType, MemorySegment } from '../src/shared';
 import { ConstantCommand } from '../src/ConstantCommand';
@@ -9,7 +9,7 @@ jest.mock('../src/BinaryArithmeticCommand', () => // the file
   ({ // the class
     BinaryArithmeticCommand: jest.fn().mockImplementation(() => ({
       // the class members
-      BinaryArithmeticCommand: (c: BinaryCommand) => { /**/ }
+      BinaryArithmeticCommand: (c: BinaryCalculationCommand) => { /**/ }
     }))
   }));
 
