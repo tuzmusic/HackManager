@@ -2,6 +2,7 @@ import { CmdType } from './shared';
 
 export default class Command {
   protected lines: string[] = [];
+  
   protected move = {
     to: {
       // "@SP"
