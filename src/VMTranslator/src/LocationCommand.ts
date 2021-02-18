@@ -11,11 +11,11 @@ export class LocationCommand extends Command {
   private add = {
     valueOfAddress: {
       // D=D+A
-      toStoredValue: () => this.lines.push('D=D+A')
+      toStoredValue: () => this.addLine('D=D+A')
     },
     storedValue: {
       // M=M+D
-      toMemoryValue: () => this.lines.push('M=M+D')
+      toMemoryValue: () => this.addLine('M=M+D')
     }
   };
   

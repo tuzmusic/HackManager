@@ -24,13 +24,13 @@ export class BinaryArithmeticCommand extends Command {
    */
   private calculations = {
     // X+Y
-    add: () => this.lines.push('M=M+D'),
+    add: () => this.addLine('M=M+D'),
     // X-Y
-    sub: () => this.lines.push('M=M-D'),
+    sub: () => this.addLine('M=M-D'),
     // X&Y
-    and: () => this.lines.push('M=M&D'),
+    and: () => this.addLine('M=M&D'),
     // X|Y
-    or: () => this.lines.push('M=M|D'),
+    or: () => this.addLine('M=M|D'),
   };
   
   /**
@@ -39,9 +39,9 @@ export class BinaryArithmeticCommand extends Command {
    */
   private unary = {
     // -X
-    neg: () => this.lines.push('D=-M'),
+    neg: () => this.addLine('M=-M'),
     // !X
-    not: () => this.lines.push('D=!M')
+    not: () => this.addLine('M=!M')
   };
   
   /**
@@ -51,11 +51,11 @@ export class BinaryArithmeticCommand extends Command {
    */
   private comparisons = {
     // X == Y ? -1 : 0
-    eq: () => this.lines.push('D;JEQ'),
+    eq: () => this.addLine('M;JEQ'),
     // X > Y ? -1 : 0
-    gt: () => this.lines.push('D;JGT'),
+    gt: () => this.addLine('M;JGT'),
     // X < Y ? -1 : 0
-    lt: () => this.lines.push('D;JLT'),
+    lt: () => this.addLine('M;JLT'),
   };
   
   // OPERANDS HAVE ALREADY BEEN PUSHED ONTO THE STACK!!!
@@ -79,33 +79,38 @@ export class BinaryArithmeticCommand extends Command {
         calculation();
       else
         this.handleComparison(this.command as BinaryComparisonCommand);
-      
+  
     }
-    
+  
     /* "push" result (stored in D) to stack */
     // replacing the value at the stack pointer
     // (the first operand) with the result of the operation.
     // this.pushThe.storedValue.ontoStack();
     this.incrementStackPointer();
-    
+  
   }
   
   private handleComparison(command: BinaryComparisonCommand) {
-    const trueMarker = `TRUE_${ Math.random() }`;
+    const markerNum = Math.random().toString();
+    const marker = (...parts: string[]): string => parts.concat(markerNum).join('_');
     
     // store X-Y in D for comparison
     this.calculations.sub();
     // prepare jump location
-    this.lines.push(`@${ trueMarker }`);
+    this.addLine(`@${ marker('TRUE') }`);
     // set up the comparison, which will jump if true
     this.comparisons[command]();
     
     // if false, store 0 in D
-    this.lines.push('D=0');
+    this.addLine('M=0');
+    this.addLine(`@${ marker('ENDIF') }`);
     
-    // add the marker
-    this.lines.push(`(${ trueMarker })`);
-    this.lines.push('D=-1');
+    // add the marker for true
+    this.addLine(`(${ marker('TRUE') })`);
+    this.addLine('M=-1');
+    
+    // marker for endif
+    this.addLine(`(${ marker('ENDIF') })`);
   }
   
   /* prep X as M */
