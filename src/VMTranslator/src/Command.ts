@@ -7,17 +7,22 @@ export default class Command {
   
   public getLines = () => [...this.lines];
   
-  protected addLine = (line: string, comment?: string) => this.lines.push(line + (comment ? `    // ${ comment }` : ''));
+  protected addLine = (line: string, comment?: string) => this.lines.push(line.padEnd(12) + (comment ? `// ${ comment }` : ''));
   
   protected move = {
     to: {
       // "@SP"
-      stackPointer: (comment = '') => this.addLine('@SP', comment),
+      stackPointer: (comment = 'move to stack pointer') => this.addLine('@SP', comment),
       // "@i"
       variableOrValue: (v: string | number) => this.addLine(`@${ v }`),
-      topOfStack: (comment = '') => {
-        this.move.to.stackPointer(comment || 'MOVE TO TOP OF STACK');
-        this.move.using.currentMemoryValue.asAddress();
+      topOfStack: (comment = 'MOVE TO TOP OF STACK') => {
+        // often we'll move after popping, so we're already at SP
+        if (this.lines.length > 1 && this.lines[this.lines.length - 1].startsWith('M=M-1')) {
+          this.move.using.currentMemoryValue.asAddress(comment);
+        } else {
+          this.move.to.stackPointer(comment);
+          this.move.using.currentMemoryValue.asAddress();
+        }
       }
     },
     using: {
@@ -28,29 +33,42 @@ export default class Command {
       currentMemoryValue: {
         // A=M;
         // mainly used after moving to stack pointer, to move to top of stack
-        asAddress: (comment = '') => this.addLine('A=M', comment)
+        asAddress: (comment = 'move to top of stack') => this.addLine('A=M', comment)
       },
     }
   };
   protected writeThe = {
     storedValue: {
       // M=D
-      toMemoryAtCurrentAddress: (comment = '') => this.addLine('M=D')
+      toMemoryAtCurrentAddress: (comment = 'write value of D to current location') => this.addLine('M=D', comment)
+    }, valueProvided: {
+      // M=D
+      toMemoryAtCurrentAddress: (value: string, comment = '') =>
+        this.addLine('M=' + value, comment),
+      toTopOfStack: {
+        // used, for example, in OperationCommand, when the if chain ends by
+        // incrementing the stack pointer after all types of operations
+        withoutIncrementingStackPointer: (value: string, comment = '') => {
+          this.move.to.topOfStack(comment);
+          this.writeThe.valueProvided.toMemoryAtCurrentAddress(value); // M=value
+        }
+      }
     }
   };
   protected storeThe = {
     // D=M
-    memoryValue: (comment = '') => this.addLine('D=M', comment),
+    memoryValue: (comment = 'store current memory value in D') => this.addLine('D=M', comment),
     // D=i
     constantValue: (val: string) => {
       this.move.to.variableOrValue(val);
       this.storeThe.currentAddress();
     },
     // D=A
-    currentAddress: () => this.addLine('D=A', 'store the current address as a value'),
+    currentAddress: (comment = 'store the current address as a value') =>
+      this.addLine('D=A', comment),
     // implements "D = *SP"
-    topStackValue: (comment = '') => {
-      this.move.to.topOfStack(comment || 'STORE THE TOP STACK VALUE INTO D');
+    topStackValue: (comment = 'STORE THE TOP STACK VALUE INTO D') => {
+      this.move.to.topOfStack(comment);
       this.storeThe.memoryValue();
     }
   };
@@ -76,8 +94,8 @@ export default class Command {
   
   // "@SP, M=M+1"
   protected incrementStackPointer = () => {
-    this.move.to.stackPointer();
-    this.addLine('M=M+1', 'increment stack pointer'); // increment the value at the stack pointer
+    this.move.to.stackPointer('increment stack pointer');
+    this.addLine('M=M+1',); // increment the value at the stack pointer
   };
   
   protected pushThe = {
@@ -91,18 +109,25 @@ export default class Command {
     },
     valueAtCurrentAddress: {
       // "@SP, M=M+1"
-      ontoStack: () => {
+      ontoStack: (comment = 'PUSH MEMORY VALUE TO TOP OF STACK') => {
         this.storeThe.memoryValue(); // D=M
-        this.move.to.topOfStack('PUSH MEMORY VALUE TO TOP OF STACK');
+        this.move.to.topOfStack(comment);
         this.writeThe.storedValue.toMemoryAtCurrentAddress(); // M=D
         this.incrementStackPointer();
       }
     },
+    valueProvided: {
+      ontoStack: (value: string, comment = `PUSH "${ value } TO TOP OF STACK"`) => {
+        this.move.to.topOfStack(comment);
+        this.writeThe.valueProvided.toMemoryAtCurrentAddress(value); // M=value
+        this.incrementStackPointer();
+      }
+    }
   };
   
   // "@SP; M=M-1"
-  protected decrementStackPointer = () => {
-    this.move.to.stackPointer();
-    this.addLine('M=M-1', 'decrement stack pointer'); // decrement the value at the stack pointer
+  protected decrementStackPointer = (comment = 'decrement stack pointer') => {
+    this.move.to.stackPointer(comment);
+    this.addLine('M=M-1'); // decrement the value at the stack pointer
   };
 }

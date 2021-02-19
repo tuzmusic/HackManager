@@ -1,7 +1,7 @@
 import { LocationCommand } from '../src/LocationCommand';
 import { MemorySegment } from '../src/shared';
 import { ConstantCommand } from '../src/ConstantCommand';
-import { BinaryArithmeticCommand } from '../src/BinaryArithmeticCommand';
+import { OperationCommand } from '../src/OperationCommand';
 import arrayContaining = jasmine.arrayContaining;
 
 describe('All Commands', () => {
@@ -47,7 +47,7 @@ describe('All Commands', () => {
   });
   
   xdescribe('Binary arithmetic', () => {
-    const lines = new BinaryArithmeticCommand('add').getLines();
+    const lines = new OperationCommand('add').getLines();
     
     expect(lines).toEqual(arrayContaining([]));
   });

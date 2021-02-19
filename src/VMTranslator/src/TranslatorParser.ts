@@ -1,5 +1,5 @@
 import Command from './Command';
-import { BinaryArithmeticCommand, BinaryCalculationCommand } from './BinaryArithmeticCommand';
+import { BinaryCalculationCommand, OperationCommand } from './OperationCommand';
 import { ConstantCommand } from './ConstantCommand';
 import { CmdType, MemorySegment } from './shared';
 import { LocationCommand } from './LocationCommand';
@@ -11,7 +11,7 @@ export default class TranslatorParser {
     const parts = line.split(' ');
     
     if (parts.length === 1) {
-      return new BinaryArithmeticCommand(parts[0] as BinaryCalculationCommand);
+      return new OperationCommand(parts[0] as BinaryCalculationCommand);
     }
     
     if (parts.length === 3) {

@@ -1,5 +1,5 @@
 import TranslatorParser from '../src/TranslatorParser';
-import { BinaryArithmeticCommand, BinaryCalculationCommand } from '../src/BinaryArithmeticCommand';
+import { BinaryCalculationCommand, OperationCommand } from '../src/OperationCommand';
 import { mocked } from 'ts-jest/utils';
 import { CmdType, MemorySegment } from '../src/shared';
 import { ConstantCommand } from '../src/ConstantCommand';
@@ -31,7 +31,7 @@ jest.mock('../src/LocationCommand', () => // the file
 
 describe('Translator Parser', () => {
   describe('BinaryArithmeticCommands', () => {
-    const MockBinary = mocked(BinaryArithmeticCommand, true);
+    const MockBinary = mocked(OperationCommand, true);
     
     beforeEach(() => MockBinary.mockClear());
     
