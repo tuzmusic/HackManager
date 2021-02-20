@@ -117,8 +117,7 @@ export class OperationCommand extends Command {
   
   /* prep X as M */
   private prepareX() {
-    // if unary, SP is at one past X
-    // if binary, prepareY has moved SP to Y which is also one past X
+    this.decrementStackPointer('"pop" X');
     this.move.to.topOfStack('PREPARE X (prep X "into" M – but don\'t pop just yet!)');
   }
   
@@ -129,6 +128,5 @@ export class OperationCommand extends Command {
     // so, "reset" the pointer to point to Y
     this.decrementStackPointer('pop back to Y, since binary op starts at 1 past Y');
     this.storeThe.topStackValue('PREPARE Y (pop Y into D)');
-    this.decrementStackPointer('(pop...back to X)');
   }
 }
