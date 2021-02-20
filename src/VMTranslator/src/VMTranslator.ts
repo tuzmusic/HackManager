@@ -26,19 +26,27 @@ export class VMTranslator extends HackTask {
     let prevTranslation: string[];
     for (const currentLine of linesToTranslate) {
       let currentTranslation = [`// ${ currentLine }`];
-    
+  
       currentTranslation.push(...TranslatorParser.parseLine(currentLine).getLines());
-    
+  
       if (prevLine && prevTranslation)
         currentTranslation = this.optimize(currentLine, prevLine, currentTranslation, prevTranslation);
-    
+  
       // currentTranslation.push(''); // blank line at end
       translations.push(currentTranslation);
       translations.push(['']);
-    
+  
       prevLine = currentLine;
       prevTranslation = currentTranslation;
     }
+  
+    // add ending loop
+    translations.push([
+      '(INFINITE_LOOP)',
+      '@INFINITE_LOOP',
+      '0;JMP'
+    ]);
+  
     return translations.flat().join('\n');
   
   }
