@@ -50,24 +50,34 @@ export class VMTranslator extends HackTask {
     return translations.flat().join('\n');
   }
   
-  // after translations have been created, modify them in place
+  // after translations have been created, modify them in place.
+  // <p>NOTE that `currentTranslation = currentTranslation.filter(fn)` does NOT modify the source in place.
   private static optimize = (currentLine: string, prevLine: string, currentTranslation: string[], prevTranslation: string[]): string[] => {
     const optimizations = {
-      // "push constant" ends with incrementing the stack, and an OperationCommand starts with decrementing the stack.
-      // optimize those lines away.
+      // when the current command starts by decrementing the stack, but the previous command ended by incrementing
+      // the stack, optimize away that stack manipulation.
       stackFlipping() {
-        if (currentLine.split(' ').length === 1 && prevLine.startsWith('push constant')) {
+        const prevLen = prevTranslation.length;
+        
+        const currentStartsWithDecrement = currentTranslation[1].startsWith('@SP')
+          && currentTranslation[2].startsWith('M=M-1');
+        
+        const prevEndsWithIncrement = prevTranslation[prevLen - 2].startsWith('@SP')
+          && prevTranslation[prevLen - 1].startsWith('M=M+1');
+        
+        if (currentStartsWithDecrement && prevEndsWithIncrement) {
+          // if (currentLine.split(' ').length === 1 && prevLine.startsWith('push constant')) {
           // remove the incrementing from the "push constant" translation
           prevTranslation.pop();
           prevTranslation.pop();
           
-          // remove the decrementing (translation[2]) from the Operation command,
+          // remove the decrementing (translation[2]) from the current command,
           // leaving "go to stack pointer" and "move to top of stack"
           currentTranslation = currentTranslation.filter((_, index) => index !== 2);
           
           // fix the comment
           currentTranslation[1] = currentTranslation[1].replace(new RegExp('(//)(.*)'), '$1 move to top of stack' +
-            ' (already points to our operand)');
+            ' (already points to the correct spot)');
         }
       }
     };
