@@ -5,8 +5,10 @@ export class HackTask {
   static inExtension: string;
   static outExtension: string;
   static taskName: string;
+  static filename = 'PlaceholderFilename';
   
   static processFile(filename: string): void {
+    this.filename = filename.split('.')[0];
     
     if (!filename.endsWith(`.${ this.inExtension }`)) {
       console.log(`Please provide a .${ this.inExtension } file`);

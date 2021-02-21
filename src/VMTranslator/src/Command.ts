@@ -7,7 +7,7 @@ export default class Command {
   
   public getLines = () => [...this.lines];
   
-  protected addLine = (line: string, comment?: string) => this.lines.push(line.padEnd(12) + (comment ? `// ${ comment }` : ''));
+  protected addLine = (line: string, comment?: string) => this.lines.push(line.padEnd(12) + (comment ? ` // ${ comment }` : ''));
   
   protected move = {
     to: {
@@ -67,7 +67,7 @@ export default class Command {
     currentAddress: (comment = 'store the current address as a value') =>
       this.addLine('D=A', comment),
     // implements "D = *SP"
-    topStackValue: (comment = '') => {
+    topStackValue: (comment = 'move to top of stack') => {
       this.move.to.topOfStack(comment);
       this.storeThe.memoryValue('store the top stack value into D');
     }

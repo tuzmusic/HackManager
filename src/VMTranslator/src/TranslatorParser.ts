@@ -3,6 +3,7 @@ import { BinaryCalculationCommand, OperationCommand } from './OperationCommand';
 import { ConstantCommand } from './ConstantCommand';
 import { CmdType, MemorySegment } from './shared';
 import { LocationCommand } from './LocationCommand';
+import StaticCommand from './StaticCommand';
 
 export default class TranslatorParser {
   public readonly command: Command;
@@ -18,6 +19,9 @@ export default class TranslatorParser {
       const [type, segment, value] = parts;// as [CmdType, MemorySegment, string];
       if (segment === 'constant') {
         return new ConstantCommand(type as CmdType, value);
+      }
+      if (segment === 'static') {
+        return new StaticCommand(type as CmdType, value);
       }
       return new LocationCommand(type as CmdType, segment as MemorySegment, value);
     }
