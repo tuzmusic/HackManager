@@ -1,43 +1,69 @@
 import Command from './Command';
-import { CmdType, MemorySegment } from './shared';
+import { CmdType, MemorySegment, memorySegments } from './shared';
 
 export class LocationCommand extends Command {
+  // for performing stack arithmetic
+  private add = {
+    valueOfAddress: {
+      // A=D+A
+      toStoredValueAndMoveThere: (comment = 'move to segment offset') => this.addLine('A=D+A', comment),
+      // D=D+A
+      toStoredValue: (comment = 'store address of segment offset') => this.addLine('D=D+A', comment)
+    },
+    storedValue: {
+      // M=M+D
+      toMemoryValue: (comment = '') => this.addLine('M=M+D', comment)
+    }
+  };
+  
   constructor(type: CmdType, private segment: MemorySegment, value: string) {
     super(type, value);
     this[type]();
   }
   
-  // for performing stack arithmetic
-  private add = {
-    valueOfAddress: {
-      // D=D+A
-      toStoredValue: () => this.addLine('D=D+A')
-    },
-    storedValue: {
-      // M=M+D
-      toMemoryValue: () => this.addLine('M=M+D')
-    }
-  };
-  
   // write value at segment+offset to the top of the stack
   push = (): void => {
     // addr=segment+i
     this.moveToSegmentOffset();
-    // *SP=*addr
+    // *SP=*addr, SP++
     this.pushThe.valueAtCurrentAddress.ontoStack();
-    // SP++
-    this.incrementStackPointer();
   };
   
-  // `addr=LCL+i, *SP=*addr, SP++`
+  // pop the topmost stack item and store its value in segment[index].
+  // <p>`addr=segment+i, SP--, *addr=*SP`
+  pop = (): void => {
+    // STORE DESIRED ADDRESS ON TOP OF STACK
+    // get dest address
+    this.move.to.variableOrValue(memorySegments[this.segment], `move to "${ this.segment }" pointer`); // @segment
+    this.storeThe.memoryValue(`store the "${ this.segment }" base address`); // D=A
+    this.move.to.variableOrValue(this.value, 'move to address representing offset'); // @i
+    this.add.valueOfAddress.toStoredValue('D = base addr + offset'); // D=D+A
+    // write it to the stack
+    this.pushThe.storedValue.ontoStack('>> store dest addr at stack+1 <<');
+    // we actually don't want to increment the stack pointer, so remove those lines
+    // (they were added by the fn call above)
+    this.lines.pop();
+    this.lines.pop();
+    
+    // GET THE POPPED VALUE
+    this.decrementStackPointer('move stack pointer back to the value to be popped');
+    this.storeThe.topStackValue('>> store our value in D <<');
+    
+    // WRITE TO MEMORY SEGMENT
+    this.incrementStackPointer('return to where the dest addr is written');
+    this.move.using.currentMemoryValue.asAddress('move to where dest address is stored');
+    this.move.using.currentMemoryValue.asAddress('move to actual dest address');
+    this.writeThe.storedValue.toMemoryAtCurrentAddress('write our value to the dest address');
+    this.decrementStackPointer('SP-- to "pop" the stack');
+  };
   
-  // addr=seg+i (move to offset)
+  // `addr=seg+i (move to offset)`
   private moveToSegmentOffset = () => {
     const offset = this.value;
-    this.move.to.variableOrValue(this.segment); // @segment
-    this.storeThe.currentAddress(); // D=A
-    this.move.to.variableOrValue(offset); // @i
-    this.add.valueOfAddress.toStoredValue(); // D=D+A
-    this.move.using.storedValue.asAddress(); // A=D
+    this.move.to.variableOrValue(memorySegments[this.segment], `move to ${ this.segment }`); // @segment
+    this.storeThe.memoryValue(`store the "${ this.segment }" base address`); // D=A
+    this.move.to.variableOrValue(offset, 'move to address representing offset'); // @i
+    this.add.valueOfAddress.toStoredValueAndMoveThere('new addr = base addr + offset'); // A=D+A
+    // this.move.using.storedValue.asAddress(); // A=D
   };
 }

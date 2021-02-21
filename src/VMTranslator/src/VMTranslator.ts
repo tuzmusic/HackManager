@@ -19,8 +19,8 @@ export class VMTranslator extends HackTask {
       .filter(line => !line.trim().startsWith('//'))
       // remove inline comments
       .map(line => line.split('//')[0].trim());
-    // translate
   
+    // translate each line
     const translations: string[][] = [];
     let prevLine: string;
     let prevTranslation: string[];
@@ -48,7 +48,6 @@ export class VMTranslator extends HackTask {
     ]);
   
     return translations.flat().join('\n');
-  
   }
   
   // after translations have been created, modify them in place

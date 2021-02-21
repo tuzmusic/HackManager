@@ -90,23 +90,28 @@ export class OperationCommand extends Command {
     
     const source = (label: string) => `@${ marker(label) }`;
     const dest = (label: string) => `(${ marker(label) })`;
-    
+  
     this.addLine('D=M-D', 'store X-Y in D for comparison');
     // prepare jump location
     this.addLine(source('IF_TRUE'));
-    
+  
     // set up the comparison (compare D to 0), which will jump if true
     this.addLine(comparison, `perform comparison: ${ command }`);
-    
+  
     // NOTE that all the @'s that manage the conditional jumps mean that we always
     // have to manually move to the top of the stack before we write to memory
-    
+  
+    // TODO: Optimize
+    //  Have a single if true/false spot, that uses memory locations and temp storage
+    //  to manage where 0/-1 is written to, and where we jump back to at the end of the
+    //  conditional.
+  
     // if false, store 0 in D
     this.addLine(dest('IF_FALSE')); // not actually used, but a helpful road sign
     this.writeThe.valueProvided.toTopOfStack.withoutIncrementingStackPointer('0');
     this.addLine(source('END_IF'));
     this.addLine('0;JMP');
-    
+  
     // add the marker for true
     this.addLine(dest('IF_TRUE'));
     this.writeThe.valueProvided.toTopOfStack.withoutIncrementingStackPointer('-1');
