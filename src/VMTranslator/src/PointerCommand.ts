@@ -1,19 +1,17 @@
 import Command from './Command';
 import { CmdType } from './shared';
 
-export type PointerValue = '0' | '1'
-
 export class PointerCommand extends Command {
-  dest: 'THIS' | 'THAT';
   
-  constructor(type: CmdType, value: PointerValue) {
+  constructor(type: CmdType, value: string) {
     super(type, value);
-    this.dest = this.value === '0' ? 'THIS' : 'THAT';
     this[type]();
   }
   
+  addDestLine = () => this.addLine('@' + (this.value === '0' ? 'THIS' : 'THAT'));
+  
   push = () => {
-    this.addLine('@' + this.dest);
+    this.addDestLine();
     this.storeThe.memoryValue();
     this.pushThe.storedValue.ontoStack();
   };
@@ -21,7 +19,7 @@ export class PointerCommand extends Command {
   pop = () => {
     this.decrementStackPointer();
     this.storeThe.topStackValue();
-    this.addLine('@' + this.dest);
+    this.addDestLine();
     this.writeThe.storedValue.toMemoryAtCurrentAddress();
   };
 }
