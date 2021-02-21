@@ -6,7 +6,7 @@ export const memorySegments = {
   argument: 'ARG',
   this: 'THIS',
   that: 'THAT',
-  temp: 'TEMP'
+  temp: '5'
 };
 
 export type MemorySegment = keyof typeof memorySegments;

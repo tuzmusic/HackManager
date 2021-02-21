@@ -18,6 +18,11 @@ export class LocationCommand extends Command {
   
   constructor(type: CmdType, private segment: MemorySegment, value: string) {
     super(type, value);
+  
+    // special case
+    if (segment === 'temp')
+      this.value = (parseInt(value) + 5).toString();
+  
     this[type]();
   }
   
