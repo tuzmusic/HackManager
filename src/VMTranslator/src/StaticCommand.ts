@@ -2,7 +2,7 @@ import { VMTranslator } from './VMTranslator';
 import { MemoryCommand } from './MemoryCommand';
 
 export default class StaticCommand extends MemoryCommand {
-  push = () => {
+  protected push = () => {
     // move to static slot
     this.addStaticLine();
     this.storeThe.memoryValue('store the static value in D');
@@ -10,7 +10,7 @@ export default class StaticCommand extends MemoryCommand {
     this.pushThe.storedValue.ontoStack('>> push it onto the stack <<');
   };
   
-  pop = () => {
+  protected pop = () => {
     // pop stack into D
     this.decrementStackPointer('move stack pointer back to the value to be popped');
     this.storeThe.topStackValue();

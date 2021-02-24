@@ -7,9 +7,7 @@ import StaticCommand from './StaticCommand';
 import { PointerCommand, } from './PointerCommand';
 
 export default class TranslatorParser {
-  public readonly command: Command;
-  
-  static parseLine(line: string): Command {
+  public static parseLine(line: string): Command {
     const parts = line.split(' ');
   
     if (parts.length === 1)

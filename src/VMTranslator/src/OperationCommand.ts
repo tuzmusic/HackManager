@@ -58,7 +58,7 @@ export class OperationCommand extends Command {
   };
   
   // OPERANDS HAVE ALREADY BEEN PUSHED ONTO THE STACK!!!
-  constructor(private command: BinaryCalculationCommand | BinaryComparisonCommand) {
+  constructor(private command: BinaryCalculationCommand | BinaryComparisonCommand | UnaryCalculationCommand) {
     super('push', ''); // dummy arguments! we just want access to all the helper commands.
   
     const [unary, calculation] = [this.unary[command as UnaryCalculationCommand],

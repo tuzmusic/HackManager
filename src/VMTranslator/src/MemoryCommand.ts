@@ -1,7 +1,7 @@
 import Command from './Command';
 
 export class MemoryCommand extends Command {
-  getLines = () => {
+  public getLines = () => {
     if (!this.lines.length) this[this.type]();
     return [...this.lines];
   };
