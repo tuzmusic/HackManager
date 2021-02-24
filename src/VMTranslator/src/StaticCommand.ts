@@ -6,7 +6,7 @@ export default class StaticCommand extends MemoryCommand {
     // move to static slot
     this.addStaticLine();
     this.storeThe.memoryValue('store the static value in D');
-    
+    // push the value to the stack
     this.pushThe.storedValue.ontoStack('>> push it onto the stack <<');
   };
   
@@ -14,7 +14,6 @@ export default class StaticCommand extends MemoryCommand {
     // pop stack into D
     this.decrementStackPointer('move stack pointer back to the value to be popped');
     this.storeThe.topStackValue();
-    // this.decrementStackPointer('SP-- to "pop" the stack');
     
     // write D into static
     this.addStaticLine();
