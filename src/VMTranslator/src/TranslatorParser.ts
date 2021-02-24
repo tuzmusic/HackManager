@@ -15,20 +15,21 @@ export default class TranslatorParser {
     if (parts.length === 1)
       return new OperationCommand(parts[0] as BinaryCalculationCommand);
   
-    const types = {
+    const typesBesidesLocationCmd = {
       'constant': ConstantCommand,
       'static': StaticCommand,
       'pointer': PointerCommand
     };
   
     if (parts.length === 3) {
-      const [type, segment, value] = parts;// as [CmdType, MemorySegment, string];
+      const [type, segment, value] = parts as [CmdType, MemorySegment, string];
     
-      const cmd = types[segment as keyof typeof types];
-      if (cmd)
-        return new cmd(type as CmdType, value);
+      const commandBesidesLocationCmd = typesBesidesLocationCmd[segment as keyof typeof typesBesidesLocationCmd];
     
-      return new LocationCommand(type as CmdType, segment as MemorySegment, value);
+      if (commandBesidesLocationCmd)
+        return new commandBesidesLocationCmd(type as CmdType, value);
+      else
+        return new LocationCommand(type, segment, value);
     }
   }
 }

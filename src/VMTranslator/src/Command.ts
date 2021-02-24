@@ -3,7 +3,7 @@ import { CmdType } from './shared';
 export default class Command {
   protected lines: string[] = [];
   
-  constructor(private type: CmdType, protected value: string) {}
+  constructor(protected type: CmdType, protected value: string) {}
   
   public getLines = () => [...this.lines];
   

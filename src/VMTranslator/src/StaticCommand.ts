@@ -1,16 +1,7 @@
-import Command from './Command';
-import { CmdType } from './shared';
 import { VMTranslator } from './VMTranslator';
+import { MemoryCommand } from './MemoryCommand';
 
-export default class StaticCommand extends Command {
-  constructor(type: CmdType, value: string) {
-    super(type, value);
-    this[type]();
-  }
-  
-  addStaticLine = (comment = 'go to static slot') =>
-    this.addLine(`@${ VMTranslator.filename }.${ this.value }`, comment);
-  
+export default class StaticCommand extends MemoryCommand {
   push = () => {
     // move to static slot
     this.addStaticLine();
@@ -29,4 +20,7 @@ export default class StaticCommand extends Command {
     this.addStaticLine();
     this.writeThe.storedValue.toMemoryAtCurrentAddress('and store the value there'); // M=D
   };
+  
+  private addStaticLine = (comment = 'go to static slot') =>
+    this.addLine(`@${ VMTranslator.filename }.${ this.value }`, comment);
 }
