@@ -1,4 +1,4 @@
-import Command from './Command';
+import VMCommand from './VMCommand';
 import { BinaryCalculationCommand, OperationCommand } from './OperationCommand';
 import { ConstantCommand } from './ConstantCommand';
 import { CmdType, MemorySegment } from './shared';
@@ -7,12 +7,12 @@ import StaticCommand from './StaticCommand';
 import { PointerCommand, } from './PointerCommand';
 
 export default class TranslatorParser {
-  public static parseLine(line: string): Command {
+  public static parseLine(line: string): VMCommand {
     const parts = line.split(' ');
-  
+    
     if (parts.length === 1)
       return new OperationCommand(parts[0] as BinaryCalculationCommand);
-  
+    
     const typesBesidesLocationCmd = {
       'constant': ConstantCommand,
       'static': StaticCommand,

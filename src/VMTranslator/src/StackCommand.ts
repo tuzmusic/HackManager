@@ -1,6 +1,12 @@
-import Command from './Command';
+import VMCommand from './VMCommand';
+import { CmdType } from './shared';
 
-export class MemoryCommand extends Command {
+// Base class for all push/pop commands
+export class StackCommand extends VMCommand {
+  constructor(protected type: CmdType, protected value: string) {
+    super();
+  }
+  
   public getLines = () => {
     if (!this.lines.length) this[this.type]();
     return [...this.lines];

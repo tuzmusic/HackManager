@@ -1,90 +1,78 @@
-import Command from './Command';
+import VMCommand from './VMCommand';
 
-export type UnaryCalculationCommand = 'neg' | 'not'
-export type BinaryCalculationCommand =
-  | 'add'
-  | 'sub'
-  | 'and'
-  | 'or'
-export type BinaryComparisonCommand =
-  | 'eq'
-  | 'gt'
-  | 'lt'
+/**
+ * operate on top two values on the stack.
+ * Y (*SP) stored in D
+ * X (*[SP-1]) "prepped" as M.
+ */
+const calculations = {
+  // X+Y
+  add: 'M=M+D',
+  // X-Y
+  sub: 'M=M-D',
+  // X&Y
+  and: 'M=D&M',
+  // X|Y
+  or: 'M=M|D',
+};
+/**
+ * operate on the value at *SP.
+ * X (*[SP-1]) "prepped" as M.
+ */
+const unaries = {
+  // -X
+  neg: 'M=-M',
+  // !X
+  not: 'M=!M',
+};
+/**
+ * Compare the top two values on the stack
+ * Y (*SP) stored in D
+ * X (*[SP-1]) "prepped" as M.
+ */
+const comparisons = {
+  // X == Y ? -1 : 0
+  eq: 'D;JEQ',
+  // X > Y ? -1 : 0
+  gt: 'D;JGT',
+  // X < Y ? -1 : 0
+  lt: 'D;JLT',
+};
 
-// Stack-based arithmetic is a simple matter: the two top elements are popped
-// from the stack, the required operation is performed on them, and the result
-// is pushed back onto the stack.
-export class OperationCommand extends Command {
+type UnaryCalculationCommand = keyof typeof unaries
+type BinaryCalculationCommand = keyof typeof calculations
+type BinaryComparisonCommand = keyof typeof comparisons
+
+export class OperationCommand extends VMCommand {
   static comparisonCounter = 0;
   lines: string[] = [];
-  done = false;
-  /**
-   * operate on top two values on the stack.
-   * Y (*SP) stored in D
-   * X (*[SP-1]) "prepped" as M.
-   */
-  private calculations = {
-    // X+Y
-    add: 'M=M+D',
-    // X-Y
-    sub: 'M=M-D',
-    // X&Y
-    and: 'M=D&M',
-    // X|Y
-    or: 'M=M|D',
-  };
-  /**
-   * operate on the value at *SP.
-   * X (*[SP-1]) "prepped" as M.
-   */
-  private unary = {
-    // -X
-    neg: 'M=-M',
-    // !X
-    not: 'M=!M',
-  };
-  /**
-   * Compare the top two values on the stack
-   * Y (*SP) stored in D
-   * X (*[SP-1]) "prepped" as M.
-   */
-  private comparisons = {
-    // X == Y ? -1 : 0
-    eq: 'D;JEQ',
-    // X > Y ? -1 : 0
-    gt: 'D;JGT',
-    // X < Y ? -1 : 0
-    lt: 'D;JLT',
-  };
   
   // OPERANDS HAVE ALREADY BEEN PUSHED ONTO THE STACK!!!
-  constructor(private command: BinaryCalculationCommand | BinaryComparisonCommand | UnaryCalculationCommand) {
-    super('push', ''); // dummy arguments! we just want access to all the helper commands.
-  
-    const [unary, calculation] = [this.unary[command as UnaryCalculationCommand],
-      this.calculations[this.command as BinaryCalculationCommand]];
-  
+  constructor(private cmd: BinaryCalculationCommand | BinaryComparisonCommand | UnaryCalculationCommand) {
+    super();
+    
+    const [unary, calculation] = [unaries[cmd as UnaryCalculationCommand],
+      calculations[this.cmd as BinaryCalculationCommand]];
+    
     if (!unary) this.prepareY(); // pop Y into D (SP--)
-  
+    
     this.prepareX(); // prep X for M; maintain SP
-  
+    
     // these commands write the result into the X position:
     if (unary) {
-      // this.move.to.topOfStack()
-      this.addLine(unary, `perform unary operation: ${ command }`);
+      this.addLine(unary, `perform unary operation: ${ cmd }`);
     } else if (calculation) {
-      // this.move.to.topOfStack()
-      this.addLine(calculation, `perform binary operation: ${ command }`);
+      this.addLine(calculation, `perform binary operation: ${ cmd }`);
     } else {
-      this.handleComparison(this.command as BinaryComparisonCommand);
+      this.handleComparison(this.cmd as BinaryComparisonCommand);
     }
-  
+    
     // finish off the push
     this.incrementStackPointer();
   }
   
   private handleComparison(command: BinaryComparisonCommand) {
-    const comparison = this.comparisons[command];
+    const comparison = comparisons[command];
     const markerNum = `${ OperationCommand.comparisonCounter++ }`;
     const marker = (...parts: string[]): string => parts.concat(markerNum).join('_');
     

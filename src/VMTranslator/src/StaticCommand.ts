@@ -1,7 +1,7 @@
 import { VMTranslator } from './VMTranslator';
-import { MemoryCommand } from './MemoryCommand';
+import { StackCommand } from './StackCommand';
 
-export default class StaticCommand extends MemoryCommand {
+export default class StaticCommand extends StackCommand {
   protected push = () => {
     // move to static slot
     this.addStaticLine();

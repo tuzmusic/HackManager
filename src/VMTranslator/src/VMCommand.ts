@@ -1,9 +1,6 @@
-import { CmdType } from './shared';
-
-export default class Command {
+// Provides abstraction methods for adding assembly code to manipulate the stack.
+export default class VMCommand {
   protected lines: string[] = [];
-  
-  constructor(protected type: CmdType, protected value: string) {}
   
   public getLines = () => [...this.lines];
   

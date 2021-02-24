@@ -1,7 +1,7 @@
-import Command from './Command';
 import { CmdType, MemorySegment, memorySegments } from './shared';
+import { StackCommand } from './StackCommand';
 
-export class LocationCommand extends Command {
+export class LocationCommand extends StackCommand {
   // for performing stack arithmetic
   private add = {
     valueOfAddress: {

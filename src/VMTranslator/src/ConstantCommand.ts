@@ -1,6 +1,6 @@
-import { MemoryCommand } from './MemoryCommand';
+import { StackCommand } from './StackCommand';
 
-export class ConstantCommand extends MemoryCommand {
+export class ConstantCommand extends StackCommand {
   // *SP = i; SP++
   protected push = () => {
     this.storeThe.constantValue(this.value);
