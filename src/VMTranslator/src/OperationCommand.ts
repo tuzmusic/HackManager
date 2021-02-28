@@ -39,9 +39,9 @@ const comparisons = {
   lt: 'D;JLT',
 };
 
-type UnaryCalculationCommand = keyof typeof unaries
-type BinaryCalculationCommand = keyof typeof calculations
-type BinaryComparisonCommand = keyof typeof comparisons
+export type UnaryCalculationCommand = keyof typeof unaries
+export type BinaryCalculationCommand = keyof typeof calculations
+export type BinaryComparisonCommand = keyof typeof comparisons
 
 export class OperationCommand extends VMCommand {
   static comparisonCounter = 0;

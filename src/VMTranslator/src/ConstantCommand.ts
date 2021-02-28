@@ -1,6 +1,6 @@
-import { StackCommand } from './StackCommand';
+import { PushPopCommand } from './PushPopCommand';
 
-export class ConstantCommand extends StackCommand {
+export class ConstantCommand extends PushPopCommand {
   // *SP = i; SP++
   protected push = () => {
     this.storeThe.constantValue(this.value);

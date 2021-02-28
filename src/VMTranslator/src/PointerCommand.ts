@@ -1,6 +1,6 @@
-import { StackCommand } from './StackCommand';
+import { PushPopCommand } from './PushPopCommand';
 
-export class PointerCommand extends StackCommand {
+export class PointerCommand extends PushPopCommand {
   protected push = () => {
     this.addDestLine();
     this.storeThe.memoryValue();

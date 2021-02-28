@@ -1,7 +1,7 @@
 import { VMTranslator } from './VMTranslator';
-import { StackCommand } from './StackCommand';
+import { PushPopCommand } from './PushPopCommand';
 
-export default class StaticCommand extends StackCommand {
+export default class StaticCommand extends PushPopCommand {
   protected push = () => {
     // move to static slot
     this.addStaticLine();

@@ -2,7 +2,7 @@ import VMCommand from './VMCommand';
 import { CmdType } from './shared';
 
 // Base class for all push/pop commands
-export class StackCommand extends VMCommand {
+export class PushPopCommand extends VMCommand {
   constructor(protected type: CmdType, protected value: string) {
     super();
   }

@@ -1,7 +1,7 @@
 import { CmdType, MemorySegment, memorySegments } from './shared';
-import { StackCommand } from './StackCommand';
+import { PushPopCommand } from './PushPopCommand';
 
-export class LocationCommand extends StackCommand {
+export class LocationCommand extends PushPopCommand {
   // for performing stack arithmetic
   private add = {
     valueOfAddress: {
