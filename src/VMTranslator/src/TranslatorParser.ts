@@ -1,10 +1,10 @@
-import VMCommand from './VMCommand';
-import { BinaryCalculationCommand, OperationCommand } from './OperationCommand';
-import { ConstantCommand } from './ConstantCommand';
+import VMCommand from './Commands/VMCommand';
+import { BinaryCalculationCommand, OperationCommand } from './Commands/OperationCommand';
+import { ConstantCommand } from './Commands/PushPopCommands/ConstantCommand';
 import { CmdType, MemorySegment } from './shared';
-import { LocationCommand } from './LocationCommand';
-import StaticCommand from './StaticCommand';
-import { PointerCommand, } from './PointerCommand';
+import { LocationCommand } from './Commands/PushPopCommands/LocationCommand';
+import StaticCommand from './Commands/PushPopCommands/StaticCommand';
+import { PointerCommand, } from './Commands/PushPopCommands/PointerCommand';
 
 export default class TranslatorParser {
   public static parseLine(line: string): VMCommand {

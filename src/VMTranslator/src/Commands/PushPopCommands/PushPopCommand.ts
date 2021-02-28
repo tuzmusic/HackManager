@@ -1,5 +1,5 @@
-import VMCommand from './VMCommand';
-import { CmdType } from './shared';
+import VMCommand from '../VMCommand';
+import { CmdType } from '../../shared';
 
 // Base class for all push/pop commands
 export class PushPopCommand extends VMCommand {

@@ -1,4 +1,4 @@
-import { CmdType, MemorySegment, memorySegments } from './shared';
+import { CmdType, MemorySegment, memorySegments } from '../../shared';
 import { PushPopCommand } from './PushPopCommand';
 
 export class LocationCommand extends PushPopCommand {

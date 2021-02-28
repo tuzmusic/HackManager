@@ -1,7 +1,7 @@
-import { LocationCommand } from '../src/LocationCommand';
+import { LocationCommand } from '../src/Commands/PushPopCommands/LocationCommand';
 import { MemorySegment } from '../src/shared';
-import { ConstantCommand } from '../src/ConstantCommand';
-import { OperationCommand } from '../src/OperationCommand';
+import { ConstantCommand } from '../src/Commands/PushPopCommands/ConstantCommand';
+import { OperationCommand } from '../src/Commands/OperationCommand';
 import arrayContaining = jasmine.arrayContaining;
 
 describe('All Commands', () => {

@@ -1,4 +1,4 @@
-import { VMTranslator } from './VMTranslator';
+import { VMTranslator } from '../../VMTranslator';
 import { PushPopCommand } from './PushPopCommand';
 
 export default class StaticCommand extends PushPopCommand {
