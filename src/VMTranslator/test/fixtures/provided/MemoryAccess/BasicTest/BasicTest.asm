@@ -1,3 +1,9 @@
+// BOOTSTRAP THE SYSTEM
+@256         // set the start of the stack to addr 256
+D=A          // store the current address as a value
+@SP         
+M=D          // write value of D to current location
+
 // push constant 10
 @10         
 D=A          // store the current address as a value
