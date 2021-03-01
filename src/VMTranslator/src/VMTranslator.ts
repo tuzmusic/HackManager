@@ -1,5 +1,6 @@
 import TranslatorParser from './TranslatorParser';
 import { HackTask } from '../../common/HackTask';
+import { VMBootstrapper } from './Commands/VMBootstrapper';
 
 export class VMTranslator extends HackTask {
   
@@ -21,24 +22,25 @@ export class VMTranslator extends HackTask {
       .map(line => line.split('//')[0].trim());
   
     // translate each line
-    const translations: string[][] = [];
+    const translations: string[][] = [VMBootstrapper.getBootstrapCode()];
     let prevLine: string;
     let prevTranslation: string[];
     for (const currentLine of linesToTranslate) {
       let currentTranslation = [`// ${ currentLine }`];
   
-      currentTranslation.push(...TranslatorParser.parseLine(currentLine).getLines());
+      currentTranslation.push(...new TranslatorParser().parseLine(currentLine).getLines());
   
       if (prevLine && prevTranslation)
         currentTranslation = this.optimize(currentLine, prevLine, currentTranslation, prevTranslation);
   
-      // currentTranslation.push(''); // blank line at end
       translations.push(currentTranslation);
-      translations.push(['']);
   
       prevLine = currentLine;
       prevTranslation = currentTranslation;
     }
+  
+    // add a blank line between each source command
+    translations.forEach(t => t.push(''));
   
     // add ending loop
     translations.push([

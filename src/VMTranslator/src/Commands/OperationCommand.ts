@@ -43,12 +43,14 @@ export type UnaryCalculationCommand = keyof typeof unaries
 export type BinaryCalculationCommand = keyof typeof calculations
 export type BinaryComparisonCommand = keyof typeof comparisons
 
+export type OperationCmd = BinaryCalculationCommand | BinaryComparisonCommand | UnaryCalculationCommand;
+
 export class OperationCommand extends VMCommand {
   static comparisonCounter = 0;
   lines: string[] = [];
   
   // OPERANDS HAVE ALREADY BEEN PUSHED ONTO THE STACK!!!
-  constructor(private cmd: BinaryCalculationCommand | BinaryComparisonCommand | UnaryCalculationCommand) {
+  constructor(private cmd: OperationCmd) {
     super();
     
     const [unary, calculation] = [unaries[cmd as UnaryCalculationCommand],

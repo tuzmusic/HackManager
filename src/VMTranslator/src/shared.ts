@@ -11,4 +11,5 @@ export const memorySegments = {
 
 export type MemorySegment = keyof typeof memorySegments;
 
-export type CmdType = 'push' | 'pop'
+export const cmdTypes = ['push', 'pop'] as const;
+export type CmdType = typeof cmdTypes[number]

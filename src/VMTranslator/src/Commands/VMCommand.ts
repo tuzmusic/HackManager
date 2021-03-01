@@ -38,7 +38,8 @@ export default class VMCommand {
     storedValue: {
       // M=D
       toMemoryAtCurrentAddress: (comment = 'write value of D to current location') => this.addLine('M=D', comment)
-    }, valueProvided: {
+    },
+    valueProvided: {
       // M=D
       toMemoryAtCurrentAddress: (value: string, comment = '') =>
         this.addLine('M=' + value, comment),
@@ -56,8 +57,8 @@ export default class VMCommand {
     // D=M
     memoryValue: (comment = 'store current memory value in D') => this.addLine('D=M', comment),
     // D=i
-    constantValue: (val: string) => {
-      this.move.to.variableOrValue(val);
+    constantValue: (val: string, comment = '') => {
+      this.move.to.variableOrValue(val, comment);
       this.storeThe.currentAddress();
     },
     // D=A
