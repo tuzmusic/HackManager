@@ -16,7 +16,7 @@ export class LocationCommand extends PushPopCommand {
     }
   };
   
-  constructor(type: CmdType, private segment: MemorySegment, value: string) {
+  constructor(type: CmdType, value: string, private segment: MemorySegment) {
     super(type, value);
   
     // special case
