@@ -9,45 +9,38 @@ import { GotoCommand } from './Commands/ProgramFlow/GotoCommand';
 import { IfGotoCommand } from './Commands/ProgramFlow/IfGotoCommand';
 import { LabelCommand } from './Commands/ProgramFlow/LabelCommand';
 
-const typesBesidesLocationCmd = {
+const specialSegments = {
   'constant': ConstantCommand,
   'static': StaticCommand,
   'pointer': PointerCommand
 };
+type SpecialSegment = keyof typeof specialSegments
 
 const flowCommands = {
   'label': LabelCommand,
   'if-goto': IfGotoCommand,
   'goto': GotoCommand
 };
+type FlowCommand = keyof typeof flowCommands
 
 export default class TranslatorParser {
-  
   public parseLine(line: string): VMCommand {
     const parts = line.split(' ');
+    const [first, second] = parts;
     
-    const [firstPart] = parts;
     switch (parts.length) {
       case 1: // handle operations (add, sub, etc)
-        return new OperationCommand(parts[0] as OperationCmd);
+        return new OperationCommand(first as OperationCmd);
       
       case 2: // handle program flow commands
-        return new flowCommands[firstPart as keyof typeof flowCommands](parts[1]);
+        return new flowCommands[first as FlowCommand](second);
       
       case 3: // handle push/pop commands
-        const [type, segment, value] = parts as [CmdType, MemorySegment, string];
-        
-        // might be better to do something like:
-        //  if (segment in Object.keys(typesBesidesLocationCmd)) ...
-        // and then somehow loop LocationCommand in with that call?
-        // best way might be to have segment be the *final* argument to LocationCommand ctor
-        const commandBesidesLocationCmd = typesBesidesLocationCmd[segment as keyof typeof typesBesidesLocationCmd];
-        
-        if (commandBesidesLocationCmd)
-          return new commandBesidesLocationCmd(type as CmdType, value, segment);
-        else
-          return new LocationCommand(type, value, segment);
-      
+        const [type, segment, value] = parts as [CmdType, MemorySegment | SpecialSegment, string];
+        if (segment in specialSegments) // handle "special segments"
+          return new specialSegments[segment as SpecialSegment](type, value);
+        else // handle all the various segments
+          return new LocationCommand(type, segment as MemorySegment, value);
     }
   }
 }
