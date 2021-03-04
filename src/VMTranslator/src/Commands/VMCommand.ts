@@ -41,8 +41,12 @@ export default class VMCommand {
     },
     valueProvided: {
       // M=D
-      toMemoryAtCurrentAddress: (value: string, comment = '') =>
-        this.addLine('M=' + value, comment),
+      toMemoryAtCurrentAddress: (value: string, comment = '') => {
+        const valNum = parseInt(value);
+        if (!isNaN(valNum) && (valNum < -1 || valNum > 1))
+          throw Error(`You tried writing ${ valNum } but you can only write -1, 0, 1`);
+        this.addLine('M=' + value, comment);
+      },
       toTopOfStack: {
         // used, for example, in OperationCommand, when the if chain ends by
         // incrementing the stack pointer after all types of operations
@@ -96,6 +100,20 @@ export default class VMCommand {
     this.addLine('M=M+1',); // increment the value at the stack pointer
   };
   
+  // for performing stack arithmetic
+  protected add = {
+    valueOfAddress: {
+      // A=D+A
+      toStoredValueAndMoveThere: (comment = 'move to segment offset') => this.addLine('A=D+A', comment),
+      // D=D+A
+      toStoredValue: (comment = 'store address of segment offset') => this.addLine('D=D+A', comment)
+    },
+    storedValue: {
+      // M=M+D
+      toMemoryValue: (comment = '') => this.addLine('M=M+D', comment)
+    }
+  };
+  
   protected pushThe = {
     storedValue: {
       // "\*SP=*addr"
@@ -115,7 +133,7 @@ export default class VMCommand {
       }
     },
     valueProvided: {
-      ontoStack: (value: string, comment = `PUSH "${ value } TO TOP OF STACK"`) => {
+      ontoStack: (value: string, comment = `PUSH "${ value }" TO TOP OF STACK`) => {
         this.move.to.topOfStack(comment);
         this.writeThe.valueProvided.toMemoryAtCurrentAddress(value); // M=value
         this.incrementStackPointer();

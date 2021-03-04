@@ -2,19 +2,6 @@ import { CmdType, MemorySegment, memorySegments } from '../../shared';
 import { PushPopCommand } from './PushPopCommand';
 
 export class LocationCommand extends PushPopCommand {
-  // for performing stack arithmetic
-  private add = {
-    valueOfAddress: {
-      // A=D+A
-      toStoredValueAndMoveThere: (comment = 'move to segment offset') => this.addLine('A=D+A', comment),
-      // D=D+A
-      toStoredValue: (comment = 'store address of segment offset') => this.addLine('D=D+A', comment)
-    },
-    storedValue: {
-      // M=M+D
-      toMemoryValue: (comment = '') => this.addLine('M=M+D', comment)
-    }
-  };
   
   constructor(type: CmdType, private segment: MemorySegment, value: string) {
     super(type, value);
