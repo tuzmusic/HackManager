@@ -74,14 +74,14 @@ export class VMTranslator extends HackTask {
           // remove the incrementing from the "push constant" translation
           prevTranslation.pop();
           prevTranslation.pop();
-          
+  
           // remove the decrementing (translation[2]) from the current command,
           // leaving "go to stack pointer" and "move to top of stack"
           currentTranslation = currentTranslation.filter((_, index) => index !== 2);
-          
+  
           // fix the comment
-          currentTranslation[1] = currentTranslation[1].replace(new RegExp('(//)(.*)'), '$1 move to top of stack' +
-            ' (already points to the correct spot)');
+          currentTranslation[1] = currentTranslation[1].replace(new RegExp('(//.*)'), '$1' +
+            ' (SP decremented above)');
         }
       }
     };

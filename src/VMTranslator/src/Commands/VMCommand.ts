@@ -87,7 +87,10 @@ export default class VMCommand {
   };
   
   // *i=*SP
-  protected readonly popVariable = (variable: string) => {
+  protected readonly popVariable = (variable: string, comment = '') => {
+    // we always start this process at one-past the top value,
+    // so we first have to move SP to point at the value we want
+    this.decrementStackPointer(comment);
     this.storeThe.topStackValue();
     this.move.to.variableOrValue(variable);
     this.writeThe.storedValue.toMemoryAtCurrentAddress();
