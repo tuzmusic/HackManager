@@ -128,7 +128,7 @@ export default class VMCommand {
     },
     valueAtCurrentAddress: {
       // "@SP, M=M+1"
-      ontoStack: (comment = 'PUSH MEMORY VALUE TO TOP OF STACK') => {
+      ontoStack: (comment = '>>> push memory value to top of stack') => {
         this.storeThe.memoryValue(); // D=M
         this.move.to.topOfStack(comment);
         this.writeThe.storedValue.toMemoryAtCurrentAddress(); // M=D
@@ -136,7 +136,7 @@ export default class VMCommand {
       }
     },
     valueProvided: {
-      ontoStack: (value: string, comment = `PUSH "${ value }" TO TOP OF STACK`) => {
+      ontoStack: (value: string, comment = `>>> push "${ value }" to top of stack`) => {
         this.move.to.topOfStack(comment);
         this.writeThe.valueProvided.toMemoryAtCurrentAddress(value); // M=value
         this.incrementStackPointer();
