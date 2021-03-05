@@ -6,32 +6,17 @@ export default class VMCommand {
   
   protected addLine = (line: string, comment?: string) => this.lines.push(line.padEnd(12) + (comment ? ` // ${ comment }` : ''));
   
-  protected move = {
-    to: {
-      // "@SP"
-      stackPointer: (comment = 'move to stack pointer') => this.addLine('@SP', comment),
-      // "@i"
-      variableOrValue: (v: string | number, comment = '') => this.addLine(`@${ v }`, comment),
-      topOfStack: (comment = 'MOVE TO TOP OF STACK') => {
-        // often we'll move after popping, so we're already at SP
-        if (this.lines.length > 1 && this.lines[this.lines.length - 1].startsWith('M=M-1')) {
-          this.move.using.currentMemoryValue.asAddress(comment);
-        } else {
-          this.move.to.stackPointer(comment);
-          this.move.using.currentMemoryValue.asAddress();
-        }
-      }
+  // for performing stack arithmetic
+  protected add = {
+    valueOfAddress: {
+      // A=D+A
+      toStoredValueAndMoveThere: (comment = 'move to segment offset') => this.addLine('A=D+A', comment),
+      // D=D+A
+      toStoredValue: (comment = 'store address of segment offset') => this.addLine('D=D+A', comment)
     },
-    using: {
-      storedValue: {
-        // A=D
-        asAddress: (comment = '') => this.addLine('A=D', comment)
-      },
-      currentMemoryValue: {
-        // A=M;
-        // mainly used after moving to stack pointer, to move to top of stack
-        asAddress: (comment = 'move to top of stack') => this.addLine('A=M', comment)
-      },
+    storedValue: {
+      // M=M+D
+      toMemoryValue: (comment = '') => this.addLine('M=M+D', comment)
     }
   };
   protected writeThe = {
@@ -75,6 +60,9 @@ export default class VMCommand {
     }
   };
   
+  // but is easier to use from inside another command.
+  protected addLabel = (label: string, comment = '') => this.addLine(`(${ label })`, comment);
+  
   protected push = (): void => { throw Error('not implemented'); };
   
   protected pop = (): void => { throw Error('not implemented'); };
@@ -101,20 +89,6 @@ export default class VMCommand {
   protected incrementStackPointer = (comment = 'increment stack pointer') => {
     this.move.to.stackPointer(comment);
     this.addLine('M=M+1',); // increment the value at the stack pointer
-  };
-  
-  // for performing stack arithmetic
-  protected add = {
-    valueOfAddress: {
-      // A=D+A
-      toStoredValueAndMoveThere: (comment = 'move to segment offset') => this.addLine('A=D+A', comment),
-      // D=D+A
-      toStoredValue: (comment = 'store address of segment offset') => this.addLine('D=D+A', comment)
-    },
-    storedValue: {
-      // M=M+D
-      toMemoryValue: (comment = '') => this.addLine('M=M+D', comment)
-    }
   };
   
   protected pushThe = {
@@ -144,6 +118,38 @@ export default class VMCommand {
     }
   };
   
+  // this function reproduces the functionality of a LabelCommand,
+  
+  protected addJumpDestination = (label: string, comment = '') => this.addLine(`@${ label }`, comment);
+  
+  protected move = {
+    to: {
+      // "@SP"
+      stackPointer: (comment = 'move to stack pointer') => this.addLine('@SP', comment),
+      // "@i"
+      variableOrValue: (v: string, comment = '') => this.addJumpDestination(v, comment),
+      topOfStack: (comment = 'MOVE TO TOP OF STACK') => {
+        // often we'll move after popping, so we're already at SP
+        if (this.lines.length > 1 && this.lines[this.lines.length - 1].startsWith('M=M-1')) {
+          this.move.using.currentMemoryValue.asAddress(comment);
+        } else {
+          this.move.to.stackPointer(comment);
+          this.move.using.currentMemoryValue.asAddress();
+        }
+      }
+    },
+    using: {
+      storedValue: {
+        // A=D
+        asAddress: (comment = '') => this.addLine('A=D', comment)
+      },
+      currentMemoryValue: {
+        // A=M;
+        // mainly used after moving to stack pointer, to move to top of stack
+        asAddress: (comment = 'move to top of stack') => this.addLine('A=M', comment)
+      },
+    }
+  };
   // "@SP; M=M-1"
   protected decrementStackPointer = (comment = 'decrement stack pointer') => {
     this.move.to.stackPointer(comment);

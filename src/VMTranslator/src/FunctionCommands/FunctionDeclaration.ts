@@ -1,5 +1,4 @@
 import VMCommand from '../Commands/VMCommand';
-import { LabelCommand } from '../Commands/ProgramFlow/LabelCommand';
 
 /*
 Implementation:
@@ -14,14 +13,9 @@ LCL = SP // save the location of the stack pointer in LCL
 export class FunctionDeclaration extends VMCommand {
   constructor(private funcName: string, private localVarNum: string) {
     super();
-    this.addFunctionLabel();
+    this.addLabel(this.funcName);
     this.saveLocalPointer();
     this.pushLocalVars();
-  }
-  
-  private addFunctionLabel() {
-    const labelLines = new LabelCommand(this.funcName).getLines();
-    labelLines.forEach(l => this.addLine(l));
   }
   
   // have LCL point to the current top of the stack (LCL = SP)

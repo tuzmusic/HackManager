@@ -12,7 +12,7 @@ export class IfGotoCommand extends VMCommand {
     this.decrementStackPointer();
     this.storeThe.topStackValue();
     // set jump destination
-    this.addLine(`@${ label }`);
+    this.addJumpDestination(label);
     // jump if popped value is not zero
     this.addLine('D;JNE');
   }

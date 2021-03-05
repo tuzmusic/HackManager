@@ -1,4 +1,5 @@
 import VMCommand from '../Commands/VMCommand';
+import { CallStack } from '../CallStack';
 
 /*
 Implementation:
@@ -62,8 +63,16 @@ export class ReturnCommand extends VMCommand {
   }
   
   private goToReturn() {
+    // todo: this may or may not be needed? I'm honestly not sure if the
+    //  return address is just about moving around the assembly code, or
+    //  about actually changing values in the system (A, SP, etc)
     this.addLine('@RET', '>>> move to the return address, to restore control to caller');
     this.addLine('A=M',);
+  
+    if (!CallStack.isEmpty()) return;
+    this.addLine(`(${ CallStack.generateReturnLabel() })`);
+    this.addLine('0;JMP');
+    CallStack.popFunction();
   }
   
   private restoreCallerFrame() {
@@ -79,7 +88,7 @@ export class ReturnCommand extends VMCommand {
       
       // restore
       this.addLine('D=M', `store saved "${ segments[i] }"`);
-      this.addLine(`@${ segments[i] }`, '');
+      this.addJumpDestination(segments[i], '');
       this.addLine('M=D', `restore saved "${ segments[i] }"`);
       this.addLine('',);
     }

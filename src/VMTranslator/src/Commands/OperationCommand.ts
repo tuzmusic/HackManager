@@ -77,13 +77,10 @@ export class OperationCommand extends VMCommand {
     const comparison = comparisons[command];
     const markerNum = `${ OperationCommand.comparisonCounter++ }`;
     const marker = (...parts: string[]): string => parts.concat(markerNum).join('_');
-    
-    const source = (label: string) => `@${ marker(label) }`;
-    const dest = (label: string) => `(${ marker(label) })`;
   
     this.addLine('D=M-D', 'store X-Y in D for comparison');
     // prepare jump location
-    this.addLine(source('IF_TRUE'));
+    this.addJumpDestination('IF_TRUE');
   
     // set up the comparison (compare D to 0), which will jump if true
     this.addLine(comparison, `perform comparison: ${ command }`);
@@ -97,17 +94,17 @@ export class OperationCommand extends VMCommand {
     //  conditional.
   
     // if false, store 0 in D
-    this.addLine(dest('IF_FALSE')); // not actually used, but a helpful road sign
+    this.addLabel('IF_FALSE'); // not actually used, but a helpful road sign
     this.writeThe.valueProvided.toTopOfStack.withoutIncrementingStackPointer('0');
-    this.addLine(source('END_IF'));
+    this.addJumpDestination('END_IF');
     this.addLine('0;JMP');
   
     // add the marker for true
-    this.addLine(dest('IF_TRUE'));
+    this.addLabel('IF_TRUE');
     this.writeThe.valueProvided.toTopOfStack.withoutIncrementingStackPointer('-1');
-    
+  
     // marker for endif
-    this.addLine(dest('END_IF'));
+    this.addLabel('END_IF');
   }
   
   /* prep X as M */

@@ -1,4 +1,5 @@
 import VMCommand from '../Commands/VMCommand';
+import { CallStack } from '../CallStack';
 
 /*
 Implementation:
@@ -14,7 +15,22 @@ Implementation:
 * */
 
 export class FunctionCall extends VMCommand {
+  private readonly returnLabel: string;
+  
   constructor(private funcName: string, private argNum: string) {
     super();
+    CallStack.pushFunction(funcName);
+    
+    // generate return label
+    this.returnLabel = CallStack.generateReturnLabel();
+    
+    this.goToTheFunction();
+    
+    // final step!
+    this.addLabel(this.returnLabel, 'return point for the just-called function');
+  }
+  
+  private goToTheFunction() {
+  
   }
 }

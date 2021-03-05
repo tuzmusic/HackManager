@@ -21,5 +21,5 @@ export default class StaticCommand extends PushPopCommand {
   };
   
   private addStaticLine = (comment = 'go to static slot') =>
-    this.addLine(`@${ VMTranslator.filename }.${ this.value }`, comment);
+    this.addJumpDestination(`${ VMTranslator.filename }.${ this.value }`, comment);
 }

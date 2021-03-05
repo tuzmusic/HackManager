@@ -1,21 +1,15 @@
-// BOOTSTRAP THE SYSTEM
-@256         // set the start of the stack to addr 256
-D=A          // store the current address as a value
-@SP         
-M=D          // write value of D to current location
-
 // push argument 1
 @ARG         // move to argument
 D=M          // store the "argument" base address
 @1           // move to address representing offset
 A=D+A        // new addr = base addr + offset
 D=M          // store current memory value in D
-@SP          // PUSH MEMORY VALUE TO TOP OF STACK
+@SP          // >>> push memory value to top of stack
 A=M          // move to top of stack
 M=D          // write value of D to current location
 
 // pop pointer 1
-@SP          // move to top of stack (already points to the correct spot)
+@SP          // decrement stack pointer (SP decremented above)
 A=M          // move to top of stack
 D=M          // store the top stack value into D
 @THAT       
@@ -85,7 +79,7 @@ D=M          // store the "argument" base address
 @0           // move to address representing offset
 A=D+A        // new addr = base addr + offset
 D=M          // store current memory value in D
-@SP          // PUSH MEMORY VALUE TO TOP OF STACK
+@SP          // >>> push memory value to top of stack
 A=M          // move to top of stack
 M=D          // write value of D to current location
 @SP          // increment stack pointer
@@ -99,7 +93,7 @@ A=M          // move to top of stack
 M=D          // write value of D to current location
 
 // sub
-@SP          // move to top of stack (already points to the correct spot)
+@SP          // pop back to Y, since binary op starts at 1 past Y (SP decremented above)
 A=M          // PREPARE Y (pop Y into D)
 D=M          // store the top stack value into D
 @SP          // "pop" X
@@ -138,12 +132,12 @@ D=M          // store the "argument" base address
 @0           // move to address representing offset
 A=D+A        // new addr = base addr + offset
 D=M          // store current memory value in D
-@SP          // PUSH MEMORY VALUE TO TOP OF STACK
+@SP          // >>> push memory value to top of stack
 A=M          // move to top of stack
 M=D          // write value of D to current location
 
 // if-goto COMPUTE_ELEMENT
-@SP          // move to top of stack (already points to the correct spot)
+@SP          // decrement stack pointer (SP decremented above)
 A=M          // move to top of stack
 D=M          // store the top stack value into D
 @COMPUTE_ELEMENT
@@ -162,7 +156,7 @@ D=M          // store the "that" base address
 @0           // move to address representing offset
 A=D+A        // new addr = base addr + offset
 D=M          // store current memory value in D
-@SP          // PUSH MEMORY VALUE TO TOP OF STACK
+@SP          // >>> push memory value to top of stack
 A=M          // move to top of stack
 M=D          // write value of D to current location
 @SP          // increment stack pointer
@@ -174,12 +168,12 @@ D=M          // store the "that" base address
 @1           // move to address representing offset
 A=D+A        // new addr = base addr + offset
 D=M          // store current memory value in D
-@SP          // PUSH MEMORY VALUE TO TOP OF STACK
+@SP          // >>> push memory value to top of stack
 A=M          // move to top of stack
 M=D          // write value of D to current location
 
 // add
-@SP          // move to top of stack (already points to the correct spot)
+@SP          // pop back to Y, since binary op starts at 1 past Y (SP decremented above)
 A=M          // PREPARE Y (pop Y into D)
 D=M          // store the top stack value into D
 @SP          // "pop" X
@@ -226,7 +220,7 @@ A=M          // move to top of stack
 M=D          // write value of D to current location
 
 // add
-@SP          // move to top of stack (already points to the correct spot)
+@SP          // pop back to Y, since binary op starts at 1 past Y (SP decremented above)
 A=M          // PREPARE Y (pop Y into D)
 D=M          // store the top stack value into D
 @SP          // "pop" X
@@ -235,7 +229,7 @@ A=M          // PREPARE X (prep X "into" M – but don't pop just yet!)
 M=M+D        // perform binary operation: add
 
 // pop pointer 1
-@SP          // move to top of stack (already points to the correct spot)
+@SP          // decrement stack pointer (SP decremented above)
 A=M          // move to top of stack
 D=M          // store the top stack value into D
 @THAT       
@@ -247,7 +241,7 @@ D=M          // store the "argument" base address
 @0           // move to address representing offset
 A=D+A        // new addr = base addr + offset
 D=M          // store current memory value in D
-@SP          // PUSH MEMORY VALUE TO TOP OF STACK
+@SP          // >>> push memory value to top of stack
 A=M          // move to top of stack
 M=D          // write value of D to current location
 @SP          // increment stack pointer
@@ -261,7 +255,7 @@ A=M          // move to top of stack
 M=D          // write value of D to current location
 
 // sub
-@SP          // move to top of stack (already points to the correct spot)
+@SP          // pop back to Y, since binary op starts at 1 past Y (SP decremented above)
 A=M          // PREPARE Y (pop Y into D)
 D=M          // store the top stack value into D
 @SP          // "pop" X
