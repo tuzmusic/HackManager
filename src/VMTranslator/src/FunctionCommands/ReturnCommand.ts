@@ -70,8 +70,7 @@ export class ReturnCommand extends VMCommand {
     this.addLine('A=M',);
   
     if (!CallStack.isEmpty()) return;
-    this.addLine(`(${ CallStack.generateReturnLabel() })`);
-    this.addLine('0;JMP');
+    this.jumpUnconditionallyTo(CallStack.generateReturnLabel());
     CallStack.popFunction();
   }
   
@@ -88,7 +87,7 @@ export class ReturnCommand extends VMCommand {
       
       // restore
       this.addLine('D=M', `store saved "${ segments[i] }"`);
-      this.addJumpDestination(segments[i], '');
+      this.addLine(`@${ segments[i] }`, '');
       this.addLine('M=D', `restore saved "${ segments[i] }"`);
       this.addLine('',);
     }

@@ -96,8 +96,8 @@ export class OperationCommand extends VMCommand {
     // if false, store 0 in D
     this.addLabel('IF_FALSE'); // not actually used, but a helpful road sign
     this.writeThe.valueProvided.toTopOfStack.withoutIncrementingStackPointer('0');
-    this.addJumpDestination('END_IF');
-    this.addLine('0;JMP');
+    this.jumpUnconditionallyTo('END_IF');
+    // this.addLine('0;JMP');
   
     // add the marker for true
     this.addLabel('IF_TRUE');

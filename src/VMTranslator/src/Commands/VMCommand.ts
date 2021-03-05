@@ -59,13 +59,16 @@ export default class VMCommand {
       this.storeThe.memoryValue('store the top stack value into D');
     }
   };
-  
-  // but is easier to use from inside another command.
+  /**
+   * this function reproduces the functionality of a LabelCommand,
+   * but is easier to use from inside another command.
+   */
   protected addLabel = (label: string, comment = '') => this.addLine(`(${ label })`, comment);
   
-  protected push = (): void => { throw Error('not implemented'); };
-  
-  protected pop = (): void => { throw Error('not implemented'); };
+  protected jumpUnconditionallyTo = (marker: string) => {
+    this.addJumpDestination(marker);
+    this.addLine('0;JMP');
+  };
   
   // *SP=*i
   protected readonly pushVariable = (variable: string) => {
@@ -118,7 +121,6 @@ export default class VMCommand {
     }
   };
   
-  // this function reproduces the functionality of a LabelCommand,
   
   protected addJumpDestination = (label: string, comment = '') => this.addLine(`@${ label }`, comment);
   
