@@ -1,3 +1,4 @@
+(SimpleFunction.test)
 @SP         
 D=M          // store SP value
 @LCL        
@@ -120,5 +121,6 @@ D=M          // store saved "LCL"
 M=D          // restore saved "LCL"
 @RET         // >>> move to the return address, to restore control to caller
 A=M         
+(INFINITE_LOOP)
 @INFINITE_LOOP
 0;JMP

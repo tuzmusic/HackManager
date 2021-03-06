@@ -4,8 +4,10 @@ import path from 'path';
 export class HackTask {
   static inExtension: string;
   static outExtension: string;
+  static outPath: string;
   static taskName: string;
   static filename = 'PlaceholderFilename';
+  static processed: string;
   
   static processFile(filename: string): void {
     this.filename = filename.split('.')[0];
@@ -18,22 +20,44 @@ export class HackTask {
     const filepath = path.resolve(filename);
   
     // convert text
-    const assembled = this.processText(fs.readFileSync(filepath).toString());
+    this.processed = this.processText(fs.readFileSync(filepath).toString());
   
     // write file
-    const newFilePath = filepath.replace(this.inExtension, this.outExtension);
-    console.log(`${ this.taskName.toUpperCase() }: Creating`, newFilePath.split('/').pop());
-    fs.writeFileSync(newFilePath, assembled);
+    this.outPath = filepath.replace(this.inExtension, this.outExtension);
+    console.log(`${ this.taskName.toUpperCase() }: Creating`, this.outPath.split('/').pop());
+    fs.writeFileSync(this.outPath, this.processed);
   
-    // write raw file, for matching up line numbers
-    const rawPath = newFilePath.replace('.asm', '.raw.asm');
-    const rawCode = assembled.split('\n').filter(line => line.trim()
-      && !line.startsWith('(')
-      && !line.startsWith('//'))
-      .join('\n');
-  
-    fs.writeFileSync(rawPath, rawCode);
+    this.writeRawFile();
     console.log('Done');
+  }
+  
+  static writeRawFile(): void {
+    // write raw file, for matching up line numbers
+    const rawPath = this.outPath.replace(this.outExtension, 'raw.' + this.outExtension);
+    
+    // remove comments and blank lines
+    const rawCode = this.processed.split('\n').filter(line => line.trim() && !line.startsWith('//'))
+      .join('\n');
+    
+    fs.writeFileSync(rawPath, rawCode);
+  }
+  
+  static processFolder(pathString: string): void {
+    const thePath = path.resolve(pathString);
+    const files = fs.readdirSync(thePath).filter(n => n.endsWith(this.inExtension));
+    
+    // perform task
+    this.processed = files.map(filepath =>
+      [`// *** FILE: ${ filepath } ***`, '',
+        this.processText(fs.readFileSync(filepath).toString())].join('\n'))
+      .join('\n\n');
+    
+    // write file
+    this.outPath = path.join(thePath, path.basename(thePath) + '.' + this.outExtension);
+    console.log(`${ this.taskName.toUpperCase() }: Creating`, this.outPath.split('/').pop());
+    fs.writeFileSync(this.outPath, this.processed);
+    
+    this.writeRawFile();
   }
   
   protected static processText(s: string): string {
