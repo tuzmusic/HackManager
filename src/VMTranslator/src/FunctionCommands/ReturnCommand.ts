@@ -70,7 +70,10 @@ export class ReturnCommand extends VMCommand {
     this.addLine('A=M',);
   
     if (!CallStack.isEmpty()) return;
-    this.jumpUnconditionallyTo(CallStack.generateReturnLabel());
+  
+    // TODO: this breaks SimpleFunction (3/6/21)
+    // this.jumpUnconditionallyTo(CallStack.generateReturnLabel());
+  
     CallStack.popFunction();
   }
   

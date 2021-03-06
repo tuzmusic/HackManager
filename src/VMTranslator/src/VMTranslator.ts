@@ -1,6 +1,7 @@
 import TranslatorParser from './TranslatorParser';
 import { HackTask } from '../../common/HackTask';
 import { VMBootstrapper } from './Commands/VMBootstrapper';
+import * as fs from 'fs';
 
 export class VMTranslator extends HackTask {
   
@@ -8,8 +9,17 @@ export class VMTranslator extends HackTask {
   static outExtension = 'asm';
   static taskName = 'Translator';
   
-  static processFile(filename: string): void {
-    super.processFile(filename);
+  static processPath(pathString: string): void {
+    super.processPath(pathString);
+    
+    if (fs.lstatSync(pathString).isDirectory()) {
+      // TODO: do this better!
+      // add bootstrap code to final file
+      const all = fs.readFileSync(this.outPath);
+      fs.writeFileSync(this.outPath,
+        [VMBootstrapper.getBootstrapCode(), all].flat().join('\n')
+      );
+    }
   }
   
   static processText(text: string): string {
@@ -26,8 +36,10 @@ export class VMTranslator extends HackTask {
       .map(line => line.split('//')[0].trim());
     
     const translations: string[][] = [];
+    
     // start with bootstrap code
-    translations.push(VMBootstrapper.getBootstrapCode());
+    // TODO: this breaks SimpleFunction (3/6/21)
+    // translations.push(VMBootstrapper.getBootstrapCode());
     
     // translate each line
     let prevLine: string;
