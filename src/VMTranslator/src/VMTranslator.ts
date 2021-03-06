@@ -1,5 +1,6 @@
 import TranslatorParser from './TranslatorParser';
 import { HackTask } from '../../common/HackTask';
+import { VMBootstrapper } from './Commands/VMBootstrapper';
 
 export class VMTranslator extends HackTask {
   
@@ -7,11 +8,15 @@ export class VMTranslator extends HackTask {
   static outExtension = 'asm';
   static taskName = 'Translator';
   
+  static processFile(filename: string): void {
+    super.processFile(filename);
+  }
+  
   static processText(text: string): string {
     // The absolute optimum would be to read in one line at a time.
     // I just really don't feel like figuring that out, with readline etc.
     // Instead, I'll save all the lines in an array, and keep mutating it in place.
-  
+    
     const linesToTranslate = text.split('\n')
       // remove empty lines
       .filter(line => line.trim() != '')
@@ -19,38 +24,38 @@ export class VMTranslator extends HackTask {
       .filter(line => !line.trim().startsWith('//'))
       // remove inline comments
       .map(line => line.split('//')[0].trim());
-  
+    
     const translations: string[][] = [];
     // start with bootstrap code
-    // translations.push(VMBootstrapper.getBootstrapCode());
-  
+    translations.push(VMBootstrapper.getBootstrapCode());
+    
     // translate each line
     let prevLine: string;
     let prevTranslation: string[];
     for (const currentLine of linesToTranslate) {
       let currentTranslation = [`// ${ currentLine }`];
-    
+      
       currentTranslation.push(...new TranslatorParser().parseLine(currentLine).getLines());
-    
+      
       if (prevLine && prevTranslation)
         currentTranslation = this.optimize(currentLine, prevLine, currentTranslation, prevTranslation);
-    
+      
       translations.push(currentTranslation);
-    
+      
       prevLine = currentLine;
       prevTranslation = currentTranslation;
     }
-  
+    
     // add a blank line between each source command
     translations.forEach(t => t.push(''));
-  
+    
     // add ending loop
     translations.push([
       '(INFINITE_LOOP)',
       '@INFINITE_LOOP',
       '0;JMP'
     ]);
-  
+    
     return translations.flat().join('\n');
   }
   

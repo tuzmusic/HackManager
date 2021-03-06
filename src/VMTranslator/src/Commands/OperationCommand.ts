@@ -1,4 +1,5 @@
 import VMCommand from './VMCommand';
+import TranslatorParser from '../TranslatorParser';
 
 /**
  * operate on top two values on the stack.
@@ -46,7 +47,6 @@ export type BinaryComparisonCommand = keyof typeof comparisons
 export type OperationCmd = BinaryCalculationCommand | BinaryComparisonCommand | UnaryCalculationCommand;
 
 export class OperationCommand extends VMCommand {
-  static comparisonCounter = 0;
   lines: string[] = [];
   
   // OPERANDS HAVE ALREADY BEEN PUSHED ONTO THE STACK!!!
@@ -75,12 +75,12 @@ export class OperationCommand extends VMCommand {
   
   private handleComparison(command: BinaryComparisonCommand) {
     const comparison = comparisons[command];
-    const markerNum = `${ OperationCommand.comparisonCounter++ }`;
+    const markerNum = `${ TranslatorParser.ifBoolCounter++ }`;
     const marker = (...parts: string[]): string => parts.concat(markerNum).join('_');
   
     this.addLine('D=M-D', 'store X-Y in D for comparison');
     // prepare jump location
-    this.addJumpDestination('IF_TRUE');
+    this.addJumpDestination(marker('IF_TRUE'));
   
     // set up the comparison (compare D to 0), which will jump if true
     this.addLine(comparison, `perform comparison: ${ command }`);
@@ -94,17 +94,17 @@ export class OperationCommand extends VMCommand {
     //  conditional.
   
     // if false, store 0 in D
-    this.addLabel('IF_FALSE'); // not actually used, but a helpful road sign
+    this.addLabel(marker('IF_FALSE')); // not actually used, but a helpful road sig)n
     this.writeThe.valueProvided.toTopOfStack.withoutIncrementingStackPointer('0');
-    this.jumpUnconditionallyTo('END_IF');
+    this.jumpUnconditionallyTo(marker('END_IF'));
     // this.addLine('0;JMP');
   
     // add the marker for true
-    this.addLabel('IF_TRUE');
+    this.addLabel(marker('IF_TRUE'));
     this.writeThe.valueProvided.toTopOfStack.withoutIncrementingStackPointer('-1');
   
     // marker for endif
-    this.addLabel('END_IF');
+    this.addLabel(marker('END_IF'));
   }
   
   /* prep X as M */

@@ -19,6 +19,77 @@ export default class VMCommand {
       toMemoryValue: (comment = '') => this.addLine('M=M+D', comment)
     }
   };
+  
+  /**
+   * this function reproduces the functionality of a LabelCommand,
+   * but is easier to use from inside another command.
+   */
+  protected addLabel = (label: string, comment = '') => this.addLine(`(${ label })`, comment);
+  
+  protected jumpUnconditionallyTo = (marker: string) => {
+    this.addJumpDestination(marker);
+    this.addLine('0;JMP');
+  };
+  
+  // *SP=*i
+  protected readonly pushVariable = (variable: string) => {
+    this.move.to.variableOrValue(variable);
+    this.storeThe.memoryValue();
+    this.incrementStackPointer();
+  };
+  
+  // *i=*SP
+  protected readonly popVariable = (variable: string, comment = '') => {
+    // we always start this process at one-past the top value,
+    // so we first have to move SP to point at the value we want
+    this.decrementStackPointer(comment);
+    this.storeThe.topStackValue();
+    this.move.to.variableOrValue(variable);
+    this.writeThe.storedValue.toMemoryAtCurrentAddress();
+    this.decrementStackPointer();
+  };
+  
+  // "@SP, M=M+1"
+  protected incrementStackPointer = (comment = 'increment stack pointer') => {
+    this.move.to.stackPointer(comment);
+    this.addLine('M=M+1',); // increment the value at the stack pointer
+  };
+  
+  protected addLinesFromCommand = (cmd: new (...args: string[]) => VMCommand, ...args: string[]) => {
+    const lines = new cmd(...args).getLines();
+    lines.forEach(line => this.addLine(line));
+  };
+  
+  protected addJumpDestination = (label: string, comment = '') => this.addLine(`@${ label }`, comment);
+  
+  protected move = {
+    to: {
+      // "@SP"
+      stackPointer: (comment = 'move to stack pointer') => this.addLine('@SP', comment),
+      // "@i"
+      variableOrValue: (v: string, comment = '') => this.addJumpDestination(v, comment),
+      topOfStack: (comment = 'MOVE TO TOP OF STACK') => {
+        // often we'll move after popping, so we're already at SP
+        if (this.lines.length > 1 && this.lines[this.lines.length - 1].startsWith('M=M-1')) {
+          this.move.using.currentMemoryValue.asAddress(comment);
+        } else {
+          this.move.to.stackPointer(comment);
+          this.move.using.currentMemoryValue.asAddress();
+        }
+      }
+    },
+    using: {
+      storedValue: {
+        // A=D
+        asAddress: (comment = '') => this.addLine('A=D', comment)
+      },
+      currentMemoryValue: {
+        // A=M;
+        // mainly used after moving to stack pointer, to move to top of stack
+        asAddress: (comment = 'move to top of stack') => this.addLine('A=M', comment)
+      },
+    }
+  };
   protected writeThe = {
     storedValue: {
       // M=D
@@ -59,41 +130,6 @@ export default class VMCommand {
       this.storeThe.memoryValue('store the top stack value into D');
     }
   };
-  /**
-   * this function reproduces the functionality of a LabelCommand,
-   * but is easier to use from inside another command.
-   */
-  protected addLabel = (label: string, comment = '') => this.addLine(`(${ label })`, comment);
-  
-  protected jumpUnconditionallyTo = (marker: string) => {
-    this.addJumpDestination(marker);
-    this.addLine('0;JMP');
-  };
-  
-  // *SP=*i
-  protected readonly pushVariable = (variable: string) => {
-    this.move.to.variableOrValue(variable);
-    this.storeThe.memoryValue();
-    this.incrementStackPointer();
-  };
-  
-  // *i=*SP
-  protected readonly popVariable = (variable: string, comment = '') => {
-    // we always start this process at one-past the top value,
-    // so we first have to move SP to point at the value we want
-    this.decrementStackPointer(comment);
-    this.storeThe.topStackValue();
-    this.move.to.variableOrValue(variable);
-    this.writeThe.storedValue.toMemoryAtCurrentAddress();
-    this.decrementStackPointer();
-  };
-  
-  // "@SP, M=M+1"
-  protected incrementStackPointer = (comment = 'increment stack pointer') => {
-    this.move.to.stackPointer(comment);
-    this.addLine('M=M+1',); // increment the value at the stack pointer
-  };
-  
   protected pushThe = {
     storedValue: {
       // "\*SP=*addr"
@@ -121,37 +157,6 @@ export default class VMCommand {
     }
   };
   
-  
-  protected addJumpDestination = (label: string, comment = '') => this.addLine(`@${ label }`, comment);
-  
-  protected move = {
-    to: {
-      // "@SP"
-      stackPointer: (comment = 'move to stack pointer') => this.addLine('@SP', comment),
-      // "@i"
-      variableOrValue: (v: string, comment = '') => this.addJumpDestination(v, comment),
-      topOfStack: (comment = 'MOVE TO TOP OF STACK') => {
-        // often we'll move after popping, so we're already at SP
-        if (this.lines.length > 1 && this.lines[this.lines.length - 1].startsWith('M=M-1')) {
-          this.move.using.currentMemoryValue.asAddress(comment);
-        } else {
-          this.move.to.stackPointer(comment);
-          this.move.using.currentMemoryValue.asAddress();
-        }
-      }
-    },
-    using: {
-      storedValue: {
-        // A=D
-        asAddress: (comment = '') => this.addLine('A=D', comment)
-      },
-      currentMemoryValue: {
-        // A=M;
-        // mainly used after moving to stack pointer, to move to top of stack
-        asAddress: (comment = 'move to top of stack') => this.addLine('A=M', comment)
-      },
-    }
-  };
   // "@SP; M=M-1"
   protected decrementStackPointer = (comment = 'decrement stack pointer') => {
     this.move.to.stackPointer(comment);

@@ -34,6 +34,8 @@ type SpecialSegment = keyof typeof specialSegments
 type FunctionCommand = keyof typeof functionCommands
 
 export default class TranslatorParser {
+  static ifBoolCounter = 0;
+  
   public parseLine(line: string): VMCommand {
     const parts = line.split(' ');
     const [first, second, third] = parts;
