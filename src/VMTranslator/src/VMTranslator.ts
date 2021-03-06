@@ -54,8 +54,14 @@ export class VMTranslator extends HackTask {
     return translations.flat().join('\n');
   }
   
-  // after translations have been created, modify them in place.
-  // <p>NOTE that `currentTranslation = currentTranslation.filter(fn)` does NOT modify the source in place.
+  /**
+   * after translations have been created, modify them in place.
+   * <p>NOTE that `currentTranslation = currentTranslation.filter(fn)` does NOT modify the source in place.
+   * @param currentLine
+   * @param prevLine
+   * @param currentTranslation
+   * @param prevTranslation
+   */
   private static optimize = (currentLine: string, prevLine: string, currentTranslation: string[], prevTranslation: string[]): string[] => {
     const optimizations = {
       // when the current command starts by decrementing the stack, but the previous command ended by incrementing

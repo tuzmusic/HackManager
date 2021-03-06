@@ -1,5 +1,5 @@
 import VMCommand from '../Commands/VMCommand';
-import { CallStack } from '../CallStack';
+import { CallStack } from './CallStack';
 
 /*
 Implementation:

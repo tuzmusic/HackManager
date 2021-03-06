@@ -1,4 +1,4 @@
-import { FunctionInfo } from './shared';
+import { FunctionInfo } from '../shared';
 
 export class CallStack {
   private static stack: FunctionInfo[] = [];
@@ -9,7 +9,9 @@ export class CallStack {
   
   public static getCallerCounter = () => CallStack.getTop()?.counter;
   
-  public static incrementCallerCounter = () => CallStack.getTop().counter++;
+  public static incrementCallerCounter = () => {
+    if (CallStack.getTop()) CallStack.getTop().counter++;
+  };
   
   public static generateReturnLabel = () => `${ CallStack.getCallerName() }$ret.${ CallStack.getCallerCounter() }`;
   
