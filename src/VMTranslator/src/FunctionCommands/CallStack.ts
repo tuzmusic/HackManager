@@ -1,23 +1,23 @@
-import { FunctionInfo } from '../shared';
-
 export class CallStack {
-  private static stack: FunctionInfo[] = [];
+  /**
+   * Count all calls to all functions, so that the return label is always unique.
+   * There's no reason to track each function's call count, all this label has to
+   * be is UNIQUE.
+   * @private
+   */
+  private static callCounter = 0;
+  private static stack: string[] = [];
   
-  public static isEmpty = () => !!CallStack.stack.length;
+  public static isEmpty = (): boolean => !!CallStack.stack.length;
   
-  public static getCallerName = () => CallStack.getTop()?.name;
+  public static getCallerName = (): string => CallStack.getTop();
   
-  public static getCallerCounter = () => CallStack.getTop()?.counter;
-  
-  public static incrementCallerCounter = () => {
-    if (CallStack.getTop()) CallStack.getTop().counter++;
-  };
-  
-  public static generateReturnLabel = () => `${ CallStack.getCallerName() }$ret.${ CallStack.getCallerCounter() }`;
+  public static generateReturnLabel = () => `${ CallStack.getCallerName() }$ret.${ CallStack.callCounter }`;
   
   public static pushFunction = (funcName: string) => {
-    CallStack.incrementCallerCounter();
-    CallStack.stack.push({ name: funcName, counter: 0 });
+    CallStack.callCounter++;
+    // CallStack.incrementCallerCounter();
+    CallStack.stack.push(funcName);
   };
   
   public static popFunction = () => CallStack.stack.pop();

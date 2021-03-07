@@ -42,11 +42,14 @@ export class HackTask {
   static writeRawFile(): void {
     // write raw file, for matching up line numbers
     const rawPath = this.outPath.replace(this.outExtension, 'raw.' + this.outExtension);
-    
+  
     // remove comments and blank lines
-    const rawCode = this.processed.split('\n').filter(line => line.trim() && !line.startsWith('//'))
+    const rawCode = this.processed.split('\n')
+      // Assembler removes (markers) when assembling machine code.
+      // They still remain in the assembly code!
+      .filter(line => line.trim() && !line.startsWith('//'))
       .join('\n');
-    
+  
     fs.writeFileSync(rawPath, rawCode);
   }
   
@@ -56,7 +59,7 @@ export class HackTask {
     
     // perform task
     this.processed = files.map(filepath =>
-      [`// *** FILE: ${ filepath } ***`, '',
+      [`\n// *** FILE: ${ filepath } ***`, '',
         this.processText(fs.readFileSync(filepath).toString())].join('\n'))
       .join('\n\n');
     

@@ -23,7 +23,7 @@ export class FunctionCall extends VMCommand {
     this.returnLabel = CallStack.generateReturnLabel();
   
     // push return-address   // using label declared below
-    this.pushReturnAddress();
+    this.pushReturnAddress(); // todo: what is this anyway???
   
     // push LCL              // Save LCL of the calling function
     // push ARG              // Save ARG of the calling function
@@ -36,19 +36,20 @@ export class FunctionCall extends VMCommand {
     this.repositionSegments();
   
     // go to the function
-    this.jumpUnconditionallyTo(this.returnLabel);
-  
+    this.jumpUnconditionallyTo(funcName, 'jump to the function');
+    this.addLine('');
     // final step!
     this.addLabel(this.returnLabel, 'return point for the just-called function');
   }
   
   private saveFrame() {
     const segments = ['THAT', 'THIS', 'ARG', 'LCL'];
-    
-    for (let i = segments.length - 1; i <= 0; i--) {
+  
+    for (let i = segments.length - 1; i >= 0; i--) {
       this.addLine(`@${ segments[i] }`, `>>> saving "${ segments[i] }"`);
       this.storeThe.memoryValue();
       this.pushThe.storedValue.ontoStack();
+      this.addLine('');
     }
   }
   
@@ -58,14 +59,14 @@ export class FunctionCall extends VMCommand {
   }
   
   private repositionSegments() {
-    this.addLine('@SP', '>>> reposition LCL & ARG');
+    this.addLine('@SP', '>>> reposition: LCL = SP');
     this.addLine('D=M', 'store the stack pointer');
     this.addLine('@LCL');
     this.writeThe.storedValue.toMemoryAtCurrentAddress('save SP to LCL');
-    
-    this.addLine('@5');
-    this.addLine('D=D-A', 'subtract 5 from the stored SP');
+  
+    this.addLine(`@${ 5 + parseInt(this.argNum) }`, '>>> reposition ARG = SP-n-5');
+    this.addLine('D=D-A', 'subtract from the stored SP: frame + num of args');
     this.addLine('@ARG');
-    this.writeThe.storedValue.toMemoryAtCurrentAddress('save SP-5 to ARG');
+    this.writeThe.storedValue.toMemoryAtCurrentAddress('save SP-n-5 to ARG');
   }
 }

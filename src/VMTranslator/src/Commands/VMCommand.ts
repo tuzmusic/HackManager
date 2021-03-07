@@ -26,9 +26,31 @@ export default class VMCommand {
    */
   protected addLabel = (label: string, comment = '') => this.addLine(`(${ label })`, comment);
   
-  protected jumpUnconditionallyTo = (marker: string) => {
-    this.addJumpDestination(marker);
-    this.addLine('0;JMP');
+  protected pushThe = {
+    storedValue: {
+      // "\*SP=*addr"
+      ontoStack: (comment = '> push temp value to top of stack') => {
+        this.move.to.topOfStack(comment);
+        this.writeThe.storedValue.toMemoryAtCurrentAddress(); // write stored value to top of stack
+        this.incrementStackPointer();
+      }
+    },
+    valueAtCurrentAddress: {
+      // "@SP, M=M+1"
+      ontoStack: (comment = '>>> push memory value to top of stack') => {
+        this.storeThe.memoryValue(); // D=M
+        this.move.to.topOfStack(comment);
+        this.writeThe.storedValue.toMemoryAtCurrentAddress(); // M=D
+        this.incrementStackPointer();
+      }
+    },
+    valueProvided: {
+      ontoStack: (value: string, comment = `>>> push "${ value }" to top of stack`) => {
+        this.move.to.topOfStack(comment);
+        this.writeThe.valueProvided.toMemoryAtCurrentAddress(value); // M=value
+        this.incrementStackPointer();
+      }
+    }
   };
   
   // *SP=*i
@@ -130,31 +152,10 @@ export default class VMCommand {
       this.storeThe.memoryValue('store the top stack value into D');
     }
   };
-  protected pushThe = {
-    storedValue: {
-      // "\*SP=*addr"
-      ontoStack: (comment = 'PUSH TEMP VALUE TO TOP OF STACK') => {
-        this.move.to.topOfStack(comment);
-        this.writeThe.storedValue.toMemoryAtCurrentAddress(); // write stored value to top of stack
-        this.incrementStackPointer();
-      }
-    },
-    valueAtCurrentAddress: {
-      // "@SP, M=M+1"
-      ontoStack: (comment = '>>> push memory value to top of stack') => {
-        this.storeThe.memoryValue(); // D=M
-        this.move.to.topOfStack(comment);
-        this.writeThe.storedValue.toMemoryAtCurrentAddress(); // M=D
-        this.incrementStackPointer();
-      }
-    },
-    valueProvided: {
-      ontoStack: (value: string, comment = `>>> push "${ value }" to top of stack`) => {
-        this.move.to.topOfStack(comment);
-        this.writeThe.valueProvided.toMemoryAtCurrentAddress(value); // M=value
-        this.incrementStackPointer();
-      }
-    }
+  
+  protected jumpUnconditionallyTo = (marker: string, comment = '') => {
+    this.addJumpDestination(marker, comment);
+    this.addLine('0;JMP');
   };
   
   // "@SP; M=M-1"
