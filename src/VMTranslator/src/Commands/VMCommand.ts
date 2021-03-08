@@ -4,7 +4,9 @@ export default class VMCommand {
   
   public getLines = () => [...this.lines];
   
-  protected addLine = (line: string, comment?: string) => this.lines.push(line.padEnd(12) + (comment ? ` // ${ comment }` : ''));
+  protected addLine = (line: string, comment?: string) => this.lines.push(
+    line.padEnd(12) + (comment ? ` // ${ comment }` : '')
+  );
   
   // for performing stack arithmetic
   protected add = {

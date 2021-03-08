@@ -55,7 +55,17 @@ export class FunctionCall extends VMCommand {
   
   // THIS MAY BE NOTHING??
   private pushReturnAddress() {
+    /*
+    * "Push a label onto the stack. And later on I'm going to use the same label
+    * as the label to which I'm going to return after the callee terminates."
+    *
+    * But what is it that we are pushing onto the stack????
+    * */
   
+    /* perhaps it's the SP value of the return label?
+    * or is it pushing, like, ITS address? which is to say,
+    * "this is where SP should be at the end of the function
+    * */
   }
   
   private repositionSegments() {

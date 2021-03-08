@@ -57,18 +57,28 @@ export class VMTranslator extends HackTask {
       prevLine = currentLine;
       prevTranslation = currentTranslation;
     }
-    
+  
     // add a blank line between each source command
     translations.forEach(t => t.push(''));
-    
+  
     // add ending loop
     translations.push([
       '(INFINITE_LOOP)',
       '@INFINITE_LOOP',
       '0;JMP'
     ]);
-    
-    return translations.flat().join('\n');
+  
+    // fix function comments
+    translations.forEach(tr => {
+      if (tr[0].trim().startsWith('// function')) {
+        tr[1] += '\t' + tr[0]; // add function comment to the marker
+        tr.shift(); // and delete the original function comment
+      }
+    });
+  
+    return translations.flat() // get all lines
+      .map(line => (line.startsWith('(') ? '' : '\t') + line) // indent all non-marker lines
+      .join('\n');
   }
   
   /**

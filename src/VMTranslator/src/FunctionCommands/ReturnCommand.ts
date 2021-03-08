@@ -66,13 +66,15 @@ export class ReturnCommand extends VMCommand {
     // todo: this may or may not be needed? I'm honestly not sure if the
     //  return address is just about moving around the assembly code, or
     //  about actually changing values in the system (A, SP, etc)
-    this.addLine('@RET', '>>> move to the return address, to restore control to caller');
-    this.addLine('A=M',);
+    // this.addLine('@RET', '>>> move to the return address, to restore control to caller');
+    // this.addLine('A=M',);
   
+    // on top-level function, there is nothing to return to
     if (!CallStack.isEmpty()) return;
   
     // TODO: this breaks SimpleFunction (3/6/21)
-    // this.jumpUnconditionallyTo(CallStack.generateReturnLabel());
+    const label = CallStack.generateReturnLabel();
+    this.jumpUnconditionallyTo(label, `goto ${ label }`);
   
     CallStack.popFunction();
   }
