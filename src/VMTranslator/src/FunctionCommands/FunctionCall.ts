@@ -39,7 +39,8 @@ export class FunctionCall extends VMCommand {
     this.jumpUnconditionallyTo(funcName, 'jump to the function');
     this.addLine('');
     // final step!
-    this.addLabel(this.returnLabel, 'return point for the just-called function');
+    this.addLabel(this.returnLabel, 'return point for the just-called function'
+      + '\n\n\t// execution continues (after function return)...');
   }
   
   private saveFrame() {
@@ -55,6 +56,10 @@ export class FunctionCall extends VMCommand {
   
   // THIS MAY BE NOTHING??
   private pushReturnAddress() {
+    this.goto(this.returnLabel);
+    this.storeThe.currentAddress();
+    this.pushThe.storedValue.ontoStack();
+    // this.incrementStackPointer()
     /*
     * "Push a label onto the stack. And later on I'm going to use the same label
     * as the label to which I'm going to return after the callee terminates."
@@ -75,7 +80,7 @@ export class FunctionCall extends VMCommand {
     this.writeThe.storedValue.toMemoryAtCurrentAddress('save SP to LCL');
   
     this.addLine(`@${ 5 + parseInt(this.argNum) }`, '>>> reposition ARG = SP-n-5');
-    this.addLine('D=D-A', 'subtract from the stored SP: frame + num of args');
+    this.addLine('D=D-A', 'subtract (frame + num of args) from the stored SP');
     this.addLine('@ARG');
     this.writeThe.storedValue.toMemoryAtCurrentAddress('save SP-n-5 to ARG');
   }

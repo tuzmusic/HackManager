@@ -4,6 +4,9 @@ export default class VMCommand {
   
   public getLines = () => [...this.lines];
   
+  // easier way to go to markers, or other variables, than inlining the string.
+  protected goto = (str: string) => this.addLine(`@${ str }`);
+  
   protected addLine = (line: string, comment?: string) => this.lines.push(
     line.padEnd(12) + (comment ? ` // ${ comment }` : '')
   );
@@ -79,7 +82,7 @@ export default class VMCommand {
     this.addLine('M=M+1',); // increment the value at the stack pointer
   };
   
-  protected addLinesFromCommand = (cmd: new (...args: string[]) => VMCommand, ...args: string[]) => {
+  protected addLinesFromCommand = (cmd: new (...args: any[]) => VMCommand, ...args: string[]) => {
     const lines = new cmd(...args).getLines();
     lines.forEach(line => this.addLine(line));
   };

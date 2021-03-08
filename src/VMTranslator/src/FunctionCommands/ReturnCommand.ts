@@ -5,6 +5,8 @@ import { CallStack } from './CallStack';
 Implementation:
 FRAME = LCL         // FRAME is a temporary variable
 RET = *(FRAME-5)    // put return address in a temp variable
+                    // get what we PUSHED in "push return address"! (the value STORED THERE)
+                    // BUT IF WE HAVE A LABEL WE DON'T NEED THIS!!!!!! WHAT THE FUCK!?!?!!?
 *ARG = pop()        // reposition the return value for the caller
 SP = ARG+1          // restore the SP of the caller
 THAT = *(FRAME-1)   // restore the THAT of the caller
@@ -37,15 +39,6 @@ export class ReturnCommand extends VMCommand {
     this.goToReturn();
   }
   
-  // pop return value to ARG[0]
-  private popReturnValue() {
-    this.decrementStackPointer('>>> store (pop) top stack value to ARG[0]');
-    this.storeThe.topStackValue();
-    this.move.to.variableOrValue('ARG');
-    this.move.using.currentMemoryValue.asAddress('move to ARG');
-    this.writeThe.storedValue.toMemoryAtCurrentAddress('store return value in ARG[0]');
-  }
-  
   private saveReturnAddress() {
     // retrieve the return address, which was stored by the caller at LCL-5
     this.addLine('@LCL', '>>> store return address (RET), for later');
@@ -56,27 +49,19 @@ export class ReturnCommand extends VMCommand {
     this.addLine('M=D', 'write the return address to RET');
   }
   
+  // pop return value to ARG[0]
+  private popReturnValue() {
+    this.decrementStackPointer('>>> store (pop) top stack value to ARG[0]');
+    this.storeThe.topStackValue();
+    this.move.to.variableOrValue('ARG');
+    this.move.using.currentMemoryValue.asAddress('move to ARG');
+    this.writeThe.storedValue.toMemoryAtCurrentAddress('store return value in ARG[0]');
+  }
+  
   private restoreCallerStackPosition() {
     this.addLine('D=A', '>>> restore caller\'s SP. (in prev step, A=ARG)');
     this.addLine('@SP');
     this.addLine('M=D+1', 'point SP to ARG+1 (one past returned value)');
-  }
-  
-  private goToReturn() {
-    // todo: this may or may not be needed? I'm honestly not sure if the
-    //  return address is just about moving around the assembly code, or
-    //  about actually changing values in the system (A, SP, etc)
-    // this.addLine('@RET', '>>> move to the return address, to restore control to caller');
-    // this.addLine('A=M',);
-  
-    // on top-level function, there is nothing to return to
-    if (!CallStack.isEmpty()) return;
-  
-    // TODO: this breaks SimpleFunction (3/6/21)
-    const label = CallStack.generateReturnLabel();
-    this.jumpUnconditionallyTo(label, `goto ${ label }`);
-  
-    CallStack.popFunction();
   }
   
   private restoreCallerFrame() {
@@ -89,12 +74,29 @@ export class ReturnCommand extends VMCommand {
       // decrement A
       for (let j = 0; j < i; j++)
         this.addLine('A=A-1');
-      
+  
       // restore
       this.addLine('D=M', `store saved "${ segments[i] }"`);
       this.addLine(`@${ segments[i] }`, '');
       this.addLine('M=D', `restore saved "${ segments[i] }"`);
       this.addLine('',);
     }
+  }
+  
+  private goToReturn() {
+    // todo: this may or may not be needed? I'm honestly not sure if the
+    //  return address is just about moving around the assembly code, or
+    //  about actually changing values in the system (A, SP, etc)
+    // this.addLine('@RET', '>>> move to the return address, to restore control to caller');
+    // this.addLine('A=M',);
+    
+    // on top-level function, there is nothing to return to
+    if (!CallStack.isEmpty()) return;
+    
+    // TODO: this breaks SimpleFunction (3/6/21)
+    const label = CallStack.generateReturnLabel();
+    this.jumpUnconditionallyTo(label, `goto ${ label }`);
+    
+    CallStack.popFunction();
   }
 }

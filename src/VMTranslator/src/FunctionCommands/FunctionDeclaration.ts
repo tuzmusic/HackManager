@@ -11,7 +11,7 @@ LCL = SP // save the location of the stack pointer in LCL
 * */
 
 export class FunctionDeclaration extends VMCommand {
-  constructor(private funcName: string, private localVarNum: string) {
+  constructor(private funcName: string, private localVarNum: string, private lineNum: number = 0) {
     super();
     this.addLabel(this.funcName);
     this.saveLocalPointer();

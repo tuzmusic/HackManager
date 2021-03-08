@@ -34,26 +34,27 @@ export class VMTranslator extends HackTask {
       .filter(line => !line.trim().startsWith('//'))
       // remove inline comments
       .map(line => line.split('//')[0].trim());
-    
+  
     const translations: string[][] = [];
-    
+  
     // start with bootstrap code
     // TODO: this breaks SimpleFunction (3/6/21)
     // translations.push(VMBootstrapper.getBootstrapCode());
-    
+  
     // translate each line
     let prevLine: string;
     let prevTranslation: string[];
-    for (const currentLine of linesToTranslate) {
+    for (let i = 0; i < linesToTranslate.length; i++) {
+      const currentLine = linesToTranslate[i];
       let currentTranslation = [`// ${ currentLine }`];
-      
-      currentTranslation.push(...new TranslatorParser().parseLine(currentLine).getLines());
-      
+    
+      currentTranslation.push(...new TranslatorParser().parseLine(currentLine, i + 1).getLines());
+    
       if (prevLine && prevTranslation)
         currentTranslation = this.optimize(currentLine, prevLine, currentTranslation, prevTranslation);
-      
+    
       translations.push(currentTranslation);
-      
+    
       prevLine = currentLine;
       prevTranslation = currentTranslation;
     }
