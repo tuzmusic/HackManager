@@ -36,16 +36,16 @@ type FunctionCommand = keyof typeof functionCommands
 export default class TranslatorParser {
   static ifBoolCounter = 0;
   
-  public parseLine(line: string): VMCommand {
+  public parseLine(line: string, lineNum: number): VMCommand {
     const parts = line.split(' ');
     const [first, second, third] = parts;
-    
+  
     switch (parts.length) {
       case 1:
         return first === 'return'
           ? new ReturnCommand()
           : new OperationCommand(first as OperationCmd); // handle operations (add, sub, etc)
-      
+    
       case 2: // handle program flow commands
         return new flowCommands[first as FlowCommand](second);
     }
@@ -61,6 +61,6 @@ export default class TranslatorParser {
     }
     
     if (first in functionCommands) // handle function commands
-      return new functionCommands[first as FunctionCommand](second, third);
+      return new functionCommands[first as FunctionCommand](second, third, lineNum);
   }
 }

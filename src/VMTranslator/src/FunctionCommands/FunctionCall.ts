@@ -17,7 +17,7 @@ Implementation:
 export class FunctionCall extends VMCommand {
   private readonly returnLabel: string;
   
-  constructor(private funcName: string, private argNum: string) {
+  constructor(private funcName: string, private argNum: string, private lineNum: number) {
     super();
     CallStack.pushFunction(funcName);
     this.returnLabel = CallStack.generateReturnLabel();
@@ -56,10 +56,12 @@ export class FunctionCall extends VMCommand {
   
   // THIS MAY BE NOTHING??
   private pushReturnAddress() {
-    this.goto(this.returnLabel);
+    // if (!this.lineNum) return
+    this.goto((this.lineNum + 1).toString());
+    // this.goto(this.returnLabel)
     this.storeThe.currentAddress();
     this.pushThe.storedValue.ontoStack();
-    // this.incrementStackPointer()
+  
     /*
     * "Push a label onto the stack. And later on I'm going to use the same label
     * as the label to which I'm going to return after the callee terminates."

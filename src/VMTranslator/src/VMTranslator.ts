@@ -9,6 +9,8 @@ export class VMTranslator extends HackTask {
   static outExtension = 'asm';
   static taskName = 'Translator';
   
+  static runningLineCount = 0;
+  
   static processPath(pathString: string): void {
     super.processPath(pathString);
     
@@ -46,15 +48,15 @@ export class VMTranslator extends HackTask {
     let prevTranslation: string[];
     for (let i = 0; i < linesToTranslate.length; i++) {
       const currentLine = linesToTranslate[i];
-      let currentTranslation = [`// ${ currentLine }`];
-    
-      currentTranslation.push(...new TranslatorParser().parseLine(currentLine, i + 1).getLines());
-    
+      let currentTranslation = [`// COMMAND #${ this.runningLineCount + 1 }: ${ currentLine }`];
+  
+      currentTranslation.push(...new TranslatorParser().parseLine(currentLine, ++this.runningLineCount).getLines());
+  
       if (prevLine && prevTranslation)
         currentTranslation = this.optimize(currentLine, prevLine, currentTranslation, prevTranslation);
-    
+  
       translations.push(currentTranslation);
-    
+  
       prevLine = currentLine;
       prevTranslation = currentTranslation;
     }
