@@ -98,37 +98,37 @@ export class VMTranslator extends HackTask {
     const firstPass = fullCode.split('\n')
       // .filter(line => line.trim() && !line.trim().startsWith('//'))
       .filter(line => line.trim()) // remove blank lines
-      // Assembler removes (markers) when assembling machine code.
-      // They still remain in the assembly code!
-      // BUT the line numbers we want are actually to line up with the HACK code which DOESN'T have the markers
-      .filter(line => !line.trim().startsWith('(')) // remove jump markers
       .map(line => line.trim());
     
     const secondPass: string[] = [];
     
     // include commands as comments
     firstPass.forEach((line, i) => {
-      if (line.startsWith('//')) {
-        const cmdCommentParts = line.split('COMMAND #');
-        if (cmdCommentParts.length < 2) return; // skip normal comments
-        
+      const nextLine = firstPass[i + 1];
+      if (!nextLine) return;
+      const nextLineParts = nextLine.split('// ');
+      const cmdCommentParts = line.split('COMMAND #');
+  
+      if (cmdCommentParts.length > 1) {
         const commandInfo = `** ${ cmdCommentParts.pop() } **`;
-        
-        const nextLine = firstPass[i + 1];
-        const nextLineParts = nextLine.split('// ');
         if (nextLineParts.length === 2) {
           const nextLineComment = nextLineParts.pop();
-          firstPass[i + 1] = nextLine.replace(nextLineComment, `${ commandInfo } (${ nextLineComment })`);
+          firstPass[i + 1] = nextLine.padEnd(12).replace(nextLineComment, `${ commandInfo } (${ nextLineComment })`);
         } else {
-          firstPass[i + 1] = nextLine + ' // ' + commandInfo;
+          firstPass[i + 1] = nextLine.padEnd(12) + ' // ' + commandInfo;
         }
-      } else { // include all non-comment lines
+      } else if (!line.startsWith('//')) {
         secondPass.push(line);
       }
     });
-    
-    const rawCode = secondPass.join('\n');
-    
+  
+    const rawCode = secondPass
+      // Assembler removes (markers) when assembling machine code.
+      // They still remain in the assembly code!
+      // BUT the line numbers we want are actually to line up with the HACK code which DOESN'T have the markers
+      .filter(line => !line.trim().startsWith('(')) // remove jump markers
+      .join('\n');
+  
     fs.writeFileSync(rawPath, rawCode);
   }
   
