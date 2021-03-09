@@ -5,7 +5,7 @@ export default class VMCommand {
   public getLines = () => [...this.lines];
   
   // easier way to go to markers, or other variables, than inlining the string.
-  protected goto = (str: string) => this.addLine(`@${ str }`);
+  protected goto = (str: string, comment = '') => this.addLine(`@${ str }`, comment);
   
   protected addLine = (line: string, comment?: string) => this.lines.push(
     line.padEnd(12) + (comment ? ` // ${ comment }` : '')

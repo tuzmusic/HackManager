@@ -56,8 +56,13 @@ export class FunctionCall extends VMCommand {
   
   // THIS MAY BE NOTHING??
   private pushReturnAddress() {
+    // save the label as a variable for containing the return address
+    const retAddr = (this.lineNum + 1).toString();
+    // this.goto(retAddr,'>>> declare variable for return label')
+    this.goto(this.returnLabel, '>>> declare variable for return label');
+  
     // if (!this.lineNum) return
-    this.goto((this.lineNum + 1).toString());
+    // this.goto((this.lineNum + 1).toString(), 'push return address (next line num??) onto stack');
     // this.goto(this.returnLabel)
     this.storeThe.currentAddress();
     this.pushThe.storedValue.ontoStack();

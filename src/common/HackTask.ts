@@ -47,7 +47,7 @@ export class HackTask {
     const rawCode = this.processed.split('\n')
       // Assembler removes (markers) when assembling machine code.
       // They still remain in the assembly code!
-      .filter(line => line.trim() && !line.startsWith('//'))
+      .filter(line => line.trim() && !line.trim().startsWith('//'))
       .join('\n');
   
     fs.writeFileSync(rawPath, rawCode);

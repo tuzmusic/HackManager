@@ -45,7 +45,7 @@ export class ReturnCommand extends VMCommand {
     this.addLine('D=M', 'store the LCL pointer address');
     this.addLine('@5');
     this.addLine('D=D-A', 'subtract 5, to get the location of the return address');
-    this.addLine('@RET', 'create/access RET variable');
+    this.goto('RET', 'create/access RET variable');
     this.addLine('M=D', 'write the return address to RET');
   }
   
@@ -87,16 +87,18 @@ export class ReturnCommand extends VMCommand {
     // todo: this may or may not be needed? I'm honestly not sure if the
     //  return address is just about moving around the assembly code, or
     //  about actually changing values in the system (A, SP, etc)
-    // this.addLine('@RET', '>>> move to the return address, to restore control to caller');
-    // this.addLine('A=M',);
-    
+    this.goto('RET', '>>> move to the return address, to restore control to caller');
+    // this.goto(CallStack.generateReturnLabel(), '>>> move to the return address, to restore control to caller');
+    this.addLine('A=M',);
+    this.addLine('0;JMP');
+  
     // on top-level function, there is nothing to return to
-    if (!CallStack.isEmpty()) return;
-    
+    if (CallStack.isEmpty()) return;
+  
     // TODO: this breaks SimpleFunction (3/6/21)
-    const label = CallStack.generateReturnLabel();
-    this.jumpUnconditionallyTo(label, `goto ${ label }`);
-    
+    // const label = CallStack.generateReturnLabel();
+    // this.jumpUnconditionallyTo(label, `goto ${ label }`);
+  
     CallStack.popFunction();
   }
 }
