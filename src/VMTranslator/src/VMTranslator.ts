@@ -88,6 +88,50 @@ export class VMTranslator extends HackTask {
     return this.indentNonMarkerLines(translations.flat()).join('\n');
   }
   
+  static writeRawFile(): void {
+    // write raw file, for matching up line numbers
+    const rawPath = this.outPath.replace(this.outExtension, 'raw.' + this.outExtension);
+    
+    const fullCode = fs.readFileSync(this.outPath).toString();
+    
+    // remove comments and blank lines
+    const firstPass = fullCode.split('\n')
+      // .filter(line => line.trim() && !line.trim().startsWith('//'))
+      .filter(line => line.trim()) // remove blank lines
+      // Assembler removes (markers) when assembling machine code.
+      // They still remain in the assembly code!
+      // BUT the line numbers we want are actually to line up with the HACK code which DOESN'T have the markers
+      .filter(line => !line.trim().startsWith('(')) // remove jump markers
+      .map(line => line.trim());
+    
+    const secondPass: string[] = [];
+    
+    // include commands as comments
+    firstPass.forEach((line, i) => {
+      if (line.startsWith('//')) {
+        const cmdCommentParts = line.split('COMMAND #');
+        if (cmdCommentParts.length < 2) return; // skip normal comments
+        
+        const commandInfo = `** ${ cmdCommentParts.pop() } **`;
+        
+        const nextLine = firstPass[i + 1];
+        const nextLineParts = nextLine.split('// ');
+        if (nextLineParts.length === 2) {
+          const nextLineComment = nextLineParts.pop();
+          firstPass[i + 1] = nextLine.replace(nextLineComment, `${ commandInfo } (${ nextLineComment })`);
+        } else {
+          firstPass[i + 1] = nextLine + ' // ' + commandInfo;
+        }
+      } else { // include all non-comment lines
+        secondPass.push(line);
+      }
+    });
+    
+    const rawCode = secondPass.join('\n');
+    
+    fs.writeFileSync(rawPath, rawCode);
+  }
+  
   /**
    * after translations have been created, modify them in place.
    * <p>NOTE that `currentTranslation = currentTranslation.filter(fn)` does NOT modify the source in place.

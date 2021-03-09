@@ -1,5 +1,4 @@
 import VMCommand from './VMCommand';
-import TranslatorParser from '../TranslatorParser';
 
 /**
  * operate on top two values on the stack.
@@ -72,10 +71,11 @@ export class OperationCommand extends VMCommand {
     // finish off the push
     this.incrementStackPointer();
   }
+  static ifBoolCounter = 0;
   
   private handleComparison(command: BinaryComparisonCommand) {
     const comparison = comparisons[command];
-    const markerNum = `${ TranslatorParser.ifBoolCounter++ }`;
+    const markerNum = `${ OperationCommand.ifBoolCounter++ }`;
     const marker = (...parts: string[]): string => parts.concat(markerNum).join('_');
   
     this.addLine('D=M-D', 'store X-Y in D for comparison');
