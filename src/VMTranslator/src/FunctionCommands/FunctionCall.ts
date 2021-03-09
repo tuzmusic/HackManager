@@ -23,13 +23,13 @@ export class FunctionCall extends VMCommand {
     this.returnLabel = CallStack.generateReturnLabel();
   
     // push return-address   // using label declared below
-    this.pushReturnAddress(); // todo: what is this anyway???
+    this.pushReturnAddress(); // SP++
   
     // push LCL              // Save LCL of the calling function
     // push ARG              // Save ARG of the calling function
     // push THIS             // Save THIS of the calling function
     // push THAT             // Save THAT of the calling function
-    this.saveFrame();
+    this.saveFrame(); // SP += 4
   
     // ARG = SP-n-5          // reposition ARG (n = number of args)
     // LCL = SP              // reposition LCL
@@ -39,8 +39,8 @@ export class FunctionCall extends VMCommand {
     this.jumpUnconditionallyTo(funcName, 'jump to the function');
     this.addLine('');
     // final step!
-    this.addLabel(this.returnLabel, 'return point for the just-called function'
-      + '\n\n\t// execution continues (after function return)...');
+    this.addLabel(this.returnLabel, 'return point for the just-called function');
+    this.addLine('\n\t// execution continues (after function return)...');
   }
   
   private saveFrame() {
@@ -54,37 +54,55 @@ export class FunctionCall extends VMCommand {
     }
   }
   
-  // THIS MAY BE NOTHING??
   private pushReturnAddress() {
-    // save the label as a variable for containing the return address
-    const retAddr = (this.lineNum + 1).toString();
-    // this.goto(retAddr,'>>> declare variable for return label')
-    this.goto(this.returnLabel, '>>> declare variable for return label');
+    /**
+     * Neither the VM code or assembly code recurs. Only the execution recurs.
+     * So there should actually not be a label for each recursion, but only
+     * a label for each *return point*.
+     * This VM/ASM flow should only occur *once* for each label, in the code.
+     *
+     * Remember, it's not entirely clear from the VM Emulator what happens.
+     * That's what we're working to figure out. And we'll do that by hypothesizing,
+     * not getting too attached, and seeing what works.
+     */
   
-    // if (!this.lineNum) return
-    // this.goto((this.lineNum + 1).toString(), 'push return address (next line num??) onto stack');
-    // this.goto(this.returnLabel)
-    this.storeThe.currentAddress();
-    this.pushThe.storedValue.ontoStack();
+    /**
+     * what we are doing is STORING, ON THE STACK, a record of where we
+     * will need to return to. Again, we're storing it ON THE STACK.
+     *
+     * What is it we're storing on the stack?
+     * It has to be an address, IN THE ASSEMBLY CODE.
+     * The address of a label. (not the address where the label is stored!)
+     *
+     * How do we get the address of a label?
+     * The Assembler creates it using the symbol table.
+     * So we need to get the address of the label, after the label is created.
+     */
   
-    /*
-    * "Push a label onto the stack. And later on I'm going to use the same label
-    * as the label to which I'm going to return after the callee terminates."
+    /* Create the label. (whatever$label) will take us to the location of a new label */
+    // use the CallStack-generated label. Since it doesn't matter what the actual
+    // label is, right?
+    this.at_sign(this.returnLabel);
+    /* Push the address of the label onto the stack!
+    * As a result, the return command will find the address of the label (retAddr)
+    * on the stack, and jump to it.
     *
-    * But what is it that we are pushing onto the stack????
+    * THIS DOES SEEM WEIRD, since it seems like we'll never actually use the label again???
+    * Sure we'll place the label later ––– WAIT A MINUTE! @label doesn't tell use where the
+    * label is if there's no (label) first, right?!?!?!
+    * ANSWER: the assembler parses the markers on the first pass.
+    * This doesn't seem very system-agnostic, but it should work.
     * */
-  
-    /* perhaps it's the SP value of the return label?
-    * or is it pushing, like, ITS address? which is to say,
-    * "this is where SP should be at the end of the function
-    * */
+    this.storeThe.currentAddress('D=retAddr');
+    this.pushThe.storedValue.ontoStack('>>> push retAddr onto stack');
   }
   
   private repositionSegments() {
     this.addLine('@SP', '>>> reposition: LCL = SP');
-    this.addLine('D=M', 'store the stack pointer');
+    this.addLine('D=M', 'store the stack pointer (after pushing the retAddr & segments)');
     this.addLine('@LCL');
     this.writeThe.storedValue.toMemoryAtCurrentAddress('save SP to LCL');
+    this.addLine('', 'this should be 5 more than after pushing retAddr');
   
     this.addLine(`@${ 5 + parseInt(this.argNum) }`, '>>> reposition ARG = SP-n-5');
     this.addLine('D=D-A', 'subtract (frame + num of args) from the stored SP');

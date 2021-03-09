@@ -43,11 +43,16 @@ export class HackTask {
     // write raw file, for matching up line numbers
     const rawPath = this.outPath.replace(this.outExtension, 'raw.' + this.outExtension);
   
+    const fullCode = fs.readFileSync(this.outPath).toString();
+  
     // remove comments and blank lines
-    const rawCode = this.processed.split('\n')
+    const rawCode = fullCode.split('\n')
+      .filter(line => line.trim() && !line.trim().startsWith('//'))
       // Assembler removes (markers) when assembling machine code.
       // They still remain in the assembly code!
-      .filter(line => line.trim() && !line.trim().startsWith('//'))
+      // BUT the line numbers we want are actually to line up with the HACK code which DOESN'T have the markers
+      .filter(line => !line.trim().startsWith('('))
+      .map(line => line.trim())
       .join('\n');
   
     fs.writeFileSync(rawPath, rawCode);

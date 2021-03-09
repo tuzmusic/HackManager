@@ -14,13 +14,16 @@ export class VMTranslator extends HackTask {
   static processPath(pathString: string): void {
     super.processPath(pathString);
     
+    // add bootstrap code if we started with a directory
     if (fs.lstatSync(pathString).isDirectory()) {
       // TODO: do this better!
       // add bootstrap code to final file
-      const all = fs.readFileSync(this.outPath);
+      const codeLines = fs.readFileSync(this.outPath);
       fs.writeFileSync(this.outPath,
-        [VMBootstrapper.getBootstrapCode(), all].flat().join('\n')
+        [this.indentNonMarkerLines(VMBootstrapper.getBootstrapCode()), codeLines]
+          .flat().join('\n')
       );
+      this.writeRawFile();
     }
   }
   
@@ -73,15 +76,16 @@ export class VMTranslator extends HackTask {
   
     // fix function comments
     translations.forEach(tr => {
-      if (tr[0].trim().startsWith('// function')) {
+      const actualCommand = tr[0].split(': ').pop().trim();
+      const firstWord = actualCommand.split(' ')[0];
+  
+      if (['function', 'label'].includes(firstWord)) {
         tr[1] += '\t' + tr[0]; // add function comment to the marker
         tr.shift(); // and delete the original function comment
       }
     });
   
-    return translations.flat() // get all lines
-      .map(line => (line.startsWith('(') ? '' : '\t') + line) // indent all non-marker lines
-      .join('\n');
+    return this.indentNonMarkerLines(translations.flat()).join('\n');
   }
   
   /**
@@ -121,8 +125,12 @@ export class VMTranslator extends HackTask {
         }
       }
     };
-    
+  
     Object.values(optimizations).forEach(op => op());
     return currentTranslation;
   };
+  
+  private static indentNonMarkerLines(lines: string[]): string[] {
+    return lines.map(line => (line.startsWith('(') ? '' : '\t') + line); // indent all non-marker lines
+  }
 }

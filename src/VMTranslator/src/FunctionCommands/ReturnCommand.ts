@@ -37,16 +37,27 @@ export class ReturnCommand extends VMCommand {
     this.restoreCallerFrame();
     // goto RET            // go to the return address in caller's code (stored above)
     this.goToReturn();
+  
+    // on top-level function, there is nothing to return to
+    if (CallStack.isEmpty()) return;
+  
+    // TODO: this breaks SimpleFunction (3/6/21)
+    // const label = CallStack.generateReturnLabel();
+    // this.jumpUnconditionallyTo(label, `goto ${ label }`);
+  
+    CallStack.popFunction();
   }
   
   private saveReturnAddress() {
-    // retrieve the return address, which was stored by the caller at LCL-5
-    this.addLine('@LCL', '>>> store return address (RET), for later');
-    this.addLine('D=M', 'store the LCL pointer address');
-    this.addLine('@5');
-    this.addLine('D=D-A', 'subtract 5, to get the location of the return address');
-    this.goto('RET', 'create/access RET variable');
-    this.addLine('M=D', 'write the return address to RET');
+    this.addLine('@LCL', '>>> store LCL as FRAME');
+    this.storeThe.memoryValue('store value of LCL');
+    this.at_sign('FRAME', 'access FRAME variable (VME uses @R13)');
+    this.writeThe.storedValue.toMemoryAtCurrentAddress('save FRAME=LCL');
+  
+    this.addLine('@5', '>>> save RET');
+    this.addLine('D=D-A', 'RET=FRAME-5');
+    this.at_sign('RET', 'create/access RET variable (VME uses @R14)');
+    this.addLine('M=D', 'write to RET (retAddr)');
   }
   
   // pop return value to ARG[0]
@@ -87,18 +98,9 @@ export class ReturnCommand extends VMCommand {
     // todo: this may or may not be needed? I'm honestly not sure if the
     //  return address is just about moving around the assembly code, or
     //  about actually changing values in the system (A, SP, etc)
-    this.goto('RET', '>>> move to the return address, to restore control to caller');
+    this.at_sign('RET', '>>> move to the return address, to restore control to caller');
     // this.goto(CallStack.generateReturnLabel(), '>>> move to the return address, to restore control to caller');
-    this.addLine('A=M',);
+    this.addLine('A=M', 'prepare to jump to address stored in RET');
     this.addLine('0;JMP');
-  
-    // on top-level function, there is nothing to return to
-    if (CallStack.isEmpty()) return;
-  
-    // TODO: this breaks SimpleFunction (3/6/21)
-    // const label = CallStack.generateReturnLabel();
-    // this.jumpUnconditionallyTo(label, `goto ${ label }`);
-  
-    CallStack.popFunction();
   }
 }
