@@ -47,7 +47,7 @@ D=D-A        // subtract (frame + num of args) from the stored SP
 M=D          // save SP-n-5 to ARG
 @Sys.init    // jump to the function
 0;JMP
-@SP
+@SP          // ** 1: function Main.fibonacci 0 **
 D=M          // store SP value
 @LCL
 M=D          // store stack address in LCL
@@ -61,7 +61,7 @@ A=M          // move to top of stack
 M=D          // write value of D to current location
 @SP          // increment stack pointer
 M=M+1
-@2 // ** 3: push constant 2 **
+@2           // ** 3: push constant 2 **
 D=A          // store the current address as a value
 @SP          // >> push constant value (2) onto stack <<
 A=M          // move to top of stack
@@ -90,7 +90,7 @@ D=M          // store the top stack value into D
 D;JNE
 @IF_FALSE.VM // ** 6: goto IF_FALSE **
 0;JMP
-@ARG         // ** 8: push argument 0 ** (move to argument)
+@ARG         // ** 8: push argument 0) ** (move to argument)
 D=M          // store the "argument" base address
 @0           // move to address representing offset
 A=D+A        // new addr = base addr + offset
@@ -147,7 +147,7 @@ M=D          // restore saved "LCL"
 @RET         // >>> move to the return address, to restore control to caller
 A=M          // prepare to jump to address stored in RET
 0;JMP
-@ARG         // ** 11: push argument 0 ** (move to argument)
+@ARG         // ** 11: push argument 0) ** (move to argument)
 D=M          // store the "argument" base address
 @0           // move to address representing offset
 A=D+A        // new addr = base addr + offset
@@ -157,7 +157,7 @@ A=M          // move to top of stack
 M=D          // write value of D to current location
 @SP          // increment stack pointer
 M=M+1
-@2 // ** 12: push constant 2 **
+@2           // ** 12: push constant 2 **
 D=A          // store the current address as a value
 @SP          // >> push constant value (2) onto stack <<
 A=M          // move to top of stack
@@ -226,7 +226,7 @@ A=M          // move to top of stack
 M=D          // write value of D to current location
 @SP          // increment stack pointer
 M=M+1
-@1 // ** 16: push constant 1 **
+@1           // ** 16: push constant 1 **
 D=A          // store the current address as a value
 @SP          // >> push constant value (1) onto stack <<
 A=M          // move to top of stack
@@ -344,11 +344,11 @@ A=M          // prepare to jump to address stored in RET
 0;JMP
 @INFINITE_LOOP
 0;JMP
-@SP
+@SP          // ** 21: function Sys.init 0 **
 D=M          // store SP value
 @LCL
 M=D          // store stack address in LCL
-@4 // ** 22: push constant 4 **
+@4           // ** 22: push constant 4 **
 D=A          // store the current address as a value
 @SP          // >> push constant value (4) onto stack <<
 A=M          // move to top of stack
@@ -400,7 +400,6 @@ D=D-A        // subtract (frame + num of args) from the stored SP
 M=D          // save SP-n-5 to ARG
 @Main.fibonacci // jump to the function
 0;JMP
-@WHILE.VM // ** 25: goto WHILE **
+@WHILE.VM    // ** 25: goto WHILE) **
 0;JMP
 @INFINITE_LOOP
-0;JMP
