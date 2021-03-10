@@ -25,10 +25,10 @@ function testFile(folderName: string) {
     // console.log(`TESTING ${ folderName }:`);
     // result
     try {
-      childProcess.execSync(cpuEmPath + ' ' + testFilePath).toString();
+      childProcess.execSync(cpuEmPath + ' ' + testFilePath, { stdio: 'ignore' })?.toString();
       console.log(`✅\s ${ folderName } Passed!`);
-    } catch ({ message }) {
-      // error is automatically printed to console
+    } catch ({ message, ...e }) {
+      console.log(`❌  ${ folderName } Failed`);
       // TODO: print (diff!) out and cmp
     }
   }
