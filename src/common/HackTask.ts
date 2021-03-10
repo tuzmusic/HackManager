@@ -35,8 +35,7 @@ export class HackTask {
     console.log(`${ this.taskName.toUpperCase() }: Creating`, this.outPath.split('/').pop());
     fs.writeFileSync(this.outPath, this.processed);
     
-    // this.writeRawFile();
-    console.log('Done');
+    // console.log('Done');
   }
   
   static writeRawFile(): void {
