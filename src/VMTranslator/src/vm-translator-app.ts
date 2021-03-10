@@ -55,9 +55,9 @@ const filesToTest = [
   // 'FibonacciSeries',
   // 'BasicTest',
   // 'PointerTest',
-  // 'SimpleFunction',
-  'FibonacciElement',
+  'SimpleFunction',
   'DoubleCall',
+  'FibonacciElement',
 ];
 console.clear();
 filesToTest.forEach(testFile);

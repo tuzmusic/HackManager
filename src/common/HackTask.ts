@@ -49,7 +49,7 @@ export class HackTask {
     // perform task
     this.processed = files.map(filepath =>
       [`\n// *** FILE: ${ filepath } ***`, '',
-        this.processText(fs.readFileSync(filepath).toString())].join('\n'))
+        this.processText(fs.readFileSync(path.resolve(thePath, filepath)).toString())].join('\n'))
       .join('\n\n');
     
     // write file

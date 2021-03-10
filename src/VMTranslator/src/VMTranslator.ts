@@ -67,13 +67,6 @@ export class VMTranslator extends HackTask {
     // add a blank line between each source command
     translations.forEach(t => t.push(''));
   
-    // add ending loop
-    translations.push([
-      '(INFINITE_LOOP)',
-      '@INFINITE_LOOP',
-      '0;JMP'
-    ]);
-  
     // fix function comments
     translations.forEach(tr => {
       const actualCommand = tr[0].split(': ').pop().trim();
@@ -111,11 +104,19 @@ export class VMTranslator extends HackTask {
   
       if (cmdCommentParts.length > 1) {
         const commandInfo = `** ${ cmdCommentParts.pop() } **`;
+        // add command info
         if (nextLineParts.length === 2) {
           const nextLineComment = nextLineParts.pop();
           firstPass[i + 1] = nextLine.padEnd(12).replace(nextLineComment, `${ commandInfo } (${ nextLineComment })`);
         } else {
           firstPass[i + 1] = nextLine.padEnd(12) + ' // ' + commandInfo;
+        }
+  
+        // add artificial line break in prev line
+        if (secondPass.length) {
+          let lastLine = secondPass.pop();
+          lastLine += (Array(128).fill(' ')).join('-');
+          secondPass.push(lastLine);
         }
       } else if (!line.startsWith('//')) {
         secondPass.push(line);
