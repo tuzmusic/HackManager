@@ -1,3 +1,5 @@
+tools
+
 lib-cov
 *.seed
 *.log
@@ -27,7 +29,6 @@ node_modules
 bower_components
 
 # Editors
-.idea
 *.iml
 
 # OS metadata
