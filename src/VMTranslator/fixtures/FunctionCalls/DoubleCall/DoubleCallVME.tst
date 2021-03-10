@@ -6,7 +6,7 @@
 load,  // Load all the VM files from the current directory
 output-file DoubleCall.out,
 //compare-to DoubleCall.cmp,
-output-list RAM[0]%D1.6.1 RAM[261]%D1.6.1; RAM[262]%D1.6.1;
+output-list RAM[0]%D1.6.1 RAM[261]%D1.6.1 RAM[262]%D1.6.1;
 
 set sp 261,
 

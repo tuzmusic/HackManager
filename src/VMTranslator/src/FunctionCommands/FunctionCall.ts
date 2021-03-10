@@ -40,7 +40,7 @@ export class FunctionCall extends VMCommand {
     this.addLine('');
     // final step!
     this.addLabel(this.returnLabel, 'return point for the just-called function');
-    this.addLine('\n\t// execution continues (after function return)...');
+    this.addLine('\n\t// execution continues (after called function returns)...');
   }
   
   private saveFrame() {

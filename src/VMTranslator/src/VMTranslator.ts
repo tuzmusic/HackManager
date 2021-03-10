@@ -89,7 +89,6 @@ export class VMTranslator extends HackTask {
     
     // remove comments and blank lines
     const firstPass = fullCode.split('\n')
-      // .filter(line => line.trim() && !line.trim().startsWith('//'))
       .filter(line => line.trim()) // remove blank lines
       .map(line => line.trim());
     
@@ -115,10 +114,10 @@ export class VMTranslator extends HackTask {
         // add artificial line break in prev line
         if (secondPass.length) {
           let lastLine = secondPass.pop();
-          lastLine += (Array(128).fill(' ')).join('-');
+          lastLine += ' - ' + (Array(128).fill(' ')).join('');
           secondPass.push(lastLine);
         }
-      } else if (!line.startsWith('//')) {
+      } else if (!line.startsWith('//') && !line.startsWith('(')) {
         secondPass.push(line);
       }
     });

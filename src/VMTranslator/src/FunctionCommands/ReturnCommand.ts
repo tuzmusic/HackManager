@@ -55,9 +55,11 @@ export class ReturnCommand extends VMCommand {
     this.writeThe.storedValue.toMemoryAtCurrentAddress('save FRAME=LCL');
   
     this.addLine('@5', '>>> save RET');
-    this.addLine('D=D-A', 'RET=FRAME-5');
+    this.addLine('A=D-A', 'move to location of retAddr');
+    this.storeThe.memoryValue('store the value of retAddr');
+    // this.addLine('D=D-A', 'RET=FRAME-5');
     this.at_sign('RET', 'create/access RET variable (VME uses @R14)');
-    this.addLine('M=D', 'write to RET (retAddr)');
+    this.addLine('M=D', 'write the value of retAddr to RET');
   }
   
   // pop return value to ARG[0]

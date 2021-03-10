@@ -9,7 +9,7 @@
 load DoubleCall.asm,
 output-file DoubleCall.out,
 compare-to DoubleCall.cmp,
-output-list RAM[0]%D1.6.1 RAM[261]%D1.6.1 RAM[262]%D1.6.1;
+output-list RAM[0]%D1.6.1 RAM[261]%D1.6.1;
 
 repeat 6000 {
   ticktock;

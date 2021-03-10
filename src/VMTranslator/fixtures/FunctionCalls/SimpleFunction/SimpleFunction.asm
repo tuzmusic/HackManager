@@ -1,4 +1,4 @@
-(SimpleFunction.test)	// COMMAND #125: function SimpleFunction.test 2
+(SimpleFunction.test)	// COMMAND #1: function SimpleFunction.test 2
 	@SP         
 	D=M          // store SP value
 	@LCL        
@@ -14,7 +14,7 @@
 	@SP          // increment stack pointer
 	M=M+1       
 	
-	// COMMAND #126: push local 0
+	// COMMAND #2: push local 0
 	@LCL         // move to local
 	D=M          // store the "local" base address
 	@0           // move to address representing offset
@@ -26,7 +26,7 @@
 	@SP          // increment stack pointer
 	M=M+1       
 	
-	// COMMAND #127: push local 1
+	// COMMAND #3: push local 1
 	@LCL         // move to local
 	D=M          // store the "local" base address
 	@1           // move to address representing offset
@@ -36,7 +36,7 @@
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	
-	// COMMAND #128: add
+	// COMMAND #4: add
 	@SP          // pop back to Y, since binary op starts at 1 past Y (SP decremented above)
 	A=M          // PREPARE Y (pop Y into D)
 	D=M          // store the top stack value into D
@@ -45,14 +45,14 @@
 	A=M          // PREPARE X (prep X "into" M – but don't pop just yet!)
 	M=M+D        // perform binary operation: add
 	
-	// COMMAND #129: not
+	// COMMAND #5: not
 	@SP          // "pop" X (SP decremented above)
 	A=M          // PREPARE X (prep X "into" M – but don't pop just yet!)
 	M=!M         // perform unary operation: not
 	@SP          // increment stack pointer
 	M=M+1       
 	
-	// COMMAND #130: push argument 0
+	// COMMAND #6: push argument 0
 	@ARG         // move to argument
 	D=M          // store the "argument" base address
 	@0           // move to address representing offset
@@ -62,7 +62,7 @@
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	
-	// COMMAND #131: add
+	// COMMAND #7: add
 	@SP          // pop back to Y, since binary op starts at 1 past Y (SP decremented above)
 	A=M          // PREPARE Y (pop Y into D)
 	D=M          // store the top stack value into D
@@ -73,7 +73,7 @@
 	@SP          // increment stack pointer
 	M=M+1       
 	
-	// COMMAND #132: push argument 1
+	// COMMAND #8: push argument 1
 	@ARG         // move to argument
 	D=M          // store the "argument" base address
 	@1           // move to address representing offset
@@ -83,7 +83,7 @@
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	
-	// COMMAND #133: sub
+	// COMMAND #9: sub
 	@SP          // pop back to Y, since binary op starts at 1 past Y (SP decremented above)
 	A=M          // PREPARE Y (pop Y into D)
 	D=M          // store the top stack value into D
@@ -94,15 +94,16 @@
 	@SP          // increment stack pointer
 	M=M+1       
 	
-	// COMMAND #134: return
+	// COMMAND #10: return
 	@LCL         // >>> store LCL as FRAME
 	D=M          // store value of LCL
 	@FRAME       // access FRAME variable (VME uses @R13)
 	M=D          // save FRAME=LCL
 	@5           // >>> save RET
-	D=D-A        // RET=FRAME-5
+	A=D-A        // move to location of retAddr
+	D=M          // store the value of retAddr
 	@RET         // create/access RET variable (VME uses @R14)
-	M=D          // write to RET (retAddr)
+	M=D          // write the value of retAddr to RET
 	            
 	@SP          // >>> store (pop) top stack value to ARG[0]
 	M=M-1       
@@ -150,6 +151,3 @@
 	A=M          // prepare to jump to address stored in RET
 	0;JMP       
 	
-(INFINITE_LOOP)
-	@INFINITE_LOOP
-	0;JMP

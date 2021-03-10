@@ -23,7 +23,7 @@ export class FunctionDeclaration extends VMCommand {
     this.addLine('@SP');
     this.addLine('D=M', 'store SP value');
     this.addLine('@LCL');
-    this.addLine('M=D', 'store stack address in LCL');
+    this.addLine('M=D', 'store stack address in LCL' + (this.localVarNum === '0' ? ' (no local vars so we\'re done)' : ''));
   }
   
   // push 0's onto the stack. since `LCL` has just been set to `SP`, these become `LCL[0...localVarNum]`
