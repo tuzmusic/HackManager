@@ -1,6 +1,7 @@
 import childProcess from 'child_process';
 import { VMTranslator } from './VMTranslator';
 import path from 'path';
+import fs from 'fs';
 
 const cpuEmPath = '~/dev/HackManager/tools/CPUEmulator.sh';
 const fixturesPath = '~/dev/HackManager/src/VMTranslator/fixtures/';
@@ -17,6 +18,16 @@ function testFile(folderName: string) {
     VMTranslator.processPath(vmFilePath || foundPath);
   }
   
+  function printDiff() {
+    const cmpFileLines = fs.readFileSync(path.join(foundPath, folderName + '.cmp')).toString().split('\n');
+    const outFileLines = fs.readFileSync(path.join(foundPath, folderName + '.out')).toString().split('\n');
+    const pad = 12;
+    // print column headers:
+    console.log(''.padEnd(pad), cmpFileLines[0]);
+    console.log('Expected:'.padEnd(pad), cmpFileLines[1]);
+    console.log('Actual:'.padEnd(pad), outFileLines[1]);
+  }
+  
   function testAndPrintResults() {
     // get the paths
     const testFilePath = path.join(foundPath, folderName + '.tst');
@@ -29,7 +40,7 @@ function testFile(folderName: string) {
       console.log(`✅\s ${ folderName } Passed!`);
     } catch ({ message, ...e }) {
       console.log(`❌  ${ folderName } Failed`);
-      // TODO: print (diff!) out and cmp
+      printDiff();
     }
   }
   
@@ -38,13 +49,13 @@ function testFile(folderName: string) {
 }
 
 const filesToTest = [
-  'SimpleAdd',
-  'StackTest',
-  'BasicLoop',
-  'FibonacciSeries',
-  'BasicTest',
-  'PointerTest',
-  'SimpleFunction',
+  // 'SimpleAdd',
+  // 'StackTest',
+  // 'BasicLoop',
+  // 'FibonacciSeries',
+  // 'BasicTest',
+  // 'PointerTest',
+  // 'SimpleFunction',
   'FibonacciElement',
   'DoubleCall',
 ];
