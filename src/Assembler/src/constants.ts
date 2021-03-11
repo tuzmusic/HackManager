@@ -24,37 +24,6 @@ export const SYMBOL_TABLE: Record<string, number> = {
   'THAT': 4,
 };
 
-export enum CompCodes {
-  zero = '0',
-  one = '1',
-  minus1 = '-1',
-  D = 'D',
-  notD = '!D',
-  negD = '-D',
-  Dlus1 = 'D+1',
-  Dminus1 = 'D-1',
-  A = 'A',
-  notA = '!A',
-  negA = '-A',
-  Aplus1 = 'A+1',
-  Aminus1 = 'A-1',
-  DplusA = 'D+A',
-  DminusA = 'D-A',
-  AminusD = 'A-D',
-  DandA = 'D&A',
-  DorA = 'D|A',
-  M = 'M',
-  notM = '!M',
-  negM = '-M',
-  Mplus1 = 'M+1',
-  Mminus1 = 'M-1',
-  DplusM = 'D+M',
-  DminusM = 'D-M',
-  MminusD = 'M-D',
-  DandM = 'D&M',
-  DorM = 'D|M',
-}
-
 // doesn't seem worth the trouble to combine the
 // A/M instructions and "calculate" the 'a' bit.
 export const COMP_CODES: Record<string, string> = {
