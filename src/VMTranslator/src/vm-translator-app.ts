@@ -49,15 +49,16 @@ function testFile(folderName: string) {
 }
 
 const filesToTest = [
-  'SimpleAdd',
-  'StackTest',
-  'BasicLoop',
-  'FibonacciSeries',
-  'BasicTest',
-  'PointerTest',
-  'SimpleFunction',
-  'DoubleCall',
-  'FibonacciElement',
+  // 'SimpleAdd',
+  // 'StackTest',
+  // 'BasicLoop',
+  // 'FibonacciSeries',
+  // 'BasicTest',
+  // 'PointerTest',
+  // 'SimpleFunction',
+  // 'DoubleCall',
+  // 'FibonacciElement',
+  'StaticTest',
   'NestedCall',
   'StaticsTest'
 ];

@@ -19,6 +19,7 @@ export class HackTask {
   
   static processFile(filename: string): void {
     this.filename = filename.split('.')[0];
+    this.filename = path.parse(filename).name;
     
     if (!filename.endsWith(`.${ this.inExtension }`)) {
       console.log(`Please provide a .${ this.inExtension } file`);
