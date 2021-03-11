@@ -2,7 +2,7 @@
 D=A          // store the current address as a value
 @SP
 M=D          // write value of D to current location -                                                                                                                                 
-@Sys.init$ret.9 // ** 0B: CALL Sys.init **
+@Sys.init$ret.3 // ** 0B: CALL Sys.init **
 D=A          // D=retAddr
 @SP          // >>> push retAddr onto stack
 A=M          // move to top of stack
@@ -47,31 +47,31 @@ D=D-A        // subtract (frame + num of args) from the stored SP
 M=D          // save SP-n-5 to ARG
 @Sys.init    // jump to the function
 0;JMP -                                                                                                                                 
-@SP          // ** 170: function Sys.init 0 **
+@SP          // ** 1: function Sys.init 0 **
 D=M          // store SP value
 @LCL
 M=D          // store stack address in LCL (no local vars so we're done) -                                                                                                                                 
-@4000        // ** 171: push constant 4000 **
+@4000        // ** 2: push constant 4000 **
 D=A          // store the current address as a value
 @SP          // >> push constant value (4000) onto stack <<
 A=M          // move to top of stack
 M=D          // write value of D to current location -                                                                                                                                 
-@SP          // ** 172: pop pointer 0 ** (decrement stack pointer (SP decremented above))
+@SP          // ** 3: pop pointer 0 ** (decrement stack pointer (SP decremented above))
 A=M          // move to top of stack
 D=M          // store the top stack value into D
 @THIS
 M=D          // write value of D to current location -                                                                                                                                 
-@5000        // ** 173: push constant 5000 **
+@5000        // ** 4: push constant 5000 **
 D=A          // store the current address as a value
 @SP          // >> push constant value (5000) onto stack <<
 A=M          // move to top of stack
 M=D          // write value of D to current location -                                                                                                                                 
-@SP          // ** 174: pop pointer 1 ** (decrement stack pointer (SP decremented above))
+@SP          // ** 5: pop pointer 1 ** (decrement stack pointer (SP decremented above))
 A=M          // move to top of stack
 D=M          // store the top stack value into D
 @THAT
 M=D          // write value of D to current location -                                                                                                                                 
-@Sys.main$ret.7 // ** 175: call Sys.main 0 **
+@Sys.main$ret.1 // ** 6: call Sys.main 0 **
 D=A          // D=retAddr
 @SP          // >>> push retAddr onto stack
 A=M          // move to top of stack
@@ -116,7 +116,7 @@ D=D-A        // subtract (frame + num of args) from the stored SP
 M=D          // save SP-n-5 to ARG
 @Sys.main    // jump to the function
 0;JMP -                                                                                                                                 
-@5           // ** 176: pop temp 1 ** (move to "temp" pointer)
+@5           // ** 7: pop temp 1 ** (move to "temp" pointer)
 D=M          // store the "temp" base address
 @6           // move to address representing offset
 D=D+A        // D = base addr + offset
@@ -134,9 +134,9 @@ A=M          // move to actual dest address
 M=D          // write our value to the dest address
 @SP          // SP-- to "pop" the stack
 M=M-1 -                                                                                                                                  -                                                                                                                                 
-@LOOP.VM     // ** 178: goto LOOP) **
+@LOOP.VM     // ** 9: goto LOOP) **
 0;JMP -                                                                                                                                 
-@SP          // ** 179: function Sys.main 5 **
+@SP          // ** 10: function Sys.main 5 **
 D=M          // store SP value
 @LCL
 M=D          // store stack address in LCL
@@ -165,34 +165,34 @@ A=M          // move to top of stack
 M=0
 @SP          // increment stack pointer
 M=M+1 -                                                                                                                                 
-@4001        // ** 180: push constant 4001 **
+@4001        // ** 11: push constant 4001 **
 D=A          // store the current address as a value
 @SP          // >> push constant value (4001) onto stack <<
 A=M          // move to top of stack
 M=D          // write value of D to current location -                                                                                                                                 
-@SP          // ** 181: pop pointer 0 ** (decrement stack pointer (SP decremented above))
+@SP          // ** 12: pop pointer 0 ** (decrement stack pointer (SP decremented above))
 A=M          // move to top of stack
 D=M          // store the top stack value into D
 @THIS
 M=D          // write value of D to current location -                                                                                                                                 
-@5001        // ** 182: push constant 5001 **
+@5001        // ** 13: push constant 5001 **
 D=A          // store the current address as a value
 @SP          // >> push constant value (5001) onto stack <<
 A=M          // move to top of stack
 M=D          // write value of D to current location -                                                                                                                                 
-@SP          // ** 183: pop pointer 1 ** (decrement stack pointer (SP decremented above))
+@SP          // ** 14: pop pointer 1 ** (decrement stack pointer (SP decremented above))
 A=M          // move to top of stack
 D=M          // store the top stack value into D
 @THAT
 M=D          // write value of D to current location -                                                                                                                                 
-@200         // ** 184: push constant 200 **
+@200         // ** 15: push constant 200 **
 D=A          // store the current address as a value
 @SP          // >> push constant value (200) onto stack <<
 A=M          // move to top of stack
 M=D          // write value of D to current location
 @SP          // increment stack pointer
 M=M+1 -                                                                                                                                 
-@LCL         // ** 185: pop local 1 ** (move to "local" pointer)
+@LCL         // ** 16: pop local 1 ** (move to "local" pointer)
 D=M          // store the "local" base address
 @1           // move to address representing offset
 D=D+A        // D = base addr + offset
@@ -210,14 +210,14 @@ A=M          // move to actual dest address
 M=D          // write our value to the dest address
 @SP          // SP-- to "pop" the stack
 M=M-1 -                                                                                                                                 
-@40          // ** 186: push constant 40 **
+@40          // ** 17: push constant 40 **
 D=A          // store the current address as a value
 @SP          // >> push constant value (40) onto stack <<
 A=M          // move to top of stack
 M=D          // write value of D to current location
 @SP          // increment stack pointer
 M=M+1 -                                                                                                                                 
-@LCL         // ** 187: pop local 2 ** (move to "local" pointer)
+@LCL         // ** 18: pop local 2 ** (move to "local" pointer)
 D=M          // store the "local" base address
 @2           // move to address representing offset
 D=D+A        // D = base addr + offset
@@ -235,14 +235,14 @@ A=M          // move to actual dest address
 M=D          // write our value to the dest address
 @SP          // SP-- to "pop" the stack
 M=M-1 -                                                                                                                                 
-@6           // ** 188: push constant 6 **
+@6           // ** 19: push constant 6 **
 D=A          // store the current address as a value
 @SP          // >> push constant value (6) onto stack <<
 A=M          // move to top of stack
 M=D          // write value of D to current location
 @SP          // increment stack pointer
 M=M+1 -                                                                                                                                 
-@LCL         // ** 189: pop local 3 ** (move to "local" pointer)
+@LCL         // ** 20: pop local 3 ** (move to "local" pointer)
 D=M          // store the "local" base address
 @3           // move to address representing offset
 D=D+A        // D = base addr + offset
@@ -260,14 +260,14 @@ A=M          // move to actual dest address
 M=D          // write our value to the dest address
 @SP          // SP-- to "pop" the stack
 M=M-1 -                                                                                                                                 
-@123         // ** 190: push constant 123 **
+@123         // ** 21: push constant 123 **
 D=A          // store the current address as a value
 @SP          // >> push constant value (123) onto stack <<
 A=M          // move to top of stack
 M=D          // write value of D to current location
 @SP          // increment stack pointer
 M=M+1 -                                                                                                                                 
-@Sys.add12$ret.8 // ** 191: call Sys.add12 1 **
+@Sys.add12$ret.2 // ** 22: call Sys.add12 1 **
 D=A          // D=retAddr
 @SP          // >>> push retAddr onto stack
 A=M          // move to top of stack
@@ -312,7 +312,7 @@ D=D-A        // subtract (frame + num of args) from the stored SP
 M=D          // save SP-n-5 to ARG
 @Sys.add12   // jump to the function
 0;JMP -                                                                                                                                 
-@5           // ** 192: pop temp 0 ** (move to "temp" pointer)
+@5           // ** 23: pop temp 0 ** (move to "temp" pointer)
 D=M          // store the "temp" base address
 @5           // move to address representing offset
 D=D+A        // D = base addr + offset
@@ -330,7 +330,7 @@ A=M          // move to actual dest address
 M=D          // write our value to the dest address
 @SP          // SP-- to "pop" the stack
 M=M-1 -                                                                                                                                 
-@LCL         // ** 193: push local 0 ** (move to local)
+@LCL         // ** 24: push local 0 ** (move to local)
 D=M          // store the "local" base address
 @0           // move to address representing offset
 A=D+A        // new addr = base addr + offset
@@ -340,7 +340,7 @@ A=M          // move to top of stack
 M=D          // write value of D to current location
 @SP          // increment stack pointer
 M=M+1 -                                                                                                                                 
-@LCL         // ** 194: push local 1 ** (move to local)
+@LCL         // ** 25: push local 1 ** (move to local)
 D=M          // store the "local" base address
 @1           // move to address representing offset
 A=D+A        // new addr = base addr + offset
@@ -350,7 +350,7 @@ A=M          // move to top of stack
 M=D          // write value of D to current location
 @SP          // increment stack pointer
 M=M+1 -                                                                                                                                 
-@LCL         // ** 195: push local 2 ** (move to local)
+@LCL         // ** 26: push local 2 ** (move to local)
 D=M          // store the "local" base address
 @2           // move to address representing offset
 A=D+A        // new addr = base addr + offset
@@ -360,7 +360,7 @@ A=M          // move to top of stack
 M=D          // write value of D to current location
 @SP          // increment stack pointer
 M=M+1 -                                                                                                                                 
-@LCL         // ** 196: push local 3 ** (move to local)
+@LCL         // ** 27: push local 3 ** (move to local)
 D=M          // store the "local" base address
 @3           // move to address representing offset
 A=D+A        // new addr = base addr + offset
@@ -370,7 +370,7 @@ A=M          // move to top of stack
 M=D          // write value of D to current location
 @SP          // increment stack pointer
 M=M+1 -                                                                                                                                 
-@LCL         // ** 197: push local 4 ** (move to local)
+@LCL         // ** 28: push local 4 ** (move to local)
 D=M          // store the "local" base address
 @4           // move to address representing offset
 A=D+A        // new addr = base addr + offset
@@ -378,28 +378,28 @@ D=M          // store current memory value in D
 @SP          // >>> push memory value to top of stack
 A=M          // move to top of stack
 M=D          // write value of D to current location -                                                                                                                                 
-@SP          // ** 198: add ** (pop back to Y, since binary op starts at 1 past Y (SP decremented above))
+@SP          // ** 29: add ** (pop back to Y, since binary op starts at 1 past Y (SP decremented above))
 A=M          // PREPARE Y (pop Y into D)
 D=M          // store the top stack value into D
 @SP          // "pop" X
 M=M-1
 A=M          // PREPARE X (prep X "into" M – but don't pop just yet!)
 M=M+D        // perform binary operation: add -                                                                                                                                 
-@SP          // ** 199: add ** (pop back to Y, since binary op starts at 1 past Y (SP decremented above))
+@SP          // ** 30: add ** (pop back to Y, since binary op starts at 1 past Y (SP decremented above))
 A=M          // PREPARE Y (pop Y into D)
 D=M          // store the top stack value into D
 @SP          // "pop" X
 M=M-1
 A=M          // PREPARE X (prep X "into" M – but don't pop just yet!)
 M=M+D        // perform binary operation: add -                                                                                                                                 
-@SP          // ** 200: add ** (pop back to Y, since binary op starts at 1 past Y (SP decremented above))
+@SP          // ** 31: add ** (pop back to Y, since binary op starts at 1 past Y (SP decremented above))
 A=M          // PREPARE Y (pop Y into D)
 D=M          // store the top stack value into D
 @SP          // "pop" X
 M=M-1
 A=M          // PREPARE X (prep X "into" M – but don't pop just yet!)
 M=M+D        // perform binary operation: add -                                                                                                                                 
-@SP          // ** 201: add ** (pop back to Y, since binary op starts at 1 past Y (SP decremented above))
+@SP          // ** 32: add ** (pop back to Y, since binary op starts at 1 past Y (SP decremented above))
 A=M          // PREPARE Y (pop Y into D)
 D=M          // store the top stack value into D
 @SP          // "pop" X
@@ -408,7 +408,7 @@ A=M          // PREPARE X (prep X "into" M – but don't pop just yet!)
 M=M+D        // perform binary operation: add
 @SP          // increment stack pointer
 M=M+1 -                                                                                                                                 
-@LCL         // ** 202: return ** (>>> store LCL as FRAME)
+@LCL         // ** 33: return ** (>>> store LCL as FRAME)
 D=M          // store value of LCL
 @FRAME       // access FRAME variable (VME uses @R13)
 M=D          // save FRAME=LCL
@@ -456,31 +456,31 @@ M=D          // restore saved "LCL"
 @RET         // >>> move to the return address, to restore control to caller
 A=M          // prepare to jump to address stored in RET
 0;JMP -                                                                                                                                 
-@SP          // ** 203: function Sys.add12 0 **
+@SP          // ** 34: function Sys.add12 0 **
 D=M          // store SP value
 @LCL
 M=D          // store stack address in LCL (no local vars so we're done) -                                                                                                                                 
-@4002        // ** 204: push constant 4002 **
+@4002        // ** 35: push constant 4002 **
 D=A          // store the current address as a value
 @SP          // >> push constant value (4002) onto stack <<
 A=M          // move to top of stack
 M=D          // write value of D to current location -                                                                                                                                 
-@SP          // ** 205: pop pointer 0 ** (decrement stack pointer (SP decremented above))
+@SP          // ** 36: pop pointer 0 ** (decrement stack pointer (SP decremented above))
 A=M          // move to top of stack
 D=M          // store the top stack value into D
 @THIS
 M=D          // write value of D to current location -                                                                                                                                 
-@5002        // ** 206: push constant 5002 **
+@5002        // ** 37: push constant 5002 **
 D=A          // store the current address as a value
 @SP          // >> push constant value (5002) onto stack <<
 A=M          // move to top of stack
 M=D          // write value of D to current location -                                                                                                                                 
-@SP          // ** 207: pop pointer 1 ** (decrement stack pointer (SP decremented above))
+@SP          // ** 38: pop pointer 1 ** (decrement stack pointer (SP decremented above))
 A=M          // move to top of stack
 D=M          // store the top stack value into D
 @THAT
 M=D          // write value of D to current location -                                                                                                                                 
-@ARG         // ** 208: push argument 0 ** (move to argument)
+@ARG         // ** 39: push argument 0 ** (move to argument)
 D=M          // store the "argument" base address
 @0           // move to address representing offset
 A=D+A        // new addr = base addr + offset
@@ -490,12 +490,12 @@ A=M          // move to top of stack
 M=D          // write value of D to current location
 @SP          // increment stack pointer
 M=M+1 -                                                                                                                                 
-@12          // ** 209: push constant 12 **
+@12          // ** 40: push constant 12 **
 D=A          // store the current address as a value
 @SP          // >> push constant value (12) onto stack <<
 A=M          // move to top of stack
 M=D          // write value of D to current location -                                                                                                                                 
-@SP          // ** 210: add ** (pop back to Y, since binary op starts at 1 past Y (SP decremented above))
+@SP          // ** 41: add ** (pop back to Y, since binary op starts at 1 past Y (SP decremented above))
 A=M          // PREPARE Y (pop Y into D)
 D=M          // store the top stack value into D
 @SP          // "pop" X
@@ -504,7 +504,7 @@ A=M          // PREPARE X (prep X "into" M – but don't pop just yet!)
 M=M+D        // perform binary operation: add
 @SP          // increment stack pointer
 M=M+1 -                                                                                                                                 
-@LCL         // ** 211: return ** (>>> store LCL as FRAME)
+@LCL         // ** 42: return ** (>>> store LCL as FRAME)
 D=M          // store value of LCL
 @FRAME       // access FRAME variable (VME uses @R13)
 M=D          // save FRAME=LCL

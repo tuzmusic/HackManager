@@ -5,7 +5,7 @@
 	M=D          // write value of D to current location
 	            
 	// COMMAND #0B: CALL Sys.init
-	@Sys.init$ret.14
+	@Sys.init$ret.8
 	D=A          // D=retAddr
 	@SP          // >>> push retAddr onto stack
 	A=M          // move to top of stack
@@ -56,19 +56,19 @@
 	@Sys.init    // jump to the function
 	0;JMP       
 	            
-(Sys.init$ret.14) // return point for the just-called function
+(Sys.init$ret.8) // return point for the just-called function
 	
 	// execution continues (after called function returns)...
 
 // *** FILE: Class1.vm ***
 
-(Class1.set)	// COMMAND #212: function Class1.set 0
+(Class1.set)	// COMMAND #43: function Class1.set 0
 	@SP         
 	D=M          // store SP value
 	@LCL        
 	M=D          // store stack address in LCL (no local vars so we're done)
 	
-	// COMMAND #213: push argument 0
+	// COMMAND #44: push argument 0
 	@ARG         // move to argument
 	D=M          // store the "argument" base address
 	@0           // move to address representing offset
@@ -78,14 +78,14 @@
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	
-	// COMMAND #214: pop static 0
+	// COMMAND #45: pop static 0
 	@SP          // move stack pointer back to the value to be popped (SP decremented above)
 	A=M          // move to top of stack
 	D=M          // store the top stack value into D
-	@/Users/tuzmacbookpro2017/dev/HackManager/src/VMTranslator/fixtures//FunctionCalls/SimpleFunction/SimpleFunction.0 // go to static slot
+	@Class1.0    // go to static slot
 	M=D          // and store the value there
 	
-	// COMMAND #215: push argument 1
+	// COMMAND #46: push argument 1
 	@ARG         // move to argument
 	D=M          // store the "argument" base address
 	@1           // move to address representing offset
@@ -95,14 +95,14 @@
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	
-	// COMMAND #216: pop static 1
+	// COMMAND #47: pop static 1
 	@SP          // move stack pointer back to the value to be popped (SP decremented above)
 	A=M          // move to top of stack
 	D=M          // store the top stack value into D
-	@/Users/tuzmacbookpro2017/dev/HackManager/src/VMTranslator/fixtures//FunctionCalls/SimpleFunction/SimpleFunction.1 // go to static slot
+	@Class1.1    // go to static slot
 	M=D          // and store the value there
 	
-	// COMMAND #217: push constant 0
+	// COMMAND #48: push constant 0
 	@0          
 	D=A          // store the current address as a value
 	@SP          // >> push constant value (0) onto stack <<
@@ -111,7 +111,7 @@
 	@SP          // increment stack pointer
 	M=M+1       
 	
-	// COMMAND #218: return
+	// COMMAND #49: return
 	@LCL         // >>> store LCL as FRAME
 	D=M          // store value of LCL
 	@FRAME       // access FRAME variable (VME uses @R13)
@@ -168,14 +168,14 @@
 	A=M          // prepare to jump to address stored in RET
 	0;JMP       
 	
-(Class1.get)	// COMMAND #219: function Class1.get 0
+(Class1.get)	// COMMAND #50: function Class1.get 0
 	@SP         
 	D=M          // store SP value
 	@LCL        
 	M=D          // store stack address in LCL (no local vars so we're done)
 	
-	// COMMAND #220: push static 0
-	@/Users/tuzmacbookpro2017/dev/HackManager/src/VMTranslator/fixtures//FunctionCalls/SimpleFunction/SimpleFunction.0 // go to static slot
+	// COMMAND #51: push static 0
+	@Class1.0    // go to static slot
 	D=M          // store the static value in D
 	@SP          // >> push it onto the stack <<
 	A=M          // move to top of stack
@@ -183,14 +183,14 @@
 	@SP          // increment stack pointer
 	M=M+1       
 	
-	// COMMAND #221: push static 1
-	@/Users/tuzmacbookpro2017/dev/HackManager/src/VMTranslator/fixtures//FunctionCalls/SimpleFunction/SimpleFunction.1 // go to static slot
+	// COMMAND #52: push static 1
+	@Class1.1    // go to static slot
 	D=M          // store the static value in D
 	@SP          // >> push it onto the stack <<
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	
-	// COMMAND #222: sub
+	// COMMAND #53: sub
 	@SP          // pop back to Y, since binary op starts at 1 past Y (SP decremented above)
 	A=M          // PREPARE Y (pop Y into D)
 	D=M          // store the top stack value into D
@@ -201,7 +201,7 @@
 	@SP          // increment stack pointer
 	M=M+1       
 	
-	// COMMAND #223: return
+	// COMMAND #54: return
 	@LCL         // >>> store LCL as FRAME
 	D=M          // store value of LCL
 	@FRAME       // access FRAME variable (VME uses @R13)
@@ -262,13 +262,13 @@
 
 // *** FILE: Class2.vm ***
 
-(Class2.set)	// COMMAND #224: function Class2.set 0
+(Class2.set)	// COMMAND #55: function Class2.set 0
 	@SP         
 	D=M          // store SP value
 	@LCL        
 	M=D          // store stack address in LCL (no local vars so we're done)
 	
-	// COMMAND #225: push argument 0
+	// COMMAND #56: push argument 0
 	@ARG         // move to argument
 	D=M          // store the "argument" base address
 	@0           // move to address representing offset
@@ -278,14 +278,14 @@
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	
-	// COMMAND #226: pop static 0
+	// COMMAND #57: pop static 0
 	@SP          // move stack pointer back to the value to be popped (SP decremented above)
 	A=M          // move to top of stack
 	D=M          // store the top stack value into D
-	@/Users/tuzmacbookpro2017/dev/HackManager/src/VMTranslator/fixtures//FunctionCalls/SimpleFunction/SimpleFunction.0 // go to static slot
+	@Class2.0    // go to static slot
 	M=D          // and store the value there
 	
-	// COMMAND #227: push argument 1
+	// COMMAND #58: push argument 1
 	@ARG         // move to argument
 	D=M          // store the "argument" base address
 	@1           // move to address representing offset
@@ -295,14 +295,14 @@
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	
-	// COMMAND #228: pop static 1
+	// COMMAND #59: pop static 1
 	@SP          // move stack pointer back to the value to be popped (SP decremented above)
 	A=M          // move to top of stack
 	D=M          // store the top stack value into D
-	@/Users/tuzmacbookpro2017/dev/HackManager/src/VMTranslator/fixtures//FunctionCalls/SimpleFunction/SimpleFunction.1 // go to static slot
+	@Class2.1    // go to static slot
 	M=D          // and store the value there
 	
-	// COMMAND #229: push constant 0
+	// COMMAND #60: push constant 0
 	@0          
 	D=A          // store the current address as a value
 	@SP          // >> push constant value (0) onto stack <<
@@ -311,7 +311,7 @@
 	@SP          // increment stack pointer
 	M=M+1       
 	
-	// COMMAND #230: return
+	// COMMAND #61: return
 	@LCL         // >>> store LCL as FRAME
 	D=M          // store value of LCL
 	@FRAME       // access FRAME variable (VME uses @R13)
@@ -368,14 +368,14 @@
 	A=M          // prepare to jump to address stored in RET
 	0;JMP       
 	
-(Class2.get)	// COMMAND #231: function Class2.get 0
+(Class2.get)	// COMMAND #62: function Class2.get 0
 	@SP         
 	D=M          // store SP value
 	@LCL        
 	M=D          // store stack address in LCL (no local vars so we're done)
 	
-	// COMMAND #232: push static 0
-	@/Users/tuzmacbookpro2017/dev/HackManager/src/VMTranslator/fixtures//FunctionCalls/SimpleFunction/SimpleFunction.0 // go to static slot
+	// COMMAND #63: push static 0
+	@Class2.0    // go to static slot
 	D=M          // store the static value in D
 	@SP          // >> push it onto the stack <<
 	A=M          // move to top of stack
@@ -383,14 +383,14 @@
 	@SP          // increment stack pointer
 	M=M+1       
 	
-	// COMMAND #233: push static 1
-	@/Users/tuzmacbookpro2017/dev/HackManager/src/VMTranslator/fixtures//FunctionCalls/SimpleFunction/SimpleFunction.1 // go to static slot
+	// COMMAND #64: push static 1
+	@Class2.1    // go to static slot
 	D=M          // store the static value in D
 	@SP          // >> push it onto the stack <<
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	
-	// COMMAND #234: sub
+	// COMMAND #65: sub
 	@SP          // pop back to Y, since binary op starts at 1 past Y (SP decremented above)
 	A=M          // PREPARE Y (pop Y into D)
 	D=M          // store the top stack value into D
@@ -401,7 +401,7 @@
 	@SP          // increment stack pointer
 	M=M+1       
 	
-	// COMMAND #235: return
+	// COMMAND #66: return
 	@LCL         // >>> store LCL as FRAME
 	D=M          // store value of LCL
 	@FRAME       // access FRAME variable (VME uses @R13)
@@ -462,13 +462,13 @@
 
 // *** FILE: Sys.vm ***
 
-(Sys.init)  	// COMMAND #236: function Sys.init 0
+(Sys.init)  	// COMMAND #67: function Sys.init 0
 	@SP         
 	D=M          // store SP value
 	@LCL        
 	M=D          // store stack address in LCL (no local vars so we're done)
 	
-	// COMMAND #237: push constant 6
+	// COMMAND #68: push constant 6
 	@6          
 	D=A          // store the current address as a value
 	@SP          // >> push constant value (6) onto stack <<
@@ -477,7 +477,7 @@
 	@SP          // increment stack pointer
 	M=M+1       
 	
-	// COMMAND #238: push constant 8
+	// COMMAND #69: push constant 8
 	@8          
 	D=A          // store the current address as a value
 	@SP          // >> push constant value (8) onto stack <<
@@ -486,8 +486,8 @@
 	@SP          // increment stack pointer
 	M=M+1       
 	
-	// COMMAND #239: call Class1.set 2
-	@Class1.set$ret.10
+	// COMMAND #70: call Class1.set 2
+	@Class1.set$ret.4
 	D=A          // D=retAddr
 	@SP          // >>> push retAddr onto stack
 	A=M          // move to top of stack
@@ -538,11 +538,11 @@
 	@Class1.set  // jump to the function
 	0;JMP       
 	            
-(Class1.set$ret.10) // return point for the just-called function
+(Class1.set$ret.4) // return point for the just-called function
 	
 	// execution continues (after called function returns)...
 	
-	// COMMAND #240: pop temp 0
+	// COMMAND #71: pop temp 0
 	@5           // move to "temp" pointer
 	D=M          // store the "temp" base address
 	@5           // move to address representing offset
@@ -562,7 +562,7 @@
 	@SP          // SP-- to "pop" the stack
 	M=M-1       
 	
-	// COMMAND #241: push constant 23
+	// COMMAND #72: push constant 23
 	@23         
 	D=A          // store the current address as a value
 	@SP          // >> push constant value (23) onto stack <<
@@ -571,7 +571,7 @@
 	@SP          // increment stack pointer
 	M=M+1       
 	
-	// COMMAND #242: push constant 15
+	// COMMAND #73: push constant 15
 	@15         
 	D=A          // store the current address as a value
 	@SP          // >> push constant value (15) onto stack <<
@@ -580,8 +580,8 @@
 	@SP          // increment stack pointer
 	M=M+1       
 	
-	// COMMAND #243: call Class2.set 2
-	@Class2.set$ret.11
+	// COMMAND #74: call Class2.set 2
+	@Class2.set$ret.5
 	D=A          // D=retAddr
 	@SP          // >>> push retAddr onto stack
 	A=M          // move to top of stack
@@ -632,11 +632,11 @@
 	@Class2.set  // jump to the function
 	0;JMP       
 	            
-(Class2.set$ret.11) // return point for the just-called function
+(Class2.set$ret.5) // return point for the just-called function
 	
 	// execution continues (after called function returns)...
 	
-	// COMMAND #244: pop temp 0
+	// COMMAND #75: pop temp 0
 	@5           // move to "temp" pointer
 	D=M          // store the "temp" base address
 	@5           // move to address representing offset
@@ -656,8 +656,8 @@
 	@SP          // SP-- to "pop" the stack
 	M=M-1       
 	
-	// COMMAND #245: call Class1.get 0
-	@Class1.get$ret.12
+	// COMMAND #76: call Class1.get 0
+	@Class1.get$ret.6
 	D=A          // D=retAddr
 	@SP          // >>> push retAddr onto stack
 	A=M          // move to top of stack
@@ -708,12 +708,12 @@
 	@Class1.get  // jump to the function
 	0;JMP       
 	            
-(Class1.get$ret.12) // return point for the just-called function
+(Class1.get$ret.6) // return point for the just-called function
 	
 	// execution continues (after called function returns)...
 	
-	// COMMAND #246: call Class2.get 0
-	@Class2.get$ret.13
+	// COMMAND #77: call Class2.get 0
+	@Class2.get$ret.7
 	D=A          // D=retAddr
 	@SP          // >>> push retAddr onto stack
 	A=M          // move to top of stack
@@ -764,13 +764,13 @@
 	@Class2.get  // jump to the function
 	0;JMP       
 	            
-(Class2.get$ret.13) // return point for the just-called function
+(Class2.get$ret.7) // return point for the just-called function
 	
 	// execution continues (after called function returns)...
 	
-(WHILE.VM)  	// COMMAND #247: label WHILE
+(WHILE.VM)  	// COMMAND #78: label WHILE
 	
-	// COMMAND #248: goto WHILE
+	// COMMAND #79: goto WHILE
 	@WHILE.VM   
 	0;JMP       
 	

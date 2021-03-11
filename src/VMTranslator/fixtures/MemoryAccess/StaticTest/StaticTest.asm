@@ -27,7 +27,7 @@
 	@SP          // move stack pointer back to the value to be popped (SP decremented above)
 	A=M          // move to top of stack
 	D=M          // store the top stack value into D
-	@/Users/tuzmacbookpro2017/dev/HackManager/src/VMTranslator/fixtures//MemoryAccess/StaticTest/StaticTest.8 // go to static slot
+	@StaticTest.8 // go to static slot
 	M=D          // and store the value there
 	
 	// COMMAND #5: pop static 3
@@ -35,7 +35,7 @@
 	M=M-1       
 	A=M          // move to top of stack
 	D=M          // store the top stack value into D
-	@/Users/tuzmacbookpro2017/dev/HackManager/src/VMTranslator/fixtures//MemoryAccess/StaticTest/StaticTest.3 // go to static slot
+	@StaticTest.3 // go to static slot
 	M=D          // and store the value there
 	
 	// COMMAND #6: pop static 1
@@ -43,11 +43,11 @@
 	M=M-1       
 	A=M          // move to top of stack
 	D=M          // store the top stack value into D
-	@/Users/tuzmacbookpro2017/dev/HackManager/src/VMTranslator/fixtures//MemoryAccess/StaticTest/StaticTest.1 // go to static slot
+	@StaticTest.1 // go to static slot
 	M=D          // and store the value there
 	
 	// COMMAND #7: push static 3
-	@/Users/tuzmacbookpro2017/dev/HackManager/src/VMTranslator/fixtures//MemoryAccess/StaticTest/StaticTest.3 // go to static slot
+	@StaticTest.3 // go to static slot
 	D=M          // store the static value in D
 	@SP          // >> push it onto the stack <<
 	A=M          // move to top of stack
@@ -56,7 +56,7 @@
 	M=M+1       
 	
 	// COMMAND #8: push static 1
-	@/Users/tuzmacbookpro2017/dev/HackManager/src/VMTranslator/fixtures//MemoryAccess/StaticTest/StaticTest.1 // go to static slot
+	@StaticTest.1 // go to static slot
 	D=M          // store the static value in D
 	@SP          // >> push it onto the stack <<
 	A=M          // move to top of stack
@@ -74,7 +74,7 @@
 	M=M+1       
 	
 	// COMMAND #10: push static 8
-	@/Users/tuzmacbookpro2017/dev/HackManager/src/VMTranslator/fixtures//MemoryAccess/StaticTest/StaticTest.8 // go to static slot
+	@StaticTest.8 // go to static slot
 	D=M          // store the static value in D
 	@SP          // >> push it onto the stack <<
 	A=M          // move to top of stack

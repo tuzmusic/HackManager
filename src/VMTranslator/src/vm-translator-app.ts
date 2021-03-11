@@ -58,7 +58,7 @@ const filesToTest = [
   // 'SimpleFunction',
   // 'DoubleCall',
   // 'FibonacciElement',
-  'StaticTest',
+  // 'StaticTest',
   'NestedCall',
   'StaticsTest'
 ];

@@ -18,7 +18,6 @@ export class HackTask {
   }
   
   static processFile(filename: string): void {
-    this.filename = filename.split('.')[0];
     this.filename = path.parse(filename).name;
     
     if (!filename.endsWith(`.${ this.inExtension }`)) {
@@ -46,13 +45,17 @@ export class HackTask {
   static processFolder(pathString: string): void {
     const thePath = path.resolve(pathString);
     const files = fs.readdirSync(thePath).filter(n => n.endsWith(this.inExtension));
-    
+  
     // perform task
-    this.processed = files.map(filepath =>
-      [`\n// *** FILE: ${ filepath } ***`, '',
-        this.processText(fs.readFileSync(path.resolve(thePath, filepath)).toString())].join('\n'))
-      .join('\n\n');
+    this.processed = files.map(filepath => {
+      this.filename = path.parse(filepath).name;
     
+      const header = `\n// *** FILE: ${ filepath } ***`;
+      const processedText = this.processText(fs.readFileSync(path.resolve(thePath, filepath)).toString());
+      return [header, '', processedText].join('\n');
+    })
+      .join('\n\n');
+  
     // write file
     this.outPath = path.join(thePath, path.basename(thePath) + '.' + this.outExtension);
     console.log(`${ this.taskName.toUpperCase() }: Creating`, this.outPath.split('/').pop());
