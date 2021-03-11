@@ -153,6 +153,3 @@
 	@SP          // increment stack pointer
 	M=M+1       
 	
-(INFINITE_LOOP)
-	@INFINITE_LOOP
-	0;JMP

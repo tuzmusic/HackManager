@@ -49,15 +49,17 @@ function testFile(folderName: string) {
 }
 
 const filesToTest = [
-  // 'SimpleAdd',
-  // 'StackTest',
-  // 'BasicLoop',
-  // 'FibonacciSeries',
-  // 'BasicTest',
-  // 'PointerTest',
+  'SimpleAdd',
+  'StackTest',
+  'BasicLoop',
+  'FibonacciSeries',
+  'BasicTest',
+  'PointerTest',
   'SimpleFunction',
   'DoubleCall',
   'FibonacciElement',
+  'NestedCall',
+  'StaticsTest'
 ];
 console.clear();
 filesToTest.forEach(testFile);

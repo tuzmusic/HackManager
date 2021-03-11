@@ -62,13 +62,13 @@
 
 // *** FILE: Main.vm ***
 
-(Main.fibonacci)	// COMMAND #21: function Main.fibonacci 0
+(Main.fibonacci)	// COMMAND #145: function Main.fibonacci 0
 	@SP         
 	D=M          // store SP value
 	@LCL        
 	M=D          // store stack address in LCL (no local vars so we're done)
 	
-	// COMMAND #22: push argument 0
+	// COMMAND #146: push argument 0
 	@ARG         // move to argument
 	D=M          // store the "argument" base address
 	@0           // move to address representing offset
@@ -80,14 +80,14 @@
 	@SP          // increment stack pointer
 	M=M+1       
 	
-	// COMMAND #23: push constant 2
+	// COMMAND #147: push constant 2
 	@2          
 	D=A          // store the current address as a value
 	@SP          // >> push constant value (2) onto stack <<
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	
-	// COMMAND #24: lt
+	// COMMAND #148: lt
 	@SP          // pop back to Y, since binary op starts at 1 past Y (SP decremented above)
 	A=M          // PREPARE Y (pop Y into D)
 	D=M          // store the top stack value into D
@@ -95,34 +95,34 @@
 	M=M-1       
 	A=M          // PREPARE X (prep X "into" M – but don't pop just yet!)
 	D=M-D        // store X-Y in D for comparison
-	@IF_TRUE_0  
+	@IF_TRUE_9  
 	D;JLT        // perform comparison: lt
-(IF_FALSE_0)
+(IF_FALSE_9)
 	@SP         
 	A=M          // move to top of stack
 	M=0         
-	@END_IF_0   
+	@END_IF_9   
 	0;JMP       
-(IF_TRUE_0) 
+(IF_TRUE_9) 
 	@SP         
 	A=M          // move to top of stack
 	M=-1        
-(END_IF_0)  
+(END_IF_9)  
 	
-	// COMMAND #25: if-goto IF_TRUE
+	// COMMAND #149: if-goto IF_TRUE
 	@SP          // decrement stack pointer (SP decremented above)
 	A=M          // move to top of stack
 	D=M          // store the top stack value into D
 	@IF_TRUE.VM 
 	D;JNE       
 	
-	// COMMAND #26: goto IF_FALSE
+	// COMMAND #150: goto IF_FALSE
 	@IF_FALSE.VM
 	0;JMP       
 	
-(IF_TRUE.VM)	// COMMAND #27: label IF_TRUE
+(IF_TRUE.VM)	// COMMAND #151: label IF_TRUE
 	
-	// COMMAND #28: push argument 0
+	// COMMAND #152: push argument 0
 	@ARG         // move to argument
 	D=M          // store the "argument" base address
 	@0           // move to address representing offset
@@ -134,7 +134,7 @@
 	@SP          // increment stack pointer
 	M=M+1       
 	
-	// COMMAND #29: return
+	// COMMAND #153: return
 	@LCL         // >>> store LCL as FRAME
 	D=M          // store value of LCL
 	@FRAME       // access FRAME variable (VME uses @R13)
@@ -191,9 +191,9 @@
 	A=M          // prepare to jump to address stored in RET
 	0;JMP       
 	
-(IF_FALSE.VM)	// COMMAND #30: label IF_FALSE
+(IF_FALSE.VM)	// COMMAND #154: label IF_FALSE
 	
-	// COMMAND #31: push argument 0
+	// COMMAND #155: push argument 0
 	@ARG         // move to argument
 	D=M          // store the "argument" base address
 	@0           // move to address representing offset
@@ -205,14 +205,14 @@
 	@SP          // increment stack pointer
 	M=M+1       
 	
-	// COMMAND #32: push constant 2
+	// COMMAND #156: push constant 2
 	@2          
 	D=A          // store the current address as a value
 	@SP          // >> push constant value (2) onto stack <<
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	
-	// COMMAND #33: sub
+	// COMMAND #157: sub
 	@SP          // pop back to Y, since binary op starts at 1 past Y (SP decremented above)
 	A=M          // PREPARE Y (pop Y into D)
 	D=M          // store the top stack value into D
@@ -223,7 +223,7 @@
 	@SP          // increment stack pointer
 	M=M+1       
 	
-	// COMMAND #34: call Main.fibonacci 1
+	// COMMAND #158: call Main.fibonacci 1
 	@Main.fibonacci$ret.3
 	D=A          // D=retAddr
 	@SP          // >>> push retAddr onto stack
@@ -279,7 +279,7 @@
 	
 	// execution continues (after called function returns)...
 	
-	// COMMAND #35: push argument 0
+	// COMMAND #159: push argument 0
 	@ARG         // move to argument
 	D=M          // store the "argument" base address
 	@0           // move to address representing offset
@@ -291,14 +291,14 @@
 	@SP          // increment stack pointer
 	M=M+1       
 	
-	// COMMAND #36: push constant 1
+	// COMMAND #160: push constant 1
 	@1          
 	D=A          // store the current address as a value
 	@SP          // >> push constant value (1) onto stack <<
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	
-	// COMMAND #37: sub
+	// COMMAND #161: sub
 	@SP          // pop back to Y, since binary op starts at 1 past Y (SP decremented above)
 	A=M          // PREPARE Y (pop Y into D)
 	D=M          // store the top stack value into D
@@ -309,7 +309,7 @@
 	@SP          // increment stack pointer
 	M=M+1       
 	
-	// COMMAND #38: call Main.fibonacci 1
+	// COMMAND #162: call Main.fibonacci 1
 	@Main.fibonacci$ret.4
 	D=A          // D=retAddr
 	@SP          // >>> push retAddr onto stack
@@ -365,7 +365,7 @@
 	
 	// execution continues (after called function returns)...
 	
-	// COMMAND #39: add
+	// COMMAND #163: add
 	@SP          // pop back to Y, since binary op starts at 1 past Y
 	M=M-1       
 	A=M          // PREPARE Y (pop Y into D)
@@ -377,7 +377,7 @@
 	@SP          // increment stack pointer
 	M=M+1       
 	
-	// COMMAND #40: return
+	// COMMAND #164: return
 	@LCL         // >>> store LCL as FRAME
 	D=M          // store value of LCL
 	@FRAME       // access FRAME variable (VME uses @R13)
@@ -438,13 +438,13 @@
 
 // *** FILE: Sys.vm ***
 
-(Sys.init)  	// COMMAND #41: function Sys.init 0
+(Sys.init)  	// COMMAND #165: function Sys.init 0
 	@SP         
 	D=M          // store SP value
 	@LCL        
 	M=D          // store stack address in LCL (no local vars so we're done)
 	
-	// COMMAND #42: push constant 4
+	// COMMAND #166: push constant 4
 	@4          
 	D=A          // store the current address as a value
 	@SP          // >> push constant value (4) onto stack <<
@@ -453,7 +453,7 @@
 	@SP          // increment stack pointer
 	M=M+1       
 	
-	// COMMAND #43: call Main.fibonacci 1
+	// COMMAND #167: call Main.fibonacci 1
 	@Main.fibonacci$ret.5
 	D=A          // D=retAddr
 	@SP          // >>> push retAddr onto stack
@@ -509,9 +509,9 @@
 	
 	// execution continues (after called function returns)...
 	
-(WHILE.VM)  	// COMMAND #44: label WHILE
+(WHILE.VM)  	// COMMAND #168: label WHILE
 	
-	// COMMAND #45: goto WHILE
+	// COMMAND #169: goto WHILE
 	@WHILE.VM   
 	0;JMP       
 	
