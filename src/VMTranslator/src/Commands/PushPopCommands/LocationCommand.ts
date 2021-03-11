@@ -3,12 +3,12 @@ import { PushPopCommand } from './PushPopCommand';
 
 export class LocationCommand extends PushPopCommand {
   
-  constructor(type: CmdType, private segment: MemorySegment, value: string) {
+  constructor(type: CmdType, private segment: MemorySegment, protected value: string) {
     super(type, value);
   
     // special case
-    if (segment === 'temp')
-      this.value = (parseInt(value) + 5).toString();
+    // if (segment === 'temp')
+    //   this.value = (parseInt(value) + 5).toString();
   
     this[type]();
   }

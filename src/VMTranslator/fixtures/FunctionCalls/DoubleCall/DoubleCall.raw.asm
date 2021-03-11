@@ -47,11 +47,11 @@ D=D-A        // subtract (frame + num of args) from the stored SP
 M=D          // save SP-n-5 to ARG
 @Sys.init    // jump to the function
 0;JMP -                                                                                                                                 
-@SP          // ** 135: function Main.DoubleCall 0 **
+@SP          // ** 146: function Main.DoubleCall 0 **
 D=M          // store SP value
 @LCL
 M=D          // store stack address in LCL (no local vars so we're done) -                                                                                                                                 
-@ARG         // ** 136: push argument 0 ** (move to argument)
+@ARG         // ** 147: push argument 0 ** (move to argument)
 D=M          // store the "argument" base address
 @0           // move to address representing offset
 A=D+A        // new addr = base addr + offset
@@ -61,7 +61,7 @@ A=M          // move to top of stack
 M=D          // write value of D to current location
 @SP          // increment stack pointer
 M=M+1 -                                                                                                                                 
-@ARG         // ** 137: push argument 0 ** (move to argument)
+@ARG         // ** 148: push argument 0 ** (move to argument)
 D=M          // store the "argument" base address
 @0           // move to address representing offset
 A=D+A        // new addr = base addr + offset
@@ -69,7 +69,7 @@ D=M          // store current memory value in D
 @SP          // >>> push memory value to top of stack
 A=M          // move to top of stack
 M=D          // write value of D to current location -                                                                                                                                 
-@SP          // ** 138: add ** (pop back to Y, since binary op starts at 1 past Y (SP decremented above))
+@SP          // ** 149: add ** (pop back to Y, since binary op starts at 1 past Y (SP decremented above))
 A=M          // PREPARE Y (pop Y into D)
 D=M          // store the top stack value into D
 @SP          // "pop" X
@@ -78,7 +78,7 @@ A=M          // PREPARE X (prep X "into" M – but don't pop just yet!)
 M=M+D        // perform binary operation: add
 @SP          // increment stack pointer
 M=M+1 -                                                                                                                                 
-@LCL         // ** 139: return ** (>>> store LCL as FRAME)
+@LCL         // ** 150: return ** (>>> store LCL as FRAME)
 D=M          // store value of LCL
 @FRAME       // access FRAME variable (VME uses @R13)
 M=D          // save FRAME=LCL
@@ -126,18 +126,18 @@ M=D          // restore saved "LCL"
 @RET         // >>> move to the return address, to restore control to caller
 A=M          // prepare to jump to address stored in RET
 0;JMP -                                                                                                                                 
-@SP          // ** 140: function Sys.init 0 **
+@SP          // ** 151: function Sys.init 0 **
 D=M          // store SP value
 @LCL
 M=D          // store stack address in LCL (no local vars so we're done) -                                                                                                                                 
-@3           // ** 141: push constant 3 **
+@3           // ** 152: push constant 3 **
 D=A          // store the current address as a value
 @SP          // >> push constant value (3) onto stack <<
 A=M          // move to top of stack
 M=D          // write value of D to current location
 @SP          // increment stack pointer
 M=M+1 -                                                                                                                                 
-@Main.DoubleCall$ret.1 // ** 142: call Main.DoubleCall 1 **
+@Main.DoubleCall$ret.1 // ** 153: call Main.DoubleCall 1 **
 D=A          // D=retAddr
 @SP          // >>> push retAddr onto stack
 A=M          // move to top of stack
@@ -182,4 +182,4 @@ D=D-A        // subtract (frame + num of args) from the stored SP
 M=D          // save SP-n-5 to ARG
 @Main.DoubleCall // jump to the function
 0;JMP -                                                                                                                                  -                                                                                                                                 
-@WHILE.VM    // ** 144: goto WHILE) **
+@WHILE.VM    // ** 155: goto WHILE) **

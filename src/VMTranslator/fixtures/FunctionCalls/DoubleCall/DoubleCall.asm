@@ -62,13 +62,13 @@
 
 // *** FILE: Main.vm ***
 
-(Main.DoubleCall)	// COMMAND #135: function Main.DoubleCall 0
+(Main.DoubleCall)	// COMMAND #146: function Main.DoubleCall 0
 	@SP         
 	D=M          // store SP value
 	@LCL        
 	M=D          // store stack address in LCL (no local vars so we're done)
 	
-	// COMMAND #136: push argument 0
+	// COMMAND #147: push argument 0
 	@ARG         // move to argument
 	D=M          // store the "argument" base address
 	@0           // move to address representing offset
@@ -80,7 +80,7 @@
 	@SP          // increment stack pointer
 	M=M+1       
 	
-	// COMMAND #137: push argument 0
+	// COMMAND #148: push argument 0
 	@ARG         // move to argument
 	D=M          // store the "argument" base address
 	@0           // move to address representing offset
@@ -90,7 +90,7 @@
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	
-	// COMMAND #138: add
+	// COMMAND #149: add
 	@SP          // pop back to Y, since binary op starts at 1 past Y (SP decremented above)
 	A=M          // PREPARE Y (pop Y into D)
 	D=M          // store the top stack value into D
@@ -101,7 +101,7 @@
 	@SP          // increment stack pointer
 	M=M+1       
 	
-	// COMMAND #139: return
+	// COMMAND #150: return
 	@LCL         // >>> store LCL as FRAME
 	D=M          // store value of LCL
 	@FRAME       // access FRAME variable (VME uses @R13)
@@ -162,13 +162,13 @@
 
 // *** FILE: Sys.vm ***
 
-(Sys.init)  	// COMMAND #140: function Sys.init 0
+(Sys.init)  	// COMMAND #151: function Sys.init 0
 	@SP         
 	D=M          // store SP value
 	@LCL        
 	M=D          // store stack address in LCL (no local vars so we're done)
 	
-	// COMMAND #141: push constant 3
+	// COMMAND #152: push constant 3
 	@3          
 	D=A          // store the current address as a value
 	@SP          // >> push constant value (3) onto stack <<
@@ -177,7 +177,7 @@
 	@SP          // increment stack pointer
 	M=M+1       
 	
-	// COMMAND #142: call Main.DoubleCall 1
+	// COMMAND #153: call Main.DoubleCall 1
 	@Main.DoubleCall$ret.1
 	D=A          // D=retAddr
 	@SP          // >>> push retAddr onto stack
@@ -233,9 +233,9 @@
 	
 	// execution continues (after called function returns)...
 	
-(WHILE.VM)  	// COMMAND #143: label WHILE
+(WHILE.VM)  	// COMMAND #154: label WHILE
 	
-	// COMMAND #144: goto WHILE
+	// COMMAND #155: goto WHILE
 	@WHILE.VM   
 	0;JMP       
 	

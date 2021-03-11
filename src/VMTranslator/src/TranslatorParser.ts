@@ -11,12 +11,14 @@ import { LabelCommand } from './Commands/ProgramFlow/LabelCommand';
 import { ReturnCommand } from './FunctionCommands/ReturnCommand';
 import { FunctionDeclaration } from './FunctionCommands/FunctionDeclaration';
 import { FunctionCall } from './FunctionCommands/FunctionCall';
+import { TempCommand } from './Commands/PushPopCommands/TempCommand';
 
 const parseTable = {
   specialSegments: {
     'constant': ConstantCommand,
     'static': StaticCommand,
-    'pointer': PointerCommand
+    'pointer': PointerCommand,
+    'temp': TempCommand
   },
   flowCommands: {
     'label': LabelCommand,

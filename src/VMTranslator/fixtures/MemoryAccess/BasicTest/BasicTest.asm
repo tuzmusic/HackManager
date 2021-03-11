@@ -178,28 +178,13 @@
 	@SP          // >> push constant value (510) onto stack <<
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
-	@SP          // increment stack pointer
-	M=M+1       
 	
 	// COMMAND #98: pop temp 6
-	@5           // move to "temp" pointer
-	D=M          // store the "temp" base address
-	@11          // move to address representing offset
-	D=D+A        // D = base addr + offset
-	@SP          // >> store dest addr at stack+1 <<
+	@SP          // decrement stack pointer (SP decremented above)
 	A=M          // move to top of stack
-	M=D          // write value of D to current location
-	@SP          // move stack pointer back to the value to be popped
-	M=M-1       
-	A=M          // >> store our value in D <<
 	D=M          // store the top stack value into D
-	@SP          // return to where the dest addr is written
-	M=M+1       
-	A=M          // move to where dest address is stored
-	A=M          // move to actual dest address
-	M=D          // write our value to the dest address
-	@SP          // SP-- to "pop" the stack
-	M=M-1       
+	@11         
+	M=D          // write value of D to current location
 	
 	// COMMAND #99: push local 0
 	@LCL         // move to local
@@ -298,10 +283,7 @@
 	M=M+1       
 	
 	// COMMAND #108: push temp 6
-	@5           // move to temp
-	D=M          // store the "temp" base address
-	@11          // move to address representing offset
-	A=D+A        // new addr = base addr + offset
+	@11         
 	D=M          // store current memory value in D
 	@SP          // >>> push memory value to top of stack
 	A=M          // move to top of stack
