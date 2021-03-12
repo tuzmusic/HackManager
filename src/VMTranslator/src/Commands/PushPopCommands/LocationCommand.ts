@@ -24,41 +24,39 @@ export class LocationCommand extends PushPopCommand {
   // pop the topmost stack item and store its value in segment[index].
   // <p>`addr=segment+i, SP--, *addr=*SP`
   pop = (): void => {
+    // get destination address, write it to a temp variable
+    this.storeSegmentOffsetAddress();
+    this.move.to.variableOrValue('OFFSET');
+    this.writeThe.storedValue.toMemoryAtCurrentAddress();
+  
+    // GET THE POPPED VALUE
+    this.decrementStackPointer('>> move stack pointer back to the value to be popped <<');
+    this.storeThe.topStackValue('>> store the top stack value in D <<');
+  
+    // WRITE TO MEMORY SEGMENT
+    this.move.to.variableOrValue('OFFSET');
+    this.move.using.currentMemoryValue.asAddress('move to offset');
+    this.writeThe.storedValue.toMemoryAtCurrentAddress();
+  };
+  
+  private storeSegmentOffsetAddress = () => {
     // STORE DESIRED ADDRESS ON TOP OF STACK
     // get dest address
     this.move.to.variableOrValue(memorySegments[this.segment], `move to "${ this.segment }" pointer`); // @segment
     this.storeThe.memoryValue(`store the "${ this.segment }" base address`); // D=A
-  
+    
     const segmentIndex = Object.keys(memorySegments).indexOf(this.segment);
     const valInt = parseInt(this.value);
-  ®
+    
     // if value is 0, no offset is needed
     if (valInt) {
       // e.g., ARG = 2, so if value is 2, no @ is needed for adding the constant
       if ((segmentIndex + 1) !== valInt) {
         this.move.to.variableOrValue(this.value, 'move to address representing offset'); // @i
       }
-    
+      
       this.add.valueOfAddress.toStoredValue('D = base addr + offset'); // D=D+A
     }
-  
-    // write it to the stack
-    this.pushThe.storedValue.ontoStack('>> write dest addr to top of stack (don\'t increment) <<');
-    // we actually don't want to increment the stack pointer, so remove those lines
-    // (they were added by the fn call above)
-    this.lines.pop();
-    this.lines.pop();
-  
-    // GET THE POPPED VALUE
-    this.decrementStackPointer('>> move stack pointer back to the value to be popped <<');
-    this.storeThe.topStackValue('>> store our value in D <<');
-    
-    // WRITE TO MEMORY SEGMENT
-    this.incrementStackPointer('return to where the dest addr is written');
-    this.move.using.currentMemoryValue.asAddress('move to where dest address is stored');
-    this.move.using.currentMemoryValue.asAddress('move to actual dest address');
-    this.writeThe.storedValue.toMemoryAtCurrentAddress('write our value to the dest address');
-    this.decrementStackPointer('SP-- to "pop" the stack');
   };
   
   // `addr=seg+i (move to offset)`
