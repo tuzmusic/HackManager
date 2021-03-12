@@ -13,7 +13,7 @@ export class VMTranslator extends HackTask {
   
   static processPath(pathString: string): void {
     super.processPath(pathString);
-    
+  
     // add bootstrap code if we started with a directory
     if (fs.lstatSync(pathString).isDirectory()) {
       // TODO: do this better!
@@ -23,8 +23,8 @@ export class VMTranslator extends HackTask {
         [this.indentNonMarkerLines(VMBootstrapper.getBootstrapCode()), codeLines]
           .flat().join('\n')
       );
-      this.writeRawFile();
     }
+    this.writeRawFile();
   }
   
   static processText(text: string): string {
@@ -84,16 +84,21 @@ export class VMTranslator extends HackTask {
   static writeRawFile(): void {
     // write raw file, for matching up line numbers
     const rawPath = this.outPath.replace(this.outExtension, 'raw.' + this.outExtension);
-    
+  
+    let oldRawCount = 0;
+  
+    // get line count for previous
+    try { oldRawCount = this.getFileLineCount(rawPath);} catch (e) { }
+  
     const fullCode = fs.readFileSync(this.outPath).toString();
-    
+  
     // remove comments and blank lines
     const firstPass = fullCode.split('\n')
       .filter(line => line.trim()) // remove blank lines
       .map(line => line.trim());
-    
+  
     const secondPass: string[] = [];
-    
+  
     // include commands as comments
     firstPass.forEach((line, i) => {
       const nextLine = firstPass[i + 1];
@@ -110,7 +115,7 @@ export class VMTranslator extends HackTask {
         } else {
           firstPass[i + 1] = nextLine.padEnd(12) + ' // ' + commandInfo;
         }
-  
+    
         // add artificial line break in prev line
         if (secondPass.length) {
           let lastLine = secondPass.pop();
@@ -130,6 +135,14 @@ export class VMTranslator extends HackTask {
       .join('\n');
   
     fs.writeFileSync(rawPath, rawCode);
+    const newRawCount = this.getFileLineCount(rawPath);
+  
+    if (oldRawCount)
+      console.log(`Previous linecount: ${ oldRawCount }. New linecount: ${ newRawCount }`);
+  }
+  
+  private static getFileLineCount(filePath: string): number {
+    return fs.readFileSync(filePath).toString().split('\n').length;
   }
   
   /**
@@ -169,7 +182,7 @@ export class VMTranslator extends HackTask {
         }
       }
     };
-  
+    
     Object.values(optimizations).forEach(op => op());
     return currentTranslation;
   };

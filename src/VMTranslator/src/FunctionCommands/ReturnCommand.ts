@@ -51,14 +51,14 @@ export class ReturnCommand extends VMCommand {
   private saveReturnAddress() {
     this.addLine('@LCL', '>>> store LCL as FRAME');
     this.storeThe.memoryValue('store value of LCL');
-    this.at_sign('FRAME', 'access FRAME variable (VME uses @R13)');
+    this.move.to.variableOrValue('FRAME', 'access FRAME variable (VME uses @R13)');
     this.writeThe.storedValue.toMemoryAtCurrentAddress('save FRAME=LCL');
   
     this.addLine('@5', '>>> save RET');
     this.addLine('A=D-A', 'move to location of retAddr');
     this.storeThe.memoryValue('store the value of retAddr');
     // this.addLine('D=D-A', 'RET=FRAME-5');
-    this.at_sign('RET', 'create/access RET variable (VME uses @R14)');
+    this.move.to.variableOrValue('RET', 'create/access RET variable (VME uses @R14)');
     this.addLine('M=D', 'write the value of retAddr to RET');
   }
   
@@ -100,7 +100,7 @@ export class ReturnCommand extends VMCommand {
     // todo: this may or may not be needed? I'm honestly not sure if the
     //  return address is just about moving around the assembly code, or
     //  about actually changing values in the system (A, SP, etc)
-    this.at_sign('RET', '>>> move to the return address, to restore control to caller');
+    this.move.to.variableOrValue('RET', '>>> move to the return address, to restore control to caller');
     // this.goto(CallStack.generateReturnLabel(), '>>> move to the return address, to restore control to caller');
     this.addLine('A=M', 'prepare to jump to address stored in RET');
     this.addLine('0;JMP');

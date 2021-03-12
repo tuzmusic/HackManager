@@ -82,7 +82,7 @@ export class FunctionCall extends VMCommand {
     /* Create the label. (whatever$label) will take us to the location of a new label */
     // use the CallStack-generated label. Since it doesn't matter what the actual
     // label is, right?
-    this.at_sign(this.returnLabel);
+    this.move.to.variableOrValue(this.returnLabel);
     /* Push the address of the label onto the stack!
     * As a result, the return command will find the address of the label (retAddr)
     * on the stack, and jump to it.
