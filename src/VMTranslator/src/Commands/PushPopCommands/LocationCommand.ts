@@ -28,17 +28,29 @@ export class LocationCommand extends PushPopCommand {
     // get dest address
     this.move.to.variableOrValue(memorySegments[this.segment], `move to "${ this.segment }" pointer`); // @segment
     this.storeThe.memoryValue(`store the "${ this.segment }" base address`); // D=A
-    this.move.to.variableOrValue(this.value, 'move to address representing offset'); // @i
-    this.add.valueOfAddress.toStoredValue('D = base addr + offset'); // D=D+A
+  
+    const segmentIndex = Object.keys(memorySegments).indexOf(this.segment);
+    const valInt = parseInt(this.value);
+  ®
+    // if value is 0, no offset is needed
+    if (valInt) {
+      // e.g., ARG = 2, so if value is 2, no @ is needed for adding the constant
+      if ((segmentIndex + 1) !== valInt) {
+        this.move.to.variableOrValue(this.value, 'move to address representing offset'); // @i
+      }
+    
+      this.add.valueOfAddress.toStoredValue('D = base addr + offset'); // D=D+A
+    }
+  
     // write it to the stack
-    this.pushThe.storedValue.ontoStack('>> store dest addr at stack+1 <<');
+    this.pushThe.storedValue.ontoStack('>> write dest addr to top of stack (don\'t increment) <<');
     // we actually don't want to increment the stack pointer, so remove those lines
     // (they were added by the fn call above)
     this.lines.pop();
     this.lines.pop();
-    
+  
     // GET THE POPPED VALUE
-    this.decrementStackPointer('move stack pointer back to the value to be popped');
+    this.decrementStackPointer('>> move stack pointer back to the value to be popped <<');
     this.storeThe.topStackValue('>> store our value in D <<');
     
     // WRITE TO MEMORY SEGMENT

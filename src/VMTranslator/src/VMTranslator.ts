@@ -28,9 +28,7 @@ export class VMTranslator extends HackTask {
   }
   
   static processText(text: string): string {
-    // The absolute optimum would be to read in one line at a time.
-    // I just really don't feel like figuring that out, with readline etc.
-    // Instead, I'll save all the lines in an array, and keep mutating it in place.
+    this.runningLineCount = 0;
     
     const linesToTranslate = text.split('\n')
       // remove empty lines
@@ -137,8 +135,13 @@ export class VMTranslator extends HackTask {
     fs.writeFileSync(rawPath, rawCode);
     const newRawCount = this.getFileLineCount(rawPath);
   
-    if (oldRawCount)
-      console.log(`Previous linecount: ${ oldRawCount }. New linecount: ${ newRawCount }`);
+    if (oldRawCount) {
+      const lineDiff = newRawCount - oldRawCount;
+      if (lineDiff > 0) console.log(lineDiff, 'lines added');
+      if (lineDiff < 0) console.log(-1 * lineDiff, 'lines saved');
+      if (lineDiff === 0) console.log('identical line count');
+      // console.log(`Previous linecount: ${ oldRawCount }. New linecount: ${ newRawCount }`);
+    }
   }
   
   private static getFileLineCount(filePath: string): number {
