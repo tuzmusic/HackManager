@@ -2,8 +2,7 @@ import { SymbolTable } from './SymbolTable';
 import { AssemblyParser } from './AssemblyParser';
 import { HackTask } from '../../common/HackTask';
 
-// TODO: Base class for Assembler/Translator/etc
-export class Assembler extends HackTask /*implements ProcessorInterface*/ {
+export class Assembler extends HackTask {
   static inExtension = 'asm';
   static outExtension = 'hack';
   static taskName = 'Assembler';

@@ -41,10 +41,6 @@ export class ReturnCommand extends VMCommand {
     // on top-level function, there is nothing to return to
     if (CallStack.isEmpty()) return;
   
-    // TODO: this breaks SimpleFunction (3/6/21)
-    // const label = CallStack.generateReturnLabel();
-    // this.jumpUnconditionallyTo(label, `goto ${ label }`);
-  
     CallStack.popFunction();
   }
   
@@ -88,9 +84,6 @@ export class ReturnCommand extends VMCommand {
   }
   
   private goToReturn() {
-    // todo: this may or may not be needed? I'm honestly not sure if the
-    //  return address is just about moving around the assembly code, or
-    //  about actually changing values in the system (A, SP, etc)
     this.move.to.variableOrValue('RET', '>>> move to the return address, to restore control to caller');
     // this.goto(CallStack.generateReturnLabel(), '>>> move to the return address, to restore control to caller');
     this.addLine('A=M', 'prepare to jump to address stored in RET');

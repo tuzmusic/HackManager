@@ -38,10 +38,6 @@ export class HackTask {
     // console.log('Done');
   }
   
-  static writeRawFile(): void {
-    throw Error('writeRawFile not implemented');
-  }
-  
   static processFolder(pathString: string): void {
     const thePath = path.resolve(pathString);
     const files = fs.readdirSync(thePath).filter(n => n.endsWith(this.inExtension));
@@ -60,8 +56,6 @@ export class HackTask {
     this.outPath = path.join(thePath, path.basename(thePath) + '.' + this.outExtension);
     console.log(`${ this.taskName.toUpperCase() }: Creating`, this.outPath.split('/').pop());
     fs.writeFileSync(this.outPath, this.processed);
-  
-    // this.writeRawFile();
   }
   
   protected static processText(s: string): string {

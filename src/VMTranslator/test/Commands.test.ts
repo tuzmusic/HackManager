@@ -1,5 +1,4 @@
 import { LocationCommand } from '../src/Commands/PushPopCommands/LocationCommand';
-import { MemorySegment } from '../src/shared';
 import { ConstantCommand } from '../src/Commands/PushPopCommands/ConstantCommand';
 import { OperationCommand } from '../src/Commands/OperationCommand';
 import arrayContaining = jasmine.arrayContaining;
@@ -9,7 +8,7 @@ describe('All Commands', () => {
   describe('Location Commands', () => {
     describe('push', () => {
       test('push local 8', () => {
-        const lines = new LocationCommand('push', MemorySegment.Local, '8').getLines();
+        const lines = new LocationCommand('push', 'local', '8').getLines();
         
         expect(lines).toEqual(arrayContaining([
           '@LCL',
