@@ -110,7 +110,7 @@ export class OperationCommand extends VMCommand {
   /* prep X as M */
   private prepareX() {
     this.decrementStackPointer('"pop" X');
-    this.move.to.topOfStack('PREPARE X (prep X "into" M – but don\'t pop just yet!)');
+    this.move.to.topOfStack('PREPARE X (prep X "into" M)');
   }
   
   /* store Y in D */
@@ -118,7 +118,6 @@ export class OperationCommand extends VMCommand {
     // after the push commands that prepare for these commands,
     // the SP points to one beyond the stored operands.
     // so, "reset" the pointer to point to Y
-    this.decrementStackPointer('pop back to Y, since binary op starts at 1 past Y');
-    this.storeThe.topStackValue('PREPARE Y (pop Y into D)');
+    this.popStack.toTempStorage('PREPARE Y (pop Y into D)');
   }
 }

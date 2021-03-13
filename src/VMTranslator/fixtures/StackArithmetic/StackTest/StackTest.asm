@@ -1,4 +1,4 @@
-	// COMMAND #4: push constant 17
+	// COMMAND #1: push constant 17
 	@17         
 	D=A          // store the current address as a value
 	@SP          // >> push constant value (17) onto stack <<
@@ -7,20 +7,20 @@
 	@SP          // increment stack pointer
 	M=M+1       
 	
-	// COMMAND #5: push constant 17
+	// COMMAND #2: push constant 17
 	@17         
 	D=A          // store the current address as a value
 	@SP          // >> push constant value (17) onto stack <<
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	
-	// COMMAND #6: eq
-	@SP          // pop back to Y, since binary op starts at 1 past Y (SP decremented above)
-	A=M          // PREPARE Y (pop Y into D)
+	// COMMAND #3: eq
+	@SP          // PREPARE Y (pop Y into D) (SP decremented above)
+	A=M          // move to top of stack
 	D=M          // store the top stack value into D
 	@SP          // "pop" X
 	M=M-1       
-	A=M          // PREPARE X (prep X "into" M – but don't pop just yet!)
+	A=M          // PREPARE X (prep X "into" M)
 	D=M-D        // store X-Y in D for comparison
 	@IF_TRUE_0  
 	D;JEQ        // perform comparison: eq
@@ -38,7 +38,7 @@
 	@SP          // increment stack pointer
 	M=M+1       
 	
-	// COMMAND #7: push constant 17
+	// COMMAND #4: push constant 17
 	@17         
 	D=A          // store the current address as a value
 	@SP          // >> push constant value (17) onto stack <<
@@ -47,20 +47,20 @@
 	@SP          // increment stack pointer
 	M=M+1       
 	
-	// COMMAND #8: push constant 16
+	// COMMAND #5: push constant 16
 	@16         
 	D=A          // store the current address as a value
 	@SP          // >> push constant value (16) onto stack <<
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	
-	// COMMAND #9: eq
-	@SP          // pop back to Y, since binary op starts at 1 past Y (SP decremented above)
-	A=M          // PREPARE Y (pop Y into D)
+	// COMMAND #6: eq
+	@SP          // PREPARE Y (pop Y into D) (SP decremented above)
+	A=M          // move to top of stack
 	D=M          // store the top stack value into D
 	@SP          // "pop" X
 	M=M-1       
-	A=M          // PREPARE X (prep X "into" M – but don't pop just yet!)
+	A=M          // PREPARE X (prep X "into" M)
 	D=M-D        // store X-Y in D for comparison
 	@IF_TRUE_1  
 	D;JEQ        // perform comparison: eq
@@ -78,7 +78,7 @@
 	@SP          // increment stack pointer
 	M=M+1       
 	
-	// COMMAND #10: push constant 16
+	// COMMAND #7: push constant 16
 	@16         
 	D=A          // store the current address as a value
 	@SP          // >> push constant value (16) onto stack <<
@@ -87,20 +87,20 @@
 	@SP          // increment stack pointer
 	M=M+1       
 	
-	// COMMAND #11: push constant 17
+	// COMMAND #8: push constant 17
 	@17         
 	D=A          // store the current address as a value
 	@SP          // >> push constant value (17) onto stack <<
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	
-	// COMMAND #12: eq
-	@SP          // pop back to Y, since binary op starts at 1 past Y (SP decremented above)
-	A=M          // PREPARE Y (pop Y into D)
+	// COMMAND #9: eq
+	@SP          // PREPARE Y (pop Y into D) (SP decremented above)
+	A=M          // move to top of stack
 	D=M          // store the top stack value into D
 	@SP          // "pop" X
 	M=M-1       
-	A=M          // PREPARE X (prep X "into" M – but don't pop just yet!)
+	A=M          // PREPARE X (prep X "into" M)
 	D=M-D        // store X-Y in D for comparison
 	@IF_TRUE_2  
 	D;JEQ        // perform comparison: eq
@@ -118,7 +118,7 @@
 	@SP          // increment stack pointer
 	M=M+1       
 	
-	// COMMAND #13: push constant 892
+	// COMMAND #10: push constant 892
 	@892        
 	D=A          // store the current address as a value
 	@SP          // >> push constant value (892) onto stack <<
@@ -127,20 +127,20 @@
 	@SP          // increment stack pointer
 	M=M+1       
 	
-	// COMMAND #14: push constant 891
+	// COMMAND #11: push constant 891
 	@891        
 	D=A          // store the current address as a value
 	@SP          // >> push constant value (891) onto stack <<
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	
-	// COMMAND #15: lt
-	@SP          // pop back to Y, since binary op starts at 1 past Y (SP decremented above)
-	A=M          // PREPARE Y (pop Y into D)
+	// COMMAND #12: lt
+	@SP          // PREPARE Y (pop Y into D) (SP decremented above)
+	A=M          // move to top of stack
 	D=M          // store the top stack value into D
 	@SP          // "pop" X
 	M=M-1       
-	A=M          // PREPARE X (prep X "into" M – but don't pop just yet!)
+	A=M          // PREPARE X (prep X "into" M)
 	D=M-D        // store X-Y in D for comparison
 	@IF_TRUE_3  
 	D;JLT        // perform comparison: lt
@@ -158,7 +158,7 @@
 	@SP          // increment stack pointer
 	M=M+1       
 	
-	// COMMAND #16: push constant 891
+	// COMMAND #13: push constant 891
 	@891        
 	D=A          // store the current address as a value
 	@SP          // >> push constant value (891) onto stack <<
@@ -167,20 +167,20 @@
 	@SP          // increment stack pointer
 	M=M+1       
 	
-	// COMMAND #17: push constant 892
+	// COMMAND #14: push constant 892
 	@892        
 	D=A          // store the current address as a value
 	@SP          // >> push constant value (892) onto stack <<
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	
-	// COMMAND #18: lt
-	@SP          // pop back to Y, since binary op starts at 1 past Y (SP decremented above)
-	A=M          // PREPARE Y (pop Y into D)
+	// COMMAND #15: lt
+	@SP          // PREPARE Y (pop Y into D) (SP decremented above)
+	A=M          // move to top of stack
 	D=M          // store the top stack value into D
 	@SP          // "pop" X
 	M=M-1       
-	A=M          // PREPARE X (prep X "into" M – but don't pop just yet!)
+	A=M          // PREPARE X (prep X "into" M)
 	D=M-D        // store X-Y in D for comparison
 	@IF_TRUE_4  
 	D;JLT        // perform comparison: lt
@@ -198,7 +198,7 @@
 	@SP          // increment stack pointer
 	M=M+1       
 	
-	// COMMAND #19: push constant 891
+	// COMMAND #16: push constant 891
 	@891        
 	D=A          // store the current address as a value
 	@SP          // >> push constant value (891) onto stack <<
@@ -207,20 +207,20 @@
 	@SP          // increment stack pointer
 	M=M+1       
 	
-	// COMMAND #20: push constant 891
+	// COMMAND #17: push constant 891
 	@891        
 	D=A          // store the current address as a value
 	@SP          // >> push constant value (891) onto stack <<
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	
-	// COMMAND #21: lt
-	@SP          // pop back to Y, since binary op starts at 1 past Y (SP decremented above)
-	A=M          // PREPARE Y (pop Y into D)
+	// COMMAND #18: lt
+	@SP          // PREPARE Y (pop Y into D) (SP decremented above)
+	A=M          // move to top of stack
 	D=M          // store the top stack value into D
 	@SP          // "pop" X
 	M=M-1       
-	A=M          // PREPARE X (prep X "into" M – but don't pop just yet!)
+	A=M          // PREPARE X (prep X "into" M)
 	D=M-D        // store X-Y in D for comparison
 	@IF_TRUE_5  
 	D;JLT        // perform comparison: lt
@@ -238,7 +238,7 @@
 	@SP          // increment stack pointer
 	M=M+1       
 	
-	// COMMAND #22: push constant 32767
+	// COMMAND #19: push constant 32767
 	@32767      
 	D=A          // store the current address as a value
 	@SP          // >> push constant value (32767) onto stack <<
@@ -247,20 +247,20 @@
 	@SP          // increment stack pointer
 	M=M+1       
 	
-	// COMMAND #23: push constant 32766
+	// COMMAND #20: push constant 32766
 	@32766      
 	D=A          // store the current address as a value
 	@SP          // >> push constant value (32766) onto stack <<
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	
-	// COMMAND #24: gt
-	@SP          // pop back to Y, since binary op starts at 1 past Y (SP decremented above)
-	A=M          // PREPARE Y (pop Y into D)
+	// COMMAND #21: gt
+	@SP          // PREPARE Y (pop Y into D) (SP decremented above)
+	A=M          // move to top of stack
 	D=M          // store the top stack value into D
 	@SP          // "pop" X
 	M=M-1       
-	A=M          // PREPARE X (prep X "into" M – but don't pop just yet!)
+	A=M          // PREPARE X (prep X "into" M)
 	D=M-D        // store X-Y in D for comparison
 	@IF_TRUE_6  
 	D;JGT        // perform comparison: gt
@@ -278,7 +278,7 @@
 	@SP          // increment stack pointer
 	M=M+1       
 	
-	// COMMAND #25: push constant 32766
+	// COMMAND #22: push constant 32766
 	@32766      
 	D=A          // store the current address as a value
 	@SP          // >> push constant value (32766) onto stack <<
@@ -287,20 +287,20 @@
 	@SP          // increment stack pointer
 	M=M+1       
 	
-	// COMMAND #26: push constant 32767
+	// COMMAND #23: push constant 32767
 	@32767      
 	D=A          // store the current address as a value
 	@SP          // >> push constant value (32767) onto stack <<
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	
-	// COMMAND #27: gt
-	@SP          // pop back to Y, since binary op starts at 1 past Y (SP decremented above)
-	A=M          // PREPARE Y (pop Y into D)
+	// COMMAND #24: gt
+	@SP          // PREPARE Y (pop Y into D) (SP decremented above)
+	A=M          // move to top of stack
 	D=M          // store the top stack value into D
 	@SP          // "pop" X
 	M=M-1       
-	A=M          // PREPARE X (prep X "into" M – but don't pop just yet!)
+	A=M          // PREPARE X (prep X "into" M)
 	D=M-D        // store X-Y in D for comparison
 	@IF_TRUE_7  
 	D;JGT        // perform comparison: gt
@@ -318,7 +318,7 @@
 	@SP          // increment stack pointer
 	M=M+1       
 	
-	// COMMAND #28: push constant 32766
+	// COMMAND #25: push constant 32766
 	@32766      
 	D=A          // store the current address as a value
 	@SP          // >> push constant value (32766) onto stack <<
@@ -327,20 +327,20 @@
 	@SP          // increment stack pointer
 	M=M+1       
 	
-	// COMMAND #29: push constant 32766
+	// COMMAND #26: push constant 32766
 	@32766      
 	D=A          // store the current address as a value
 	@SP          // >> push constant value (32766) onto stack <<
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	
-	// COMMAND #30: gt
-	@SP          // pop back to Y, since binary op starts at 1 past Y (SP decremented above)
-	A=M          // PREPARE Y (pop Y into D)
+	// COMMAND #27: gt
+	@SP          // PREPARE Y (pop Y into D) (SP decremented above)
+	A=M          // move to top of stack
 	D=M          // store the top stack value into D
 	@SP          // "pop" X
 	M=M-1       
-	A=M          // PREPARE X (prep X "into" M – but don't pop just yet!)
+	A=M          // PREPARE X (prep X "into" M)
 	D=M-D        // store X-Y in D for comparison
 	@IF_TRUE_8  
 	D;JGT        // perform comparison: gt
@@ -358,7 +358,7 @@
 	@SP          // increment stack pointer
 	M=M+1       
 	
-	// COMMAND #31: push constant 57
+	// COMMAND #28: push constant 57
 	@57         
 	D=A          // store the current address as a value
 	@SP          // >> push constant value (57) onto stack <<
@@ -367,7 +367,7 @@
 	@SP          // increment stack pointer
 	M=M+1       
 	
-	// COMMAND #32: push constant 31
+	// COMMAND #29: push constant 31
 	@31         
 	D=A          // store the current address as a value
 	@SP          // >> push constant value (31) onto stack <<
@@ -376,75 +376,75 @@
 	@SP          // increment stack pointer
 	M=M+1       
 	
-	// COMMAND #33: push constant 53
+	// COMMAND #30: push constant 53
 	@53         
 	D=A          // store the current address as a value
 	@SP          // >> push constant value (53) onto stack <<
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	
-	// COMMAND #34: add
-	@SP          // pop back to Y, since binary op starts at 1 past Y (SP decremented above)
-	A=M          // PREPARE Y (pop Y into D)
+	// COMMAND #31: add
+	@SP          // PREPARE Y (pop Y into D) (SP decremented above)
+	A=M          // move to top of stack
 	D=M          // store the top stack value into D
 	@SP          // "pop" X
 	M=M-1       
-	A=M          // PREPARE X (prep X "into" M – but don't pop just yet!)
+	A=M          // PREPARE X (prep X "into" M)
 	M=M+D        // perform binary operation: add
 	@SP          // increment stack pointer
 	M=M+1       
 	
-	// COMMAND #35: push constant 112
+	// COMMAND #32: push constant 112
 	@112        
 	D=A          // store the current address as a value
 	@SP          // >> push constant value (112) onto stack <<
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	
-	// COMMAND #36: sub
-	@SP          // pop back to Y, since binary op starts at 1 past Y (SP decremented above)
-	A=M          // PREPARE Y (pop Y into D)
+	// COMMAND #33: sub
+	@SP          // PREPARE Y (pop Y into D) (SP decremented above)
+	A=M          // move to top of stack
 	D=M          // store the top stack value into D
 	@SP          // "pop" X
 	M=M-1       
-	A=M          // PREPARE X (prep X "into" M – but don't pop just yet!)
+	A=M          // PREPARE X (prep X "into" M)
 	M=M-D        // perform binary operation: sub
 	
-	// COMMAND #37: neg
+	// COMMAND #34: neg
 	@SP          // "pop" X (SP decremented above)
-	A=M          // PREPARE X (prep X "into" M – but don't pop just yet!)
+	A=M          // PREPARE X (prep X "into" M)
 	M=-M         // perform unary operation: neg
 	
-	// COMMAND #38: and
-	@SP          // pop back to Y, since binary op starts at 1 past Y (SP decremented above)
-	A=M          // PREPARE Y (pop Y into D)
+	// COMMAND #35: and
+	@SP          // PREPARE Y (pop Y into D) (SP decremented above)
+	A=M          // move to top of stack
 	D=M          // store the top stack value into D
 	@SP          // "pop" X
 	M=M-1       
-	A=M          // PREPARE X (prep X "into" M – but don't pop just yet!)
+	A=M          // PREPARE X (prep X "into" M)
 	M=D&M        // perform binary operation: and
 	@SP          // increment stack pointer
 	M=M+1       
 	
-	// COMMAND #39: push constant 82
+	// COMMAND #36: push constant 82
 	@82         
 	D=A          // store the current address as a value
 	@SP          // >> push constant value (82) onto stack <<
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	
-	// COMMAND #40: or
-	@SP          // pop back to Y, since binary op starts at 1 past Y (SP decremented above)
-	A=M          // PREPARE Y (pop Y into D)
+	// COMMAND #37: or
+	@SP          // PREPARE Y (pop Y into D) (SP decremented above)
+	A=M          // move to top of stack
 	D=M          // store the top stack value into D
 	@SP          // "pop" X
 	M=M-1       
-	A=M          // PREPARE X (prep X "into" M – but don't pop just yet!)
+	A=M          // PREPARE X (prep X "into" M)
 	M=M|D        // perform binary operation: or
 	
-	// COMMAND #41: not
+	// COMMAND #38: not
 	@SP          // "pop" X (SP decremented above)
-	A=M          // PREPARE X (prep X "into" M – but don't pop just yet!)
+	A=M          // PREPARE X (prep X "into" M)
 	M=!M         // perform unary operation: not
 	@SP          // increment stack pointer
 	M=M+1       

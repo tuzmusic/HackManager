@@ -9,8 +9,7 @@ export class VMBootstrapper extends VMCommand {
   
     // set the stack pointer
     this.storeThe.constantValue('256', 'set the start of the stack to addr 256');
-    this.addLine('@SP',);
-    this.writeThe.storedValue.toMemoryAtCurrentAddress();
+    this.writeThe.storedValue.toLocationProvided('SP');
   
     this.addLine('');
     this.addLine('// COMMAND #0B: CALL Sys.init');

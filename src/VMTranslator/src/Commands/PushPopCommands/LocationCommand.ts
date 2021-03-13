@@ -2,14 +2,8 @@ import { CmdType, MemorySegment, memorySegments } from '../../shared';
 import { PushPopCommand } from './PushPopCommand';
 
 export class LocationCommand extends PushPopCommand {
-  
   constructor(type: CmdType, private segment: MemorySegment, protected value: string) {
     super(type, value);
-  
-    // special case
-    // if (segment === 'temp')
-    //   this.value = (parseInt(value) + 5).toString();
-  
     this[type]();
   }
   
@@ -26,17 +20,10 @@ export class LocationCommand extends PushPopCommand {
   pop = (): void => {
     // get destination address, write it to a temp variable
     this.storeSegmentOffsetAddress();
-    this.move.to.variableOrValue('OFFSET');
-    this.writeThe.storedValue.toMemoryAtCurrentAddress();
+    this.writeThe.storedValue.toLocationProvided('OFFSET');
   
     // GET THE POPPED VALUE
-    this.decrementStackPointer('>> move stack pointer back to the value to be popped <<');
-    this.storeThe.topStackValue('>> store the top stack value in D <<');
-  
-    // WRITE TO MEMORY SEGMENT
-    this.move.to.variableOrValue('OFFSET');
-    this.move.using.currentMemoryValue.asAddress('move to offset');
-    this.writeThe.storedValue.toMemoryAtCurrentAddress();
+    this.popStack.toAddressStoredAsVariable('OFFSET');
   };
   
   private storeSegmentOffsetAddress = () => {

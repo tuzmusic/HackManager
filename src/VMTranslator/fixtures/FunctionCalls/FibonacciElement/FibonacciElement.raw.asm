@@ -1,6 +1,6 @@
 @256         // ** 0A: BOOTSTRAP THE SYSTEM ** (set the start of the stack to addr 256)
 D=A          // store the current address as a value
-@SP
+@SP          // write value of D to "SP"
 M=D          // write value of D to current location -                                                                                                                                 
 @Sys.init$ret.6 // ** 0B: CALL Sys.init **
 D=A          // D=retAddr
@@ -11,28 +11,28 @@ M=D          // write value of D to current location
 M=M+1
 @LCL         // >>> saving "LCL"
 D=M          // store current memory value in D
-@SP          // > push temp value to top of stack
+@SP          // > push stored value to top of stack
 A=M          // move to top of stack
 M=D          // write value of D to current location
 @SP          // increment stack pointer
 M=M+1
 @ARG         // >>> saving "ARG"
 D=M          // store current memory value in D
-@SP          // > push temp value to top of stack
+@SP          // > push stored value to top of stack
 A=M          // move to top of stack
 M=D          // write value of D to current location
 @SP          // increment stack pointer
 M=M+1
 @THIS        // >>> saving "THIS"
 D=M          // store current memory value in D
-@SP          // > push temp value to top of stack
+@SP          // > push stored value to top of stack
 A=M          // move to top of stack
 M=D          // write value of D to current location
 @SP          // increment stack pointer
 M=M+1
 @THAT        // >>> saving "THAT"
 D=M          // store current memory value in D
-@SP          // > push temp value to top of stack
+@SP          // > push stored value to top of stack
 A=M          // move to top of stack
 M=D          // write value of D to current location
 @SP          // increment stack pointer
@@ -47,11 +47,11 @@ D=D-A        // subtract (frame + num of args) from the stored SP
 M=D          // save SP-n-5 to ARG
 @Sys.init    // jump to the function
 0;JMP -                                                                                                                                 
-@SP          // ** 156: function Main.fibonacci 0 **
+@SP          // ** 1: function Main.fibonacci 0 **
 D=M          // store SP value
 @LCL
 M=D          // store stack address in LCL (no local vars so we're done) -                                                                                                                                 
-@ARG         // ** 157: push argument 0 ** (move to argument)
+@ARG         // ** 2: push argument 0 ** (move to argument)
 D=M          // store the "argument" base address
 @0           // move to address representing offset
 A=D+A        // new addr = base addr + offset
@@ -61,17 +61,17 @@ A=M          // move to top of stack
 M=D          // write value of D to current location
 @SP          // increment stack pointer
 M=M+1 -                                                                                                                                 
-@2           // ** 158: push constant 2 **
+@2           // ** 3: push constant 2 **
 D=A          // store the current address as a value
 @SP          // >> push constant value (2) onto stack <<
 A=M          // move to top of stack
 M=D          // write value of D to current location -                                                                                                                                 
-@SP          // ** 159: lt ** (pop back to Y, since binary op starts at 1 past Y (SP decremented above))
-A=M          // PREPARE Y (pop Y into D)
+@SP          // ** 4: lt ** (PREPARE Y (pop Y into D) (SP decremented above))
+A=M          // move to top of stack
 D=M          // store the top stack value into D
 @SP          // "pop" X
 M=M-1
-A=M          // PREPARE X (prep X "into" M – but don't pop just yet!)
+A=M          // PREPARE X (prep X "into" M)
 D=M-D        // store X-Y in D for comparison
 @IF_TRUE_9
 D;JLT        // perform comparison: lt
@@ -83,14 +83,14 @@ M=0
 @SP
 A=M          // move to top of stack
 M=-1 -                                                                                                                                 
-@SP          // ** 160: if-goto IF_TRUE ** (decrement stack pointer (SP decremented above))
+@SP          // ** 5: if-goto IF_TRUE ** (save top stack value in D (SP decremented above))
 A=M          // move to top of stack
 D=M          // store the top stack value into D
 @IF_TRUE.VM
 D;JNE -                                                                                                                                 
-@IF_FALSE.VM // ** 161: goto IF_FALSE **
+@IF_FALSE.VM // ** 6: goto IF_FALSE **
 0;JMP -                                                                                                                                  -                                                                                                                                 
-@ARG         // ** 163: push argument 0) ** (move to argument)
+@ARG         // ** 8: push argument 0) ** (move to argument)
 D=M          // store the "argument" base address
 @0           // move to address representing offset
 A=D+A        // new addr = base addr + offset
@@ -100,22 +100,22 @@ A=M          // move to top of stack
 M=D          // write value of D to current location
 @SP          // increment stack pointer
 M=M+1 -                                                                                                                                 
-@LCL         // ** 164: return ** (>>> store LCL as FRAME)
-D=M          // store value of LCL
-@FRAME       // access FRAME variable (VME uses @R13)
-M=D          // save FRAME=LCL
+@LCL         // ** 9: return ** (>>> store LCL as FRAME)
+D=M          // store current memory value
+@FRAME       // go to "FRAME"
+M=D          // save the stored value in "FRAME"
 @5           // >>> save RET
-A=D-A        // move to location of retAddr
-D=M          // store the value of retAddr
-@RET         // create/access RET variable (VME uses @R14)
-M=D          // write the value of retAddr to RET
-@SP          // >>> store (pop) top stack value to ARG[0]
+A=D-A        // move to location of retAddr (RET=FRAME-5)
+D=M          // store current memory value
+@RET         // go to "RET"
+M=D          // save the stored value in "RET"
+@SP          // >> pop stack to *ARG <<
 M=M-1
 A=M          // move to top of stack
 D=M          // store the top stack value into D
 @ARG
-A=M          // move to ARG
-M=D          // store return value in ARG[0]
+A=M          // move to "ARG"
+M=D          // write value of D to current location
 D=A          // >>> restore caller's SP. (in prev step, A=ARG)
 @SP
 M=D+1        // point SP to ARG+1 (one past returned value)
@@ -148,7 +148,7 @@ M=D          // restore saved "LCL"
 @RET         // >>> move to the return address, to restore control to caller
 A=M          // prepare to jump to address stored in RET
 0;JMP -                                                                                                                                  -                                                                                                                                 
-@ARG         // ** 166: push argument 0) ** (move to argument)
+@ARG         // ** 11: push argument 0) ** (move to argument)
 D=M          // store the "argument" base address
 @0           // move to address representing offset
 A=D+A        // new addr = base addr + offset
@@ -158,21 +158,21 @@ A=M          // move to top of stack
 M=D          // write value of D to current location
 @SP          // increment stack pointer
 M=M+1 -                                                                                                                                 
-@2           // ** 167: push constant 2 **
+@2           // ** 12: push constant 2 **
 D=A          // store the current address as a value
 @SP          // >> push constant value (2) onto stack <<
 A=M          // move to top of stack
 M=D          // write value of D to current location -                                                                                                                                 
-@SP          // ** 168: sub ** (pop back to Y, since binary op starts at 1 past Y (SP decremented above))
-A=M          // PREPARE Y (pop Y into D)
+@SP          // ** 13: sub ** (PREPARE Y (pop Y into D) (SP decremented above))
+A=M          // move to top of stack
 D=M          // store the top stack value into D
 @SP          // "pop" X
 M=M-1
-A=M          // PREPARE X (prep X "into" M – but don't pop just yet!)
+A=M          // PREPARE X (prep X "into" M)
 M=M-D        // perform binary operation: sub
 @SP          // increment stack pointer
 M=M+1 -                                                                                                                                 
-@Main.fibonacci$ret.3 // ** 169: call Main.fibonacci 1 **
+@Main.fibonacci$ret.3 // ** 14: call Main.fibonacci 1 **
 D=A          // D=retAddr
 @SP          // >>> push retAddr onto stack
 A=M          // move to top of stack
@@ -181,28 +181,28 @@ M=D          // write value of D to current location
 M=M+1
 @LCL         // >>> saving "LCL"
 D=M          // store current memory value in D
-@SP          // > push temp value to top of stack
+@SP          // > push stored value to top of stack
 A=M          // move to top of stack
 M=D          // write value of D to current location
 @SP          // increment stack pointer
 M=M+1
 @ARG         // >>> saving "ARG"
 D=M          // store current memory value in D
-@SP          // > push temp value to top of stack
+@SP          // > push stored value to top of stack
 A=M          // move to top of stack
 M=D          // write value of D to current location
 @SP          // increment stack pointer
 M=M+1
 @THIS        // >>> saving "THIS"
 D=M          // store current memory value in D
-@SP          // > push temp value to top of stack
+@SP          // > push stored value to top of stack
 A=M          // move to top of stack
 M=D          // write value of D to current location
 @SP          // increment stack pointer
 M=M+1
 @THAT        // >>> saving "THAT"
 D=M          // store current memory value in D
-@SP          // > push temp value to top of stack
+@SP          // > push stored value to top of stack
 A=M          // move to top of stack
 M=D          // write value of D to current location
 @SP          // increment stack pointer
@@ -217,7 +217,7 @@ D=D-A        // subtract (frame + num of args) from the stored SP
 M=D          // save SP-n-5 to ARG
 @Main.fibonacci // jump to the function
 0;JMP -                                                                                                                                 
-@ARG         // ** 170: push argument 0 ** (move to argument)
+@ARG         // ** 15: push argument 0 ** (move to argument)
 D=M          // store the "argument" base address
 @0           // move to address representing offset
 A=D+A        // new addr = base addr + offset
@@ -227,21 +227,21 @@ A=M          // move to top of stack
 M=D          // write value of D to current location
 @SP          // increment stack pointer
 M=M+1 -                                                                                                                                 
-@1           // ** 171: push constant 1 **
+@1           // ** 16: push constant 1 **
 D=A          // store the current address as a value
 @SP          // >> push constant value (1) onto stack <<
 A=M          // move to top of stack
 M=D          // write value of D to current location -                                                                                                                                 
-@SP          // ** 172: sub ** (pop back to Y, since binary op starts at 1 past Y (SP decremented above))
-A=M          // PREPARE Y (pop Y into D)
+@SP          // ** 17: sub ** (PREPARE Y (pop Y into D) (SP decremented above))
+A=M          // move to top of stack
 D=M          // store the top stack value into D
 @SP          // "pop" X
 M=M-1
-A=M          // PREPARE X (prep X "into" M – but don't pop just yet!)
+A=M          // PREPARE X (prep X "into" M)
 M=M-D        // perform binary operation: sub
 @SP          // increment stack pointer
 M=M+1 -                                                                                                                                 
-@Main.fibonacci$ret.4 // ** 173: call Main.fibonacci 1 **
+@Main.fibonacci$ret.4 // ** 18: call Main.fibonacci 1 **
 D=A          // D=retAddr
 @SP          // >>> push retAddr onto stack
 A=M          // move to top of stack
@@ -250,28 +250,28 @@ M=D          // write value of D to current location
 M=M+1
 @LCL         // >>> saving "LCL"
 D=M          // store current memory value in D
-@SP          // > push temp value to top of stack
+@SP          // > push stored value to top of stack
 A=M          // move to top of stack
 M=D          // write value of D to current location
 @SP          // increment stack pointer
 M=M+1
 @ARG         // >>> saving "ARG"
 D=M          // store current memory value in D
-@SP          // > push temp value to top of stack
+@SP          // > push stored value to top of stack
 A=M          // move to top of stack
 M=D          // write value of D to current location
 @SP          // increment stack pointer
 M=M+1
 @THIS        // >>> saving "THIS"
 D=M          // store current memory value in D
-@SP          // > push temp value to top of stack
+@SP          // > push stored value to top of stack
 A=M          // move to top of stack
 M=D          // write value of D to current location
 @SP          // increment stack pointer
 M=M+1
 @THAT        // >>> saving "THAT"
 D=M          // store current memory value in D
-@SP          // > push temp value to top of stack
+@SP          // > push stored value to top of stack
 A=M          // move to top of stack
 M=D          // write value of D to current location
 @SP          // increment stack pointer
@@ -286,32 +286,32 @@ D=D-A        // subtract (frame + num of args) from the stored SP
 M=D          // save SP-n-5 to ARG
 @Main.fibonacci // jump to the function
 0;JMP -                                                                                                                                 
-@SP          // ** 174: add ** (pop back to Y, since binary op starts at 1 past Y)
+@SP          // ** 19: add ** (PREPARE Y (pop Y into D))
 M=M-1
-A=M          // PREPARE Y (pop Y into D)
+A=M          // move to top of stack
 D=M          // store the top stack value into D
 @SP          // "pop" X
 M=M-1
-A=M          // PREPARE X (prep X "into" M – but don't pop just yet!)
+A=M          // PREPARE X (prep X "into" M)
 M=M+D        // perform binary operation: add
 @SP          // increment stack pointer
 M=M+1 -                                                                                                                                 
-@LCL         // ** 175: return ** (>>> store LCL as FRAME)
-D=M          // store value of LCL
-@FRAME       // access FRAME variable (VME uses @R13)
-M=D          // save FRAME=LCL
+@LCL         // ** 20: return ** (>>> store LCL as FRAME)
+D=M          // store current memory value
+@FRAME       // go to "FRAME"
+M=D          // save the stored value in "FRAME"
 @5           // >>> save RET
-A=D-A        // move to location of retAddr
-D=M          // store the value of retAddr
-@RET         // create/access RET variable (VME uses @R14)
-M=D          // write the value of retAddr to RET
-@SP          // >>> store (pop) top stack value to ARG[0]
+A=D-A        // move to location of retAddr (RET=FRAME-5)
+D=M          // store current memory value
+@RET         // go to "RET"
+M=D          // save the stored value in "RET"
+@SP          // >> pop stack to *ARG <<
 M=M-1
 A=M          // move to top of stack
 D=M          // store the top stack value into D
 @ARG
-A=M          // move to ARG
-M=D          // store return value in ARG[0]
+A=M          // move to "ARG"
+M=D          // write value of D to current location
 D=A          // >>> restore caller's SP. (in prev step, A=ARG)
 @SP
 M=D+1        // point SP to ARG+1 (one past returned value)
@@ -344,18 +344,18 @@ M=D          // restore saved "LCL"
 @RET         // >>> move to the return address, to restore control to caller
 A=M          // prepare to jump to address stored in RET
 0;JMP -                                                                                                                                 
-@SP          // ** 176: function Sys.init 0 **
+@SP          // ** 1: function Sys.init 0 **
 D=M          // store SP value
 @LCL
 M=D          // store stack address in LCL (no local vars so we're done) -                                                                                                                                 
-@4           // ** 177: push constant 4 **
+@4           // ** 2: push constant 4 **
 D=A          // store the current address as a value
 @SP          // >> push constant value (4) onto stack <<
 A=M          // move to top of stack
 M=D          // write value of D to current location
 @SP          // increment stack pointer
 M=M+1 -                                                                                                                                 
-@Main.fibonacci$ret.5 // ** 178: call Main.fibonacci 1 **
+@Main.fibonacci$ret.5 // ** 3: call Main.fibonacci 1 **
 D=A          // D=retAddr
 @SP          // >>> push retAddr onto stack
 A=M          // move to top of stack
@@ -364,28 +364,28 @@ M=D          // write value of D to current location
 M=M+1
 @LCL         // >>> saving "LCL"
 D=M          // store current memory value in D
-@SP          // > push temp value to top of stack
+@SP          // > push stored value to top of stack
 A=M          // move to top of stack
 M=D          // write value of D to current location
 @SP          // increment stack pointer
 M=M+1
 @ARG         // >>> saving "ARG"
 D=M          // store current memory value in D
-@SP          // > push temp value to top of stack
+@SP          // > push stored value to top of stack
 A=M          // move to top of stack
 M=D          // write value of D to current location
 @SP          // increment stack pointer
 M=M+1
 @THIS        // >>> saving "THIS"
 D=M          // store current memory value in D
-@SP          // > push temp value to top of stack
+@SP          // > push stored value to top of stack
 A=M          // move to top of stack
 M=D          // write value of D to current location
 @SP          // increment stack pointer
 M=M+1
 @THAT        // >>> saving "THAT"
 D=M          // store current memory value in D
-@SP          // > push temp value to top of stack
+@SP          // > push stored value to top of stack
 A=M          // move to top of stack
 M=D          // write value of D to current location
 @SP          // increment stack pointer
@@ -400,4 +400,4 @@ D=D-A        // subtract (frame + num of args) from the stored SP
 M=D          // save SP-n-5 to ARG
 @Main.fibonacci // jump to the function
 0;JMP -                                                                                                                                  -                                                                                                                                 
-@WHILE.VM    // ** 180: goto WHILE) **
+@WHILE.VM    // ** 5: goto WHILE) **

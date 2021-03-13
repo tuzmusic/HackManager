@@ -30,15 +30,15 @@ D=M          // store current memory value in D
 @SP          // >>> push memory value to top of stack
 A=M          // move to top of stack
 M=D          // write value of D to current location -                                                                                                                                 
-@SP          // ** 4: add ** (pop back to Y, since binary op starts at 1 past Y (SP decremented above))
-A=M          // PREPARE Y (pop Y into D)
+@SP          // ** 4: add ** (PREPARE Y (pop Y into D) (SP decremented above))
+A=M          // move to top of stack
 D=M          // store the top stack value into D
 @SP          // "pop" X
 M=M-1
-A=M          // PREPARE X (prep X "into" M – but don't pop just yet!)
+A=M          // PREPARE X (prep X "into" M)
 M=M+D        // perform binary operation: add -                                                                                                                                 
 @SP          // ** 5: not ** ("pop" X (SP decremented above))
-A=M          // PREPARE X (prep X "into" M – but don't pop just yet!)
+A=M          // PREPARE X (prep X "into" M)
 M=!M         // perform unary operation: not
 @SP          // increment stack pointer
 M=M+1 -                                                                                                                                 
@@ -50,12 +50,12 @@ D=M          // store current memory value in D
 @SP          // >>> push memory value to top of stack
 A=M          // move to top of stack
 M=D          // write value of D to current location -                                                                                                                                 
-@SP          // ** 7: add ** (pop back to Y, since binary op starts at 1 past Y (SP decremented above))
-A=M          // PREPARE Y (pop Y into D)
+@SP          // ** 7: add ** (PREPARE Y (pop Y into D) (SP decremented above))
+A=M          // move to top of stack
 D=M          // store the top stack value into D
 @SP          // "pop" X
 M=M-1
-A=M          // PREPARE X (prep X "into" M – but don't pop just yet!)
+A=M          // PREPARE X (prep X "into" M)
 M=M+D        // perform binary operation: add
 @SP          // increment stack pointer
 M=M+1 -                                                                                                                                 
@@ -67,31 +67,31 @@ D=M          // store current memory value in D
 @SP          // >>> push memory value to top of stack
 A=M          // move to top of stack
 M=D          // write value of D to current location -                                                                                                                                 
-@SP          // ** 9: sub ** (pop back to Y, since binary op starts at 1 past Y (SP decremented above))
-A=M          // PREPARE Y (pop Y into D)
+@SP          // ** 9: sub ** (PREPARE Y (pop Y into D) (SP decremented above))
+A=M          // move to top of stack
 D=M          // store the top stack value into D
 @SP          // "pop" X
 M=M-1
-A=M          // PREPARE X (prep X "into" M – but don't pop just yet!)
+A=M          // PREPARE X (prep X "into" M)
 M=M-D        // perform binary operation: sub
 @SP          // increment stack pointer
 M=M+1 -                                                                                                                                 
 @LCL         // ** 10: return ** (>>> store LCL as FRAME)
-D=M          // store value of LCL
-@FRAME       // access FRAME variable (VME uses @R13)
-M=D          // save FRAME=LCL
+D=M          // store current memory value
+@FRAME       // go to "FRAME"
+M=D          // save the stored value in "FRAME"
 @5           // >>> save RET
-A=D-A        // move to location of retAddr
-D=M          // store the value of retAddr
-@RET         // create/access RET variable (VME uses @R14)
-M=D          // write the value of retAddr to RET
-@SP          // >>> store (pop) top stack value to ARG[0]
+A=D-A        // move to location of retAddr (RET=FRAME-5)
+D=M          // store current memory value
+@RET         // go to "RET"
+M=D          // save the stored value in "RET"
+@SP          // >> pop stack to *ARG <<
 M=M-1
 A=M          // move to top of stack
 D=M          // store the top stack value into D
 @ARG
-A=M          // move to ARG
-M=D          // store return value in ARG[0]
+A=M          // move to "ARG"
+M=D          // write value of D to current location
 D=A          // >>> restore caller's SP. (in prev step, A=ARG)
 @SP
 M=D+1        // point SP to ARG+1 (one past returned value)

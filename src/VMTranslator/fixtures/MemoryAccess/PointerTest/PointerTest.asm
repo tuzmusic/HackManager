@@ -6,7 +6,7 @@
 	M=D          // write value of D to current location
 	
 	// COMMAND #2: pop pointer 0
-	@SP          // decrement stack pointer (SP decremented above)
+	@SP          // >> pop stack to THIS << (SP decremented above)
 	A=M          // move to top of stack
 	D=M          // store the top stack value into D
 	@THIS       
@@ -20,7 +20,7 @@
 	M=D          // write value of D to current location
 	
 	// COMMAND #4: pop pointer 1
-	@SP          // decrement stack pointer (SP decremented above)
+	@SP          // >> pop stack to THAT << (SP decremented above)
 	A=M          // move to top of stack
 	D=M          // store the top stack value into D
 	@THAT       
@@ -40,20 +40,15 @@
 	D=M          // store the "this" base address
 	@2           // move to address representing offset
 	D=D+A        // D = base addr + offset
-	@SP          // >> write dest addr to top of stack (don't increment) <<
-	A=M          // move to top of stack
+	@OFFSET      // write value of D to "OFFSET"
 	M=D          // write value of D to current location
-	@SP          // >> move stack pointer back to the value to be popped <<
+	@SP          // >> pop stack to *OFFSET <<
 	M=M-1       
-	A=M          // >> store our value in D <<
+	A=M          // move to top of stack
 	D=M          // store the top stack value into D
-	@SP          // return to where the dest addr is written
-	M=M+1       
-	A=M          // move to where dest address is stored
-	A=M          // move to actual dest address
-	M=D          // write our value to the dest address
-	@SP          // SP-- to "pop" the stack
-	M=M-1       
+	@OFFSET     
+	A=M          // move to "OFFSET"
+	M=D          // write value of D to current location
 	
 	// COMMAND #7: push constant 46
 	@46         
@@ -69,25 +64,20 @@
 	D=M          // store the "that" base address
 	@6           // move to address representing offset
 	D=D+A        // D = base addr + offset
-	@SP          // >> write dest addr to top of stack (don't increment) <<
-	A=M          // move to top of stack
+	@OFFSET      // write value of D to "OFFSET"
 	M=D          // write value of D to current location
-	@SP          // >> move stack pointer back to the value to be popped <<
+	@SP          // >> pop stack to *OFFSET <<
 	M=M-1       
-	A=M          // >> store our value in D <<
+	A=M          // move to top of stack
 	D=M          // store the top stack value into D
-	@SP          // return to where the dest addr is written
-	M=M+1       
-	A=M          // move to where dest address is stored
-	A=M          // move to actual dest address
-	M=D          // write our value to the dest address
-	@SP          // SP-- to "pop" the stack
-	M=M-1       
+	@OFFSET     
+	A=M          // move to "OFFSET"
+	M=D          // write value of D to current location
 	
 	// COMMAND #9: push pointer 0
 	@THIS       
 	D=M          // store current memory value in D
-	@SP          // > push temp value to top of stack
+	@SP          // >>> push memory value to top of stack
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	@SP          // increment stack pointer
@@ -96,17 +86,17 @@
 	// COMMAND #10: push pointer 1
 	@THAT       
 	D=M          // store current memory value in D
-	@SP          // > push temp value to top of stack
+	@SP          // >>> push memory value to top of stack
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	
 	// COMMAND #11: add
-	@SP          // pop back to Y, since binary op starts at 1 past Y (SP decremented above)
-	A=M          // PREPARE Y (pop Y into D)
+	@SP          // PREPARE Y (pop Y into D) (SP decremented above)
+	A=M          // move to top of stack
 	D=M          // store the top stack value into D
 	@SP          // "pop" X
 	M=M-1       
-	A=M          // PREPARE X (prep X "into" M – but don't pop just yet!)
+	A=M          // PREPARE X (prep X "into" M)
 	M=M+D        // perform binary operation: add
 	@SP          // increment stack pointer
 	M=M+1       
@@ -122,12 +112,12 @@
 	M=D          // write value of D to current location
 	
 	// COMMAND #13: sub
-	@SP          // pop back to Y, since binary op starts at 1 past Y (SP decremented above)
-	A=M          // PREPARE Y (pop Y into D)
+	@SP          // PREPARE Y (pop Y into D) (SP decremented above)
+	A=M          // move to top of stack
 	D=M          // store the top stack value into D
 	@SP          // "pop" X
 	M=M-1       
-	A=M          // PREPARE X (prep X "into" M – but don't pop just yet!)
+	A=M          // PREPARE X (prep X "into" M)
 	M=M-D        // perform binary operation: sub
 	@SP          // increment stack pointer
 	M=M+1       
@@ -143,12 +133,12 @@
 	M=D          // write value of D to current location
 	
 	// COMMAND #15: add
-	@SP          // pop back to Y, since binary op starts at 1 past Y (SP decremented above)
-	A=M          // PREPARE Y (pop Y into D)
+	@SP          // PREPARE Y (pop Y into D) (SP decremented above)
+	A=M          // move to top of stack
 	D=M          // store the top stack value into D
 	@SP          // "pop" X
 	M=M-1       
-	A=M          // PREPARE X (prep X "into" M – but don't pop just yet!)
+	A=M          // PREPARE X (prep X "into" M)
 	M=M+D        // perform binary operation: add
 	@SP          // increment stack pointer
 	M=M+1       

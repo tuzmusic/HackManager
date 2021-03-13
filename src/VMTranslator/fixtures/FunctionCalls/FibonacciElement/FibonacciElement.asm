@@ -1,7 +1,7 @@
 	// COMMAND #0A: BOOTSTRAP THE SYSTEM
 	@256         // set the start of the stack to addr 256
 	D=A          // store the current address as a value
-	@SP         
+	@SP          // write value of D to "SP"
 	M=D          // write value of D to current location
 	            
 	// COMMAND #0B: CALL Sys.init
@@ -14,7 +14,7 @@
 	M=M+1       
 	@LCL         // >>> saving "LCL"
 	D=M          // store current memory value in D
-	@SP          // > push temp value to top of stack
+	@SP          // > push stored value to top of stack
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	@SP          // increment stack pointer
@@ -22,7 +22,7 @@
 	            
 	@ARG         // >>> saving "ARG"
 	D=M          // store current memory value in D
-	@SP          // > push temp value to top of stack
+	@SP          // > push stored value to top of stack
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	@SP          // increment stack pointer
@@ -30,7 +30,7 @@
 	            
 	@THIS        // >>> saving "THIS"
 	D=M          // store current memory value in D
-	@SP          // > push temp value to top of stack
+	@SP          // > push stored value to top of stack
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	@SP          // increment stack pointer
@@ -38,7 +38,7 @@
 	            
 	@THAT        // >>> saving "THAT"
 	D=M          // store current memory value in D
-	@SP          // > push temp value to top of stack
+	@SP          // > push stored value to top of stack
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	@SP          // increment stack pointer
@@ -62,13 +62,13 @@
 
 // *** FILE: Main.vm ***
 
-(Main.fibonacci)	// COMMAND #156: function Main.fibonacci 0
+(Main.fibonacci)	// COMMAND #1: function Main.fibonacci 0
 	@SP         
 	D=M          // store SP value
 	@LCL        
 	M=D          // store stack address in LCL (no local vars so we're done)
 	
-	// COMMAND #157: push argument 0
+	// COMMAND #2: push argument 0
 	@ARG         // move to argument
 	D=M          // store the "argument" base address
 	@0           // move to address representing offset
@@ -80,20 +80,20 @@
 	@SP          // increment stack pointer
 	M=M+1       
 	
-	// COMMAND #158: push constant 2
+	// COMMAND #3: push constant 2
 	@2          
 	D=A          // store the current address as a value
 	@SP          // >> push constant value (2) onto stack <<
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	
-	// COMMAND #159: lt
-	@SP          // pop back to Y, since binary op starts at 1 past Y (SP decremented above)
-	A=M          // PREPARE Y (pop Y into D)
+	// COMMAND #4: lt
+	@SP          // PREPARE Y (pop Y into D) (SP decremented above)
+	A=M          // move to top of stack
 	D=M          // store the top stack value into D
 	@SP          // "pop" X
 	M=M-1       
-	A=M          // PREPARE X (prep X "into" M – but don't pop just yet!)
+	A=M          // PREPARE X (prep X "into" M)
 	D=M-D        // store X-Y in D for comparison
 	@IF_TRUE_9  
 	D;JLT        // perform comparison: lt
@@ -109,20 +109,20 @@
 	M=-1        
 (END_IF_9)  
 	
-	// COMMAND #160: if-goto IF_TRUE
-	@SP          // decrement stack pointer (SP decremented above)
+	// COMMAND #5: if-goto IF_TRUE
+	@SP          // save top stack value in D (SP decremented above)
 	A=M          // move to top of stack
 	D=M          // store the top stack value into D
 	@IF_TRUE.VM 
 	D;JNE       
 	
-	// COMMAND #161: goto IF_FALSE
+	// COMMAND #6: goto IF_FALSE
 	@IF_FALSE.VM
 	0;JMP       
 	
-(IF_TRUE.VM)	// COMMAND #162: label IF_TRUE
+(IF_TRUE.VM)	// COMMAND #7: label IF_TRUE
 	
-	// COMMAND #163: push argument 0
+	// COMMAND #8: push argument 0
 	@ARG         // move to argument
 	D=M          // store the "argument" base address
 	@0           // move to address representing offset
@@ -134,24 +134,24 @@
 	@SP          // increment stack pointer
 	M=M+1       
 	
-	// COMMAND #164: return
+	// COMMAND #9: return
 	@LCL         // >>> store LCL as FRAME
-	D=M          // store value of LCL
-	@FRAME       // access FRAME variable (VME uses @R13)
-	M=D          // save FRAME=LCL
+	D=M          // store current memory value
+	@FRAME       // go to "FRAME"
+	M=D          // save the stored value in "FRAME"
 	@5           // >>> save RET
-	A=D-A        // move to location of retAddr
-	D=M          // store the value of retAddr
-	@RET         // create/access RET variable (VME uses @R14)
-	M=D          // write the value of retAddr to RET
+	A=D-A        // move to location of retAddr (RET=FRAME-5)
+	D=M          // store current memory value
+	@RET         // go to "RET"
+	M=D          // save the stored value in "RET"
 	            
-	@SP          // >>> store (pop) top stack value to ARG[0]
+	@SP          // >> pop stack to *ARG <<
 	M=M-1       
 	A=M          // move to top of stack
 	D=M          // store the top stack value into D
 	@ARG        
-	A=M          // move to ARG
-	M=D          // store return value in ARG[0]
+	A=M          // move to "ARG"
+	M=D          // write value of D to current location
 	            
 	D=A          // >>> restore caller's SP. (in prev step, A=ARG)
 	@SP         
@@ -191,9 +191,9 @@
 	A=M          // prepare to jump to address stored in RET
 	0;JMP       
 	
-(IF_FALSE.VM)	// COMMAND #165: label IF_FALSE
+(IF_FALSE.VM)	// COMMAND #10: label IF_FALSE
 	
-	// COMMAND #166: push argument 0
+	// COMMAND #11: push argument 0
 	@ARG         // move to argument
 	D=M          // store the "argument" base address
 	@0           // move to address representing offset
@@ -205,25 +205,25 @@
 	@SP          // increment stack pointer
 	M=M+1       
 	
-	// COMMAND #167: push constant 2
+	// COMMAND #12: push constant 2
 	@2          
 	D=A          // store the current address as a value
 	@SP          // >> push constant value (2) onto stack <<
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	
-	// COMMAND #168: sub
-	@SP          // pop back to Y, since binary op starts at 1 past Y (SP decremented above)
-	A=M          // PREPARE Y (pop Y into D)
+	// COMMAND #13: sub
+	@SP          // PREPARE Y (pop Y into D) (SP decremented above)
+	A=M          // move to top of stack
 	D=M          // store the top stack value into D
 	@SP          // "pop" X
 	M=M-1       
-	A=M          // PREPARE X (prep X "into" M – but don't pop just yet!)
+	A=M          // PREPARE X (prep X "into" M)
 	M=M-D        // perform binary operation: sub
 	@SP          // increment stack pointer
 	M=M+1       
 	
-	// COMMAND #169: call Main.fibonacci 1
+	// COMMAND #14: call Main.fibonacci 1
 	@Main.fibonacci$ret.3
 	D=A          // D=retAddr
 	@SP          // >>> push retAddr onto stack
@@ -233,7 +233,7 @@
 	M=M+1       
 	@LCL         // >>> saving "LCL"
 	D=M          // store current memory value in D
-	@SP          // > push temp value to top of stack
+	@SP          // > push stored value to top of stack
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	@SP          // increment stack pointer
@@ -241,7 +241,7 @@
 	            
 	@ARG         // >>> saving "ARG"
 	D=M          // store current memory value in D
-	@SP          // > push temp value to top of stack
+	@SP          // > push stored value to top of stack
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	@SP          // increment stack pointer
@@ -249,7 +249,7 @@
 	            
 	@THIS        // >>> saving "THIS"
 	D=M          // store current memory value in D
-	@SP          // > push temp value to top of stack
+	@SP          // > push stored value to top of stack
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	@SP          // increment stack pointer
@@ -257,7 +257,7 @@
 	            
 	@THAT        // >>> saving "THAT"
 	D=M          // store current memory value in D
-	@SP          // > push temp value to top of stack
+	@SP          // > push stored value to top of stack
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	@SP          // increment stack pointer
@@ -279,7 +279,7 @@
 	
 	// execution continues (after called function returns)...
 	
-	// COMMAND #170: push argument 0
+	// COMMAND #15: push argument 0
 	@ARG         // move to argument
 	D=M          // store the "argument" base address
 	@0           // move to address representing offset
@@ -291,25 +291,25 @@
 	@SP          // increment stack pointer
 	M=M+1       
 	
-	// COMMAND #171: push constant 1
+	// COMMAND #16: push constant 1
 	@1          
 	D=A          // store the current address as a value
 	@SP          // >> push constant value (1) onto stack <<
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	
-	// COMMAND #172: sub
-	@SP          // pop back to Y, since binary op starts at 1 past Y (SP decremented above)
-	A=M          // PREPARE Y (pop Y into D)
+	// COMMAND #17: sub
+	@SP          // PREPARE Y (pop Y into D) (SP decremented above)
+	A=M          // move to top of stack
 	D=M          // store the top stack value into D
 	@SP          // "pop" X
 	M=M-1       
-	A=M          // PREPARE X (prep X "into" M – but don't pop just yet!)
+	A=M          // PREPARE X (prep X "into" M)
 	M=M-D        // perform binary operation: sub
 	@SP          // increment stack pointer
 	M=M+1       
 	
-	// COMMAND #173: call Main.fibonacci 1
+	// COMMAND #18: call Main.fibonacci 1
 	@Main.fibonacci$ret.4
 	D=A          // D=retAddr
 	@SP          // >>> push retAddr onto stack
@@ -319,7 +319,7 @@
 	M=M+1       
 	@LCL         // >>> saving "LCL"
 	D=M          // store current memory value in D
-	@SP          // > push temp value to top of stack
+	@SP          // > push stored value to top of stack
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	@SP          // increment stack pointer
@@ -327,7 +327,7 @@
 	            
 	@ARG         // >>> saving "ARG"
 	D=M          // store current memory value in D
-	@SP          // > push temp value to top of stack
+	@SP          // > push stored value to top of stack
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	@SP          // increment stack pointer
@@ -335,7 +335,7 @@
 	            
 	@THIS        // >>> saving "THIS"
 	D=M          // store current memory value in D
-	@SP          // > push temp value to top of stack
+	@SP          // > push stored value to top of stack
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	@SP          // increment stack pointer
@@ -343,7 +343,7 @@
 	            
 	@THAT        // >>> saving "THAT"
 	D=M          // store current memory value in D
-	@SP          // > push temp value to top of stack
+	@SP          // > push stored value to top of stack
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	@SP          // increment stack pointer
@@ -365,36 +365,36 @@
 	
 	// execution continues (after called function returns)...
 	
-	// COMMAND #174: add
-	@SP          // pop back to Y, since binary op starts at 1 past Y
+	// COMMAND #19: add
+	@SP          // PREPARE Y (pop Y into D)
 	M=M-1       
-	A=M          // PREPARE Y (pop Y into D)
+	A=M          // move to top of stack
 	D=M          // store the top stack value into D
 	@SP          // "pop" X
 	M=M-1       
-	A=M          // PREPARE X (prep X "into" M – but don't pop just yet!)
+	A=M          // PREPARE X (prep X "into" M)
 	M=M+D        // perform binary operation: add
 	@SP          // increment stack pointer
 	M=M+1       
 	
-	// COMMAND #175: return
+	// COMMAND #20: return
 	@LCL         // >>> store LCL as FRAME
-	D=M          // store value of LCL
-	@FRAME       // access FRAME variable (VME uses @R13)
-	M=D          // save FRAME=LCL
+	D=M          // store current memory value
+	@FRAME       // go to "FRAME"
+	M=D          // save the stored value in "FRAME"
 	@5           // >>> save RET
-	A=D-A        // move to location of retAddr
-	D=M          // store the value of retAddr
-	@RET         // create/access RET variable (VME uses @R14)
-	M=D          // write the value of retAddr to RET
+	A=D-A        // move to location of retAddr (RET=FRAME-5)
+	D=M          // store current memory value
+	@RET         // go to "RET"
+	M=D          // save the stored value in "RET"
 	            
-	@SP          // >>> store (pop) top stack value to ARG[0]
+	@SP          // >> pop stack to *ARG <<
 	M=M-1       
 	A=M          // move to top of stack
 	D=M          // store the top stack value into D
 	@ARG        
-	A=M          // move to ARG
-	M=D          // store return value in ARG[0]
+	A=M          // move to "ARG"
+	M=D          // write value of D to current location
 	            
 	D=A          // >>> restore caller's SP. (in prev step, A=ARG)
 	@SP         
@@ -438,13 +438,13 @@
 
 // *** FILE: Sys.vm ***
 
-(Sys.init)  	// COMMAND #176: function Sys.init 0
+(Sys.init)  	// COMMAND #1: function Sys.init 0
 	@SP         
 	D=M          // store SP value
 	@LCL        
 	M=D          // store stack address in LCL (no local vars so we're done)
 	
-	// COMMAND #177: push constant 4
+	// COMMAND #2: push constant 4
 	@4          
 	D=A          // store the current address as a value
 	@SP          // >> push constant value (4) onto stack <<
@@ -453,7 +453,7 @@
 	@SP          // increment stack pointer
 	M=M+1       
 	
-	// COMMAND #178: call Main.fibonacci 1
+	// COMMAND #3: call Main.fibonacci 1
 	@Main.fibonacci$ret.5
 	D=A          // D=retAddr
 	@SP          // >>> push retAddr onto stack
@@ -463,7 +463,7 @@
 	M=M+1       
 	@LCL         // >>> saving "LCL"
 	D=M          // store current memory value in D
-	@SP          // > push temp value to top of stack
+	@SP          // > push stored value to top of stack
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	@SP          // increment stack pointer
@@ -471,7 +471,7 @@
 	            
 	@ARG         // >>> saving "ARG"
 	D=M          // store current memory value in D
-	@SP          // > push temp value to top of stack
+	@SP          // > push stored value to top of stack
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	@SP          // increment stack pointer
@@ -479,7 +479,7 @@
 	            
 	@THIS        // >>> saving "THIS"
 	D=M          // store current memory value in D
-	@SP          // > push temp value to top of stack
+	@SP          // > push stored value to top of stack
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	@SP          // increment stack pointer
@@ -487,7 +487,7 @@
 	            
 	@THAT        // >>> saving "THAT"
 	D=M          // store current memory value in D
-	@SP          // > push temp value to top of stack
+	@SP          // > push stored value to top of stack
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	@SP          // increment stack pointer
@@ -509,9 +509,9 @@
 	
 	// execution continues (after called function returns)...
 	
-(WHILE.VM)  	// COMMAND #179: label WHILE
+(WHILE.VM)  	// COMMAND #4: label WHILE
 	
-	// COMMAND #180: goto WHILE
+	// COMMAND #5: goto WHILE
 	@WHILE.VM   
 	0;JMP       
 	

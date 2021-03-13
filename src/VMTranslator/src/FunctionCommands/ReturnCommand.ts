@@ -50,25 +50,16 @@ export class ReturnCommand extends VMCommand {
   
   private saveReturnAddress() {
     this.addLine('@LCL', '>>> store LCL as FRAME');
-    this.storeThe.memoryValue('store value of LCL');
-    this.move.to.variableOrValue('FRAME', 'access FRAME variable (VME uses @R13)');
-    this.writeThe.storedValue.toMemoryAtCurrentAddress('save FRAME=LCL');
+    this.writeThe.valueAtCurrentAddress.toLocation('FRAME');
   
     this.addLine('@5', '>>> save RET');
-    this.addLine('A=D-A', 'move to location of retAddr');
-    this.storeThe.memoryValue('store the value of retAddr');
-    // this.addLine('D=D-A', 'RET=FRAME-5');
-    this.move.to.variableOrValue('RET', 'create/access RET variable (VME uses @R14)');
-    this.addLine('M=D', 'write the value of retAddr to RET');
+    this.addLine('A=D-A', 'move to location of retAddr (RET=FRAME-5)');
+    this.writeThe.valueAtCurrentAddress.toLocation('RET');
   }
   
   // pop return value to ARG[0]
   private popReturnValue() {
-    this.decrementStackPointer('>>> store (pop) top stack value to ARG[0]');
-    this.storeThe.topStackValue();
-    this.move.to.variableOrValue('ARG');
-    this.move.using.currentMemoryValue.asAddress('move to ARG');
-    this.writeThe.storedValue.toMemoryAtCurrentAddress('store return value in ARG[0]');
+    this.popStack.toAddressStoredAsVariable('ARG');
   }
   
   private restoreCallerStackPosition() {

@@ -1,4 +1,4 @@
-	// COMMAND #125: push constant 111
+	// COMMAND #1: push constant 111
 	@111        
 	D=A          // store the current address as a value
 	@SP          // >> push constant value (111) onto stack <<
@@ -7,7 +7,7 @@
 	@SP          // increment stack pointer
 	M=M+1       
 	
-	// COMMAND #126: push constant 333
+	// COMMAND #2: push constant 333
 	@333        
 	D=A          // store the current address as a value
 	@SP          // >> push constant value (333) onto stack <<
@@ -16,77 +16,77 @@
 	@SP          // increment stack pointer
 	M=M+1       
 	
-	// COMMAND #127: push constant 888
+	// COMMAND #3: push constant 888
 	@888        
 	D=A          // store the current address as a value
 	@SP          // >> push constant value (888) onto stack <<
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	
-	// COMMAND #128: pop static 8
-	@SP          // move stack pointer back to the value to be popped (SP decremented above)
+	// COMMAND #4: pop static 8
+	@SP          // >> pop stack to StaticTest.8 << (SP decremented above)
 	A=M          // move to top of stack
 	D=M          // store the top stack value into D
-	@StaticTest.8 // go to static slot
-	M=D          // and store the value there
+	@StaticTest.8
+	M=D          // write value of D to current location
 	
-	// COMMAND #129: pop static 3
-	@SP          // move stack pointer back to the value to be popped
+	// COMMAND #5: pop static 3
+	@SP          // >> pop stack to StaticTest.3 <<
 	M=M-1       
 	A=M          // move to top of stack
 	D=M          // store the top stack value into D
-	@StaticTest.3 // go to static slot
-	M=D          // and store the value there
+	@StaticTest.3
+	M=D          // write value of D to current location
 	
-	// COMMAND #130: pop static 1
-	@SP          // move stack pointer back to the value to be popped
+	// COMMAND #6: pop static 1
+	@SP          // >> pop stack to StaticTest.1 <<
 	M=M-1       
 	A=M          // move to top of stack
 	D=M          // store the top stack value into D
-	@StaticTest.1 // go to static slot
-	M=D          // and store the value there
+	@StaticTest.1
+	M=D          // write value of D to current location
 	
-	// COMMAND #131: push static 3
-	@StaticTest.3 // go to static slot
-	D=M          // store the static value in D
-	@SP          // >> push it onto the stack <<
+	// COMMAND #7: push static 3
+	@StaticTest.3
+	D=M          // store current memory value in D
+	@SP          // >>> push memory value to top of stack
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	@SP          // increment stack pointer
 	M=M+1       
 	
-	// COMMAND #132: push static 1
-	@StaticTest.1 // go to static slot
-	D=M          // store the static value in D
-	@SP          // >> push it onto the stack <<
+	// COMMAND #8: push static 1
+	@StaticTest.1
+	D=M          // store current memory value in D
+	@SP          // >>> push memory value to top of stack
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	
-	// COMMAND #133: sub
-	@SP          // pop back to Y, since binary op starts at 1 past Y (SP decremented above)
-	A=M          // PREPARE Y (pop Y into D)
+	// COMMAND #9: sub
+	@SP          // PREPARE Y (pop Y into D) (SP decremented above)
+	A=M          // move to top of stack
 	D=M          // store the top stack value into D
 	@SP          // "pop" X
 	M=M-1       
-	A=M          // PREPARE X (prep X "into" M – but don't pop just yet!)
+	A=M          // PREPARE X (prep X "into" M)
 	M=M-D        // perform binary operation: sub
 	@SP          // increment stack pointer
 	M=M+1       
 	
-	// COMMAND #134: push static 8
-	@StaticTest.8 // go to static slot
-	D=M          // store the static value in D
-	@SP          // >> push it onto the stack <<
+	// COMMAND #10: push static 8
+	@StaticTest.8
+	D=M          // store current memory value in D
+	@SP          // >>> push memory value to top of stack
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	
-	// COMMAND #135: add
-	@SP          // pop back to Y, since binary op starts at 1 past Y (SP decremented above)
-	A=M          // PREPARE Y (pop Y into D)
+	// COMMAND #11: add
+	@SP          // PREPARE Y (pop Y into D) (SP decremented above)
+	A=M          // move to top of stack
 	D=M          // store the top stack value into D
 	@SP          // "pop" X
 	M=M-1       
-	A=M          // PREPARE X (prep X "into" M – but don't pop just yet!)
+	A=M          // PREPARE X (prep X "into" M)
 	M=M+D        // perform binary operation: add
 	@SP          // increment stack pointer
 	M=M+1       

@@ -1,7 +1,7 @@
 	// COMMAND #0A: BOOTSTRAP THE SYSTEM
 	@256         // set the start of the stack to addr 256
 	D=A          // store the current address as a value
-	@SP         
+	@SP          // write value of D to "SP"
 	M=D          // write value of D to current location
 	            
 	// COMMAND #0B: CALL Sys.init
@@ -14,7 +14,7 @@
 	M=M+1       
 	@LCL         // >>> saving "LCL"
 	D=M          // store current memory value in D
-	@SP          // > push temp value to top of stack
+	@SP          // > push stored value to top of stack
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	@SP          // increment stack pointer
@@ -22,7 +22,7 @@
 	            
 	@ARG         // >>> saving "ARG"
 	D=M          // store current memory value in D
-	@SP          // > push temp value to top of stack
+	@SP          // > push stored value to top of stack
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	@SP          // increment stack pointer
@@ -30,7 +30,7 @@
 	            
 	@THIS        // >>> saving "THIS"
 	D=M          // store current memory value in D
-	@SP          // > push temp value to top of stack
+	@SP          // > push stored value to top of stack
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	@SP          // increment stack pointer
@@ -38,7 +38,7 @@
 	            
 	@THAT        // >>> saving "THAT"
 	D=M          // store current memory value in D
-	@SP          // > push temp value to top of stack
+	@SP          // > push stored value to top of stack
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	@SP          // increment stack pointer
@@ -62,13 +62,13 @@
 
 // *** FILE: Class1.vm ***
 
-(Class1.set)	// COMMAND #181: function Class1.set 0
+(Class1.set)	// COMMAND #1: function Class1.set 0
 	@SP         
 	D=M          // store SP value
 	@LCL        
 	M=D          // store stack address in LCL (no local vars so we're done)
 	
-	// COMMAND #182: push argument 0
+	// COMMAND #2: push argument 0
 	@ARG         // move to argument
 	D=M          // store the "argument" base address
 	@0           // move to address representing offset
@@ -78,14 +78,14 @@
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	
-	// COMMAND #183: pop static 0
-	@SP          // move stack pointer back to the value to be popped (SP decremented above)
+	// COMMAND #3: pop static 0
+	@SP          // >> pop stack to Class1.0 << (SP decremented above)
 	A=M          // move to top of stack
 	D=M          // store the top stack value into D
-	@Class1.0    // go to static slot
-	M=D          // and store the value there
+	@Class1.0   
+	M=D          // write value of D to current location
 	
-	// COMMAND #184: push argument 1
+	// COMMAND #4: push argument 1
 	@ARG         // move to argument
 	D=M          // store the "argument" base address
 	@1           // move to address representing offset
@@ -95,14 +95,14 @@
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	
-	// COMMAND #185: pop static 1
-	@SP          // move stack pointer back to the value to be popped (SP decremented above)
+	// COMMAND #5: pop static 1
+	@SP          // >> pop stack to Class1.1 << (SP decremented above)
 	A=M          // move to top of stack
 	D=M          // store the top stack value into D
-	@Class1.1    // go to static slot
-	M=D          // and store the value there
+	@Class1.1   
+	M=D          // write value of D to current location
 	
-	// COMMAND #186: push constant 0
+	// COMMAND #6: push constant 0
 	@0          
 	D=A          // store the current address as a value
 	@SP          // >> push constant value (0) onto stack <<
@@ -111,24 +111,24 @@
 	@SP          // increment stack pointer
 	M=M+1       
 	
-	// COMMAND #187: return
+	// COMMAND #7: return
 	@LCL         // >>> store LCL as FRAME
-	D=M          // store value of LCL
-	@FRAME       // access FRAME variable (VME uses @R13)
-	M=D          // save FRAME=LCL
+	D=M          // store current memory value
+	@FRAME       // go to "FRAME"
+	M=D          // save the stored value in "FRAME"
 	@5           // >>> save RET
-	A=D-A        // move to location of retAddr
-	D=M          // store the value of retAddr
-	@RET         // create/access RET variable (VME uses @R14)
-	M=D          // write the value of retAddr to RET
+	A=D-A        // move to location of retAddr (RET=FRAME-5)
+	D=M          // store current memory value
+	@RET         // go to "RET"
+	M=D          // save the stored value in "RET"
 	            
-	@SP          // >>> store (pop) top stack value to ARG[0]
+	@SP          // >> pop stack to *ARG <<
 	M=M-1       
 	A=M          // move to top of stack
 	D=M          // store the top stack value into D
 	@ARG        
-	A=M          // move to ARG
-	M=D          // store return value in ARG[0]
+	A=M          // move to "ARG"
+	M=D          // write value of D to current location
 	            
 	D=A          // >>> restore caller's SP. (in prev step, A=ARG)
 	@SP         
@@ -168,57 +168,57 @@
 	A=M          // prepare to jump to address stored in RET
 	0;JMP       
 	
-(Class1.get)	// COMMAND #188: function Class1.get 0
+(Class1.get)	// COMMAND #8: function Class1.get 0
 	@SP         
 	D=M          // store SP value
 	@LCL        
 	M=D          // store stack address in LCL (no local vars so we're done)
 	
-	// COMMAND #189: push static 0
-	@Class1.0    // go to static slot
-	D=M          // store the static value in D
-	@SP          // >> push it onto the stack <<
+	// COMMAND #9: push static 0
+	@Class1.0   
+	D=M          // store current memory value in D
+	@SP          // >>> push memory value to top of stack
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	@SP          // increment stack pointer
 	M=M+1       
 	
-	// COMMAND #190: push static 1
-	@Class1.1    // go to static slot
-	D=M          // store the static value in D
-	@SP          // >> push it onto the stack <<
+	// COMMAND #10: push static 1
+	@Class1.1   
+	D=M          // store current memory value in D
+	@SP          // >>> push memory value to top of stack
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	
-	// COMMAND #191: sub
-	@SP          // pop back to Y, since binary op starts at 1 past Y (SP decremented above)
-	A=M          // PREPARE Y (pop Y into D)
+	// COMMAND #11: sub
+	@SP          // PREPARE Y (pop Y into D) (SP decremented above)
+	A=M          // move to top of stack
 	D=M          // store the top stack value into D
 	@SP          // "pop" X
 	M=M-1       
-	A=M          // PREPARE X (prep X "into" M – but don't pop just yet!)
+	A=M          // PREPARE X (prep X "into" M)
 	M=M-D        // perform binary operation: sub
 	@SP          // increment stack pointer
 	M=M+1       
 	
-	// COMMAND #192: return
+	// COMMAND #12: return
 	@LCL         // >>> store LCL as FRAME
-	D=M          // store value of LCL
-	@FRAME       // access FRAME variable (VME uses @R13)
-	M=D          // save FRAME=LCL
+	D=M          // store current memory value
+	@FRAME       // go to "FRAME"
+	M=D          // save the stored value in "FRAME"
 	@5           // >>> save RET
-	A=D-A        // move to location of retAddr
-	D=M          // store the value of retAddr
-	@RET         // create/access RET variable (VME uses @R14)
-	M=D          // write the value of retAddr to RET
+	A=D-A        // move to location of retAddr (RET=FRAME-5)
+	D=M          // store current memory value
+	@RET         // go to "RET"
+	M=D          // save the stored value in "RET"
 	            
-	@SP          // >>> store (pop) top stack value to ARG[0]
+	@SP          // >> pop stack to *ARG <<
 	M=M-1       
 	A=M          // move to top of stack
 	D=M          // store the top stack value into D
 	@ARG        
-	A=M          // move to ARG
-	M=D          // store return value in ARG[0]
+	A=M          // move to "ARG"
+	M=D          // write value of D to current location
 	            
 	D=A          // >>> restore caller's SP. (in prev step, A=ARG)
 	@SP         
@@ -262,13 +262,13 @@
 
 // *** FILE: Class2.vm ***
 
-(Class2.set)	// COMMAND #193: function Class2.set 0
+(Class2.set)	// COMMAND #1: function Class2.set 0
 	@SP         
 	D=M          // store SP value
 	@LCL        
 	M=D          // store stack address in LCL (no local vars so we're done)
 	
-	// COMMAND #194: push argument 0
+	// COMMAND #2: push argument 0
 	@ARG         // move to argument
 	D=M          // store the "argument" base address
 	@0           // move to address representing offset
@@ -278,14 +278,14 @@
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	
-	// COMMAND #195: pop static 0
-	@SP          // move stack pointer back to the value to be popped (SP decremented above)
+	// COMMAND #3: pop static 0
+	@SP          // >> pop stack to Class2.0 << (SP decremented above)
 	A=M          // move to top of stack
 	D=M          // store the top stack value into D
-	@Class2.0    // go to static slot
-	M=D          // and store the value there
+	@Class2.0   
+	M=D          // write value of D to current location
 	
-	// COMMAND #196: push argument 1
+	// COMMAND #4: push argument 1
 	@ARG         // move to argument
 	D=M          // store the "argument" base address
 	@1           // move to address representing offset
@@ -295,14 +295,14 @@
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	
-	// COMMAND #197: pop static 1
-	@SP          // move stack pointer back to the value to be popped (SP decremented above)
+	// COMMAND #5: pop static 1
+	@SP          // >> pop stack to Class2.1 << (SP decremented above)
 	A=M          // move to top of stack
 	D=M          // store the top stack value into D
-	@Class2.1    // go to static slot
-	M=D          // and store the value there
+	@Class2.1   
+	M=D          // write value of D to current location
 	
-	// COMMAND #198: push constant 0
+	// COMMAND #6: push constant 0
 	@0          
 	D=A          // store the current address as a value
 	@SP          // >> push constant value (0) onto stack <<
@@ -311,24 +311,24 @@
 	@SP          // increment stack pointer
 	M=M+1       
 	
-	// COMMAND #199: return
+	// COMMAND #7: return
 	@LCL         // >>> store LCL as FRAME
-	D=M          // store value of LCL
-	@FRAME       // access FRAME variable (VME uses @R13)
-	M=D          // save FRAME=LCL
+	D=M          // store current memory value
+	@FRAME       // go to "FRAME"
+	M=D          // save the stored value in "FRAME"
 	@5           // >>> save RET
-	A=D-A        // move to location of retAddr
-	D=M          // store the value of retAddr
-	@RET         // create/access RET variable (VME uses @R14)
-	M=D          // write the value of retAddr to RET
+	A=D-A        // move to location of retAddr (RET=FRAME-5)
+	D=M          // store current memory value
+	@RET         // go to "RET"
+	M=D          // save the stored value in "RET"
 	            
-	@SP          // >>> store (pop) top stack value to ARG[0]
+	@SP          // >> pop stack to *ARG <<
 	M=M-1       
 	A=M          // move to top of stack
 	D=M          // store the top stack value into D
 	@ARG        
-	A=M          // move to ARG
-	M=D          // store return value in ARG[0]
+	A=M          // move to "ARG"
+	M=D          // write value of D to current location
 	            
 	D=A          // >>> restore caller's SP. (in prev step, A=ARG)
 	@SP         
@@ -368,57 +368,57 @@
 	A=M          // prepare to jump to address stored in RET
 	0;JMP       
 	
-(Class2.get)	// COMMAND #200: function Class2.get 0
+(Class2.get)	// COMMAND #8: function Class2.get 0
 	@SP         
 	D=M          // store SP value
 	@LCL        
 	M=D          // store stack address in LCL (no local vars so we're done)
 	
-	// COMMAND #201: push static 0
-	@Class2.0    // go to static slot
-	D=M          // store the static value in D
-	@SP          // >> push it onto the stack <<
+	// COMMAND #9: push static 0
+	@Class2.0   
+	D=M          // store current memory value in D
+	@SP          // >>> push memory value to top of stack
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	@SP          // increment stack pointer
 	M=M+1       
 	
-	// COMMAND #202: push static 1
-	@Class2.1    // go to static slot
-	D=M          // store the static value in D
-	@SP          // >> push it onto the stack <<
+	// COMMAND #10: push static 1
+	@Class2.1   
+	D=M          // store current memory value in D
+	@SP          // >>> push memory value to top of stack
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	
-	// COMMAND #203: sub
-	@SP          // pop back to Y, since binary op starts at 1 past Y (SP decremented above)
-	A=M          // PREPARE Y (pop Y into D)
+	// COMMAND #11: sub
+	@SP          // PREPARE Y (pop Y into D) (SP decremented above)
+	A=M          // move to top of stack
 	D=M          // store the top stack value into D
 	@SP          // "pop" X
 	M=M-1       
-	A=M          // PREPARE X (prep X "into" M – but don't pop just yet!)
+	A=M          // PREPARE X (prep X "into" M)
 	M=M-D        // perform binary operation: sub
 	@SP          // increment stack pointer
 	M=M+1       
 	
-	// COMMAND #204: return
+	// COMMAND #12: return
 	@LCL         // >>> store LCL as FRAME
-	D=M          // store value of LCL
-	@FRAME       // access FRAME variable (VME uses @R13)
-	M=D          // save FRAME=LCL
+	D=M          // store current memory value
+	@FRAME       // go to "FRAME"
+	M=D          // save the stored value in "FRAME"
 	@5           // >>> save RET
-	A=D-A        // move to location of retAddr
-	D=M          // store the value of retAddr
-	@RET         // create/access RET variable (VME uses @R14)
-	M=D          // write the value of retAddr to RET
+	A=D-A        // move to location of retAddr (RET=FRAME-5)
+	D=M          // store current memory value
+	@RET         // go to "RET"
+	M=D          // save the stored value in "RET"
 	            
-	@SP          // >>> store (pop) top stack value to ARG[0]
+	@SP          // >> pop stack to *ARG <<
 	M=M-1       
 	A=M          // move to top of stack
 	D=M          // store the top stack value into D
 	@ARG        
-	A=M          // move to ARG
-	M=D          // store return value in ARG[0]
+	A=M          // move to "ARG"
+	M=D          // write value of D to current location
 	            
 	D=A          // >>> restore caller's SP. (in prev step, A=ARG)
 	@SP         
@@ -462,13 +462,13 @@
 
 // *** FILE: Sys.vm ***
 
-(Sys.init)  	// COMMAND #205: function Sys.init 0
+(Sys.init)  	// COMMAND #1: function Sys.init 0
 	@SP         
 	D=M          // store SP value
 	@LCL        
 	M=D          // store stack address in LCL (no local vars so we're done)
 	
-	// COMMAND #206: push constant 6
+	// COMMAND #2: push constant 6
 	@6          
 	D=A          // store the current address as a value
 	@SP          // >> push constant value (6) onto stack <<
@@ -477,7 +477,7 @@
 	@SP          // increment stack pointer
 	M=M+1       
 	
-	// COMMAND #207: push constant 8
+	// COMMAND #3: push constant 8
 	@8          
 	D=A          // store the current address as a value
 	@SP          // >> push constant value (8) onto stack <<
@@ -486,7 +486,7 @@
 	@SP          // increment stack pointer
 	M=M+1       
 	
-	// COMMAND #208: call Class1.set 2
+	// COMMAND #4: call Class1.set 2
 	@Class1.set$ret.7
 	D=A          // D=retAddr
 	@SP          // >>> push retAddr onto stack
@@ -496,7 +496,7 @@
 	M=M+1       
 	@LCL         // >>> saving "LCL"
 	D=M          // store current memory value in D
-	@SP          // > push temp value to top of stack
+	@SP          // > push stored value to top of stack
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	@SP          // increment stack pointer
@@ -504,7 +504,7 @@
 	            
 	@ARG         // >>> saving "ARG"
 	D=M          // store current memory value in D
-	@SP          // > push temp value to top of stack
+	@SP          // > push stored value to top of stack
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	@SP          // increment stack pointer
@@ -512,7 +512,7 @@
 	            
 	@THIS        // >>> saving "THIS"
 	D=M          // store current memory value in D
-	@SP          // > push temp value to top of stack
+	@SP          // > push stored value to top of stack
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	@SP          // increment stack pointer
@@ -520,7 +520,7 @@
 	            
 	@THAT        // >>> saving "THAT"
 	D=M          // store current memory value in D
-	@SP          // > push temp value to top of stack
+	@SP          // > push stored value to top of stack
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	@SP          // increment stack pointer
@@ -542,15 +542,15 @@
 	
 	// execution continues (after called function returns)...
 	
-	// COMMAND #209: pop temp 0
-	@SP          // decrement stack pointer
+	// COMMAND #5: pop temp 0
+	@SP          // >> pop stack to 5 <<
 	M=M-1       
 	A=M          // move to top of stack
 	D=M          // store the top stack value into D
 	@5          
 	M=D          // write value of D to current location
 	
-	// COMMAND #210: push constant 23
+	// COMMAND #6: push constant 23
 	@23         
 	D=A          // store the current address as a value
 	@SP          // >> push constant value (23) onto stack <<
@@ -559,7 +559,7 @@
 	@SP          // increment stack pointer
 	M=M+1       
 	
-	// COMMAND #211: push constant 15
+	// COMMAND #7: push constant 15
 	@15         
 	D=A          // store the current address as a value
 	@SP          // >> push constant value (15) onto stack <<
@@ -568,7 +568,7 @@
 	@SP          // increment stack pointer
 	M=M+1       
 	
-	// COMMAND #212: call Class2.set 2
+	// COMMAND #8: call Class2.set 2
 	@Class2.set$ret.8
 	D=A          // D=retAddr
 	@SP          // >>> push retAddr onto stack
@@ -578,7 +578,7 @@
 	M=M+1       
 	@LCL         // >>> saving "LCL"
 	D=M          // store current memory value in D
-	@SP          // > push temp value to top of stack
+	@SP          // > push stored value to top of stack
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	@SP          // increment stack pointer
@@ -586,7 +586,7 @@
 	            
 	@ARG         // >>> saving "ARG"
 	D=M          // store current memory value in D
-	@SP          // > push temp value to top of stack
+	@SP          // > push stored value to top of stack
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	@SP          // increment stack pointer
@@ -594,7 +594,7 @@
 	            
 	@THIS        // >>> saving "THIS"
 	D=M          // store current memory value in D
-	@SP          // > push temp value to top of stack
+	@SP          // > push stored value to top of stack
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	@SP          // increment stack pointer
@@ -602,7 +602,7 @@
 	            
 	@THAT        // >>> saving "THAT"
 	D=M          // store current memory value in D
-	@SP          // > push temp value to top of stack
+	@SP          // > push stored value to top of stack
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	@SP          // increment stack pointer
@@ -624,15 +624,15 @@
 	
 	// execution continues (after called function returns)...
 	
-	// COMMAND #213: pop temp 0
-	@SP          // decrement stack pointer
+	// COMMAND #9: pop temp 0
+	@SP          // >> pop stack to 5 <<
 	M=M-1       
 	A=M          // move to top of stack
 	D=M          // store the top stack value into D
 	@5          
 	M=D          // write value of D to current location
 	
-	// COMMAND #214: call Class1.get 0
+	// COMMAND #10: call Class1.get 0
 	@Class1.get$ret.9
 	D=A          // D=retAddr
 	@SP          // >>> push retAddr onto stack
@@ -642,7 +642,7 @@
 	M=M+1       
 	@LCL         // >>> saving "LCL"
 	D=M          // store current memory value in D
-	@SP          // > push temp value to top of stack
+	@SP          // > push stored value to top of stack
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	@SP          // increment stack pointer
@@ -650,7 +650,7 @@
 	            
 	@ARG         // >>> saving "ARG"
 	D=M          // store current memory value in D
-	@SP          // > push temp value to top of stack
+	@SP          // > push stored value to top of stack
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	@SP          // increment stack pointer
@@ -658,7 +658,7 @@
 	            
 	@THIS        // >>> saving "THIS"
 	D=M          // store current memory value in D
-	@SP          // > push temp value to top of stack
+	@SP          // > push stored value to top of stack
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	@SP          // increment stack pointer
@@ -666,7 +666,7 @@
 	            
 	@THAT        // >>> saving "THAT"
 	D=M          // store current memory value in D
-	@SP          // > push temp value to top of stack
+	@SP          // > push stored value to top of stack
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	@SP          // increment stack pointer
@@ -688,7 +688,7 @@
 	
 	// execution continues (after called function returns)...
 	
-	// COMMAND #215: call Class2.get 0
+	// COMMAND #11: call Class2.get 0
 	@Class2.get$ret.10
 	D=A          // D=retAddr
 	@SP          // >>> push retAddr onto stack
@@ -698,7 +698,7 @@
 	M=M+1       
 	@LCL         // >>> saving "LCL"
 	D=M          // store current memory value in D
-	@SP          // > push temp value to top of stack
+	@SP          // > push stored value to top of stack
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	@SP          // increment stack pointer
@@ -706,7 +706,7 @@
 	            
 	@ARG         // >>> saving "ARG"
 	D=M          // store current memory value in D
-	@SP          // > push temp value to top of stack
+	@SP          // > push stored value to top of stack
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	@SP          // increment stack pointer
@@ -714,7 +714,7 @@
 	            
 	@THIS        // >>> saving "THIS"
 	D=M          // store current memory value in D
-	@SP          // > push temp value to top of stack
+	@SP          // > push stored value to top of stack
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	@SP          // increment stack pointer
@@ -722,7 +722,7 @@
 	            
 	@THAT        // >>> saving "THAT"
 	D=M          // store current memory value in D
-	@SP          // > push temp value to top of stack
+	@SP          // > push stored value to top of stack
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	@SP          // increment stack pointer
@@ -744,9 +744,9 @@
 	
 	// execution continues (after called function returns)...
 	
-(WHILE.VM)  	// COMMAND #216: label WHILE
+(WHILE.VM)  	// COMMAND #12: label WHILE
 	
-	// COMMAND #217: goto WHILE
+	// COMMAND #13: goto WHILE
 	@WHILE.VM   
 	0;JMP       
 	

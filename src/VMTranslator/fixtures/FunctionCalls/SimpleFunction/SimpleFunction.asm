@@ -1,4 +1,4 @@
-(SimpleFunction.test)	// COMMAND #136: function SimpleFunction.test 2
+(SimpleFunction.test)	// COMMAND #1: function SimpleFunction.test 2
 	@SP         
 	D=M          // store SP value
 	@LCL        
@@ -14,7 +14,7 @@
 	@SP          // increment stack pointer
 	M=M+1       
 	
-	// COMMAND #137: push local 0
+	// COMMAND #2: push local 0
 	@LCL         // move to local
 	D=M          // store the "local" base address
 	@0           // move to address representing offset
@@ -26,7 +26,7 @@
 	@SP          // increment stack pointer
 	M=M+1       
 	
-	// COMMAND #138: push local 1
+	// COMMAND #3: push local 1
 	@LCL         // move to local
 	D=M          // store the "local" base address
 	@1           // move to address representing offset
@@ -36,23 +36,23 @@
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	
-	// COMMAND #139: add
-	@SP          // pop back to Y, since binary op starts at 1 past Y (SP decremented above)
-	A=M          // PREPARE Y (pop Y into D)
+	// COMMAND #4: add
+	@SP          // PREPARE Y (pop Y into D) (SP decremented above)
+	A=M          // move to top of stack
 	D=M          // store the top stack value into D
 	@SP          // "pop" X
 	M=M-1       
-	A=M          // PREPARE X (prep X "into" M – but don't pop just yet!)
+	A=M          // PREPARE X (prep X "into" M)
 	M=M+D        // perform binary operation: add
 	
-	// COMMAND #140: not
+	// COMMAND #5: not
 	@SP          // "pop" X (SP decremented above)
-	A=M          // PREPARE X (prep X "into" M – but don't pop just yet!)
+	A=M          // PREPARE X (prep X "into" M)
 	M=!M         // perform unary operation: not
 	@SP          // increment stack pointer
 	M=M+1       
 	
-	// COMMAND #141: push argument 0
+	// COMMAND #6: push argument 0
 	@ARG         // move to argument
 	D=M          // store the "argument" base address
 	@0           // move to address representing offset
@@ -62,18 +62,18 @@
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	
-	// COMMAND #142: add
-	@SP          // pop back to Y, since binary op starts at 1 past Y (SP decremented above)
-	A=M          // PREPARE Y (pop Y into D)
+	// COMMAND #7: add
+	@SP          // PREPARE Y (pop Y into D) (SP decremented above)
+	A=M          // move to top of stack
 	D=M          // store the top stack value into D
 	@SP          // "pop" X
 	M=M-1       
-	A=M          // PREPARE X (prep X "into" M – but don't pop just yet!)
+	A=M          // PREPARE X (prep X "into" M)
 	M=M+D        // perform binary operation: add
 	@SP          // increment stack pointer
 	M=M+1       
 	
-	// COMMAND #143: push argument 1
+	// COMMAND #8: push argument 1
 	@ARG         // move to argument
 	D=M          // store the "argument" base address
 	@1           // move to address representing offset
@@ -83,35 +83,35 @@
 	A=M          // move to top of stack
 	M=D          // write value of D to current location
 	
-	// COMMAND #144: sub
-	@SP          // pop back to Y, since binary op starts at 1 past Y (SP decremented above)
-	A=M          // PREPARE Y (pop Y into D)
+	// COMMAND #9: sub
+	@SP          // PREPARE Y (pop Y into D) (SP decremented above)
+	A=M          // move to top of stack
 	D=M          // store the top stack value into D
 	@SP          // "pop" X
 	M=M-1       
-	A=M          // PREPARE X (prep X "into" M – but don't pop just yet!)
+	A=M          // PREPARE X (prep X "into" M)
 	M=M-D        // perform binary operation: sub
 	@SP          // increment stack pointer
 	M=M+1       
 	
-	// COMMAND #145: return
+	// COMMAND #10: return
 	@LCL         // >>> store LCL as FRAME
-	D=M          // store value of LCL
-	@FRAME       // access FRAME variable (VME uses @R13)
-	M=D          // save FRAME=LCL
+	D=M          // store current memory value
+	@FRAME       // go to "FRAME"
+	M=D          // save the stored value in "FRAME"
 	@5           // >>> save RET
-	A=D-A        // move to location of retAddr
-	D=M          // store the value of retAddr
-	@RET         // create/access RET variable (VME uses @R14)
-	M=D          // write the value of retAddr to RET
+	A=D-A        // move to location of retAddr (RET=FRAME-5)
+	D=M          // store current memory value
+	@RET         // go to "RET"
+	M=D          // save the stored value in "RET"
 	            
-	@SP          // >>> store (pop) top stack value to ARG[0]
+	@SP          // >> pop stack to *ARG <<
 	M=M-1       
 	A=M          // move to top of stack
 	D=M          // store the top stack value into D
 	@ARG        
-	A=M          // move to ARG
-	M=D          // store return value in ARG[0]
+	A=M          // move to "ARG"
+	M=D          // write value of D to current location
 	            
 	D=A          // >>> restore caller's SP. (in prev step, A=ARG)
 	@SP         
