@@ -55,44 +55,12 @@ export class FunctionCall extends VMCommand {
   }
   
   private pushReturnAddress() {
-    /**
-     * Neither the VM code or assembly code recurs. Only the execution recurs.
-     * So there should actually not be a label for each recursion, but only
-     * a label for each *return point*.
-     * This VM/ASM flow should only occur *once* for each label, in the code.
-     *
-     * Remember, it's not entirely clear from the VM Emulator what happens.
-     * That's what we're working to figure out. And we'll do that by hypothesizing,
-     * not getting too attached, and seeing what works.
-     */
-  
-    /**
-     * what we are doing is STORING, ON THE STACK, a record of where we
-     * will need to return to. Again, we're storing it ON THE STACK.
-     *
-     * What is it we're storing on the stack?
-     * It has to be an address, IN THE ASSEMBLY CODE.
-     * The address of a label. (not the address where the label is stored!)
-     *
-     * How do we get the address of a label?
-     * The Assembler creates it using the symbol table.
-     * So we need to get the address of the label, after the label is created.
-     */
-  
     /* Create the label. (whatever$label) will take us to the location of a new label */
-    // use the CallStack-generated label. Since it doesn't matter what the actual
-    // label is, right?
     this.move.to.variableOrValue(this.returnLabel);
+  
     /* Push the address of the label onto the stack!
     * As a result, the return command will find the address of the label (retAddr)
-    * on the stack, and jump to it.
-    *
-    * THIS DOES SEEM WEIRD, since it seems like we'll never actually use the label again???
-    * Sure we'll place the label later ––– WAIT A MINUTE! @label doesn't tell use where the
-    * label is if there's no (label) first, right?!?!?!
-    * ANSWER: the assembler parses the markers on the first pass.
-    * This doesn't seem very system-agnostic, but it should work.
-    * */
+    * on the stack, and jump to it. */
     this.storeThe.currentAddress('D=retAddr');
     this.pushThe.storedValue.ontoStack('>>> push retAddr onto stack');
   }

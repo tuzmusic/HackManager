@@ -16,8 +16,7 @@ export class VMTranslator extends HackTask {
   
     // add bootstrap code if we started with a directory
     if (fs.lstatSync(pathString).isDirectory()) {
-      // TODO: do this better!
-      // add bootstrap code to final file
+      // add bootstrap code into final file
       const codeLines = fs.readFileSync(this.outPath);
       fs.writeFileSync(this.outPath,
         [this.indentNonMarkerLines(VMBootstrapper.getBootstrapCode()), codeLines]
@@ -39,10 +38,6 @@ export class VMTranslator extends HackTask {
       .map(line => line.split('//')[0].trim());
   
     const translations: string[][] = [];
-  
-    // start with bootstrap code
-    // TODO: this breaks SimpleFunction (3/6/21)
-    // translations.push(VMBootstrapper.getBootstrapCode());
   
     // translate each line
     let prevLine: string;
