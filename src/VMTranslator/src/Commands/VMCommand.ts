@@ -9,6 +9,7 @@ export default class VMCommand {
   );
   
   // for performing stack arithmetic
+  // note that these are both only used ONCE. but I'm leaving this in to keep things nice and abstracted
   protected add = {
     valueOfAddress: {
       // A=D+A
@@ -16,10 +17,6 @@ export default class VMCommand {
       // D=D+A
       toStoredValue: (comment = 'store address of segment offset') => this.addLine('D=D+A', comment)
     },
-    storedValue: {
-      // M=M+D
-      toMemoryValue: (comment = '') => this.addLine('M=M+D', comment)
-    }
   };
   
   /**
@@ -33,53 +30,12 @@ export default class VMCommand {
     this.move.to.stackPointer(comment);
     this.addLine('M=M+1',); // increment the value at the stack pointer
   };
-  
-  protected pushThe = {
-    storedValue: {
-      // "\*SP=*addr"
-      ontoStack: (comment = '> push stored value to top of stack') => {
-        this.move.to.topOfStack(comment);
-        this.writeThe.storedValue.toMemoryAtCurrentAddress(); // write stored value to top of stack
-        this.incrementStackPointer();
-      }
-    },
-    valueAtCurrentAddress: {
-      // "@SP, M=M+1"
-      ontoStack: (comment = '>>> push memory value to top of stack') => {
-        this.storeThe.memoryValue(); // D=M
-        this.pushThe.storedValue.ontoStack(comment);
-      }
-    },
-    valueAtLocation: {
-      // "@SP, M=M+1"
-      ontoStack: (location: string, comment = '>>> push memory value to top of stack') => {
-        this.move.to.variableOrValue(location);
-        this.storeThe.memoryValue(); // D=M
-        this.pushThe.storedValue.ontoStack(comment);
-      }
-    },
-    valueProvided: {
-      ontoStack: (value: string, comment = `>>> push "${ value }" to top of stack`) => {
-        this.move.to.topOfStack(comment);
-        this.writeThe.valueProvided.toMemoryAtCurrentAddress(value); // M=value
-        this.incrementStackPointer();
-      }
-    }
-  };
-  
-  protected addLinesFromCommand = (cmd: new (...args: any[]) => VMCommand, ...args: string[]) => {
-    const lines = new cmd(...args).getLines();
-    lines.forEach(line => this.addLine(line));
-  };
-  
-  protected addJumpDestination = (label: string, comment = '') => this.addLine(`@${ label }`, comment);
-  
   protected move = {
     to: {
       // "@SP"
       stackPointer: (comment = 'move to stack pointer') => this.addLine('@SP', comment),
       // "@i"
-      variableOrValue: (v: string, comment = '') => this.addJumpDestination(v, comment),
+      variableOrValue: (v: string, comment = '') => this.addLine(`@${ v }`, comment),
       topOfStack: (comment = 'MOVE TO TOP OF STACK') => {
         // often we'll move after popping, so we're already at SP
         if (this.lines.length > 1 && this.lines[this.lines.length - 1].startsWith('M=M-1')) {
@@ -91,10 +47,6 @@ export default class VMCommand {
       }
     },
     using: {
-      storedValue: {
-        // A=D
-        asAddress: (comment = '') => this.addLine('A=D', comment)
-      },
       currentMemoryValue: {
         // A=M;
         // mainly used after moving to stack pointer, to move to top of stack
@@ -102,22 +54,10 @@ export default class VMCommand {
       },
     }
   };
-  protected storeThe = {
-    // D=M
-    memoryValue: (comment = 'store current memory value in D') => this.addLine('D=M', comment),
-    // D=i
-    constantValue: (val: string, comment = '') => {
-      this.move.to.variableOrValue(val, comment);
-      this.storeThe.currentAddress();
-    },
-    // D=A
-    currentAddress: (comment = 'store the current address as a value') =>
-      this.addLine('D=A', comment),
-    // implements "D = *SP"
-    topStackValue: (comment = 'move to top of stack') => {
-      this.move.to.topOfStack(comment);
-      this.storeThe.memoryValue('store the top stack value into D');
-    }
+  
+  protected addLinesFromCommand = (cmd: new (...args: any[]) => VMCommand, ...args: string[]) => {
+    const lines = new cmd(...args).getLines();
+    lines.forEach(line => this.addLine(line));
   };
   protected writeThe = {
     storedValue: {
@@ -128,13 +68,6 @@ export default class VMCommand {
         this.writeThe.storedValue.toMemoryAtCurrentAddress();
       }
     },
-    currentAddress: {
-      toLocation: (location: string, comment = 'store current address') => {
-        this.storeThe.currentAddress(comment);
-        this.move.to.variableOrValue(location);
-        this.writeThe.storedValue.toMemoryAtCurrentAddress(`*${ location }=prevAddr`);
-      }
-    },
     valueAtCurrentAddress: {
       toLocation: (location: string) => {
         this.storeThe.memoryValue('store current memory value');
@@ -142,7 +75,7 @@ export default class VMCommand {
         this.writeThe.storedValue.toMemoryAtCurrentAddress(`save the stored value in "${ location }"`);
       }
     },
-    valueAtTopOfStack: {
+    valueAtTopOfStack: { // each used once, but good for abstraction
       toAddress: (address: string) => {
         this.storeThe.topStackValue();
         this.move.to.variableOrValue(address);
@@ -173,9 +106,61 @@ export default class VMCommand {
       }
     }
   };
+  protected storeThe = {
+    // D=M
+    memoryValue: (comment = 'store current memory value in D') => this.addLine('D=M', comment),
+    // D=i
+    constantValue: (val: string, comment = '') => {
+      this.move.to.variableOrValue(val, comment);
+      this.storeThe.currentAddress();
+    },
+    // D=A
+    currentAddress: (comment = 'store the current address as a value') =>
+      this.addLine('D=A', comment),
+    // implements "D = *SP"
+    topStackValue: (comment = 'move to top of stack') => {
+      this.move.to.topOfStack(comment);
+      this.storeThe.memoryValue('store the top stack value into D');
+    }
+  };
+  protected pushThe = {
+    storedValue: {
+      // "\*SP=*addr"
+      ontoStack: (comment = '> push stored value to top of stack') => {
+        this.move.to.topOfStack(comment);
+        this.writeThe.storedValue.toMemoryAtCurrentAddress(); // write stored value to top of stack
+        this.incrementStackPointer();
+      }
+    },
+    valueAtCurrentAddress: {
+      // "@SP, M=M+1"
+      // used only once, but good for abstraction
+      ontoStack: (comment = '>>> push memory value to top of stack') => {
+        this.storeThe.memoryValue(); // D=M
+        this.pushThe.storedValue.ontoStack(comment);
+      }
+    },
+    valueAtLocation: {
+      // "@SP, M=M+1"
+      // used only once, but good for abstraction
+      ontoStack: (location: string, comment = '>>> push memory value to top of stack') => {
+        this.move.to.variableOrValue(location);
+        this.storeThe.memoryValue(); // D=M
+        this.pushThe.storedValue.ontoStack(comment);
+      }
+    },
+    valueProvided: {
+      // used only once, but good for abstraction
+      ontoStack: (value: string, comment = `>>> push "${ value }" to top of stack`) => {
+        this.move.to.topOfStack(comment);
+        this.writeThe.valueProvided.toMemoryAtCurrentAddress(value); // M=value
+        this.incrementStackPointer();
+      }
+    }
+  };
   
   protected jumpUnconditionallyTo = (marker: string, comment = '') => {
-    this.addJumpDestination(marker, comment);
+    this.move.to.variableOrValue(marker, comment);
     this.addLine('0;JMP');
   };
   

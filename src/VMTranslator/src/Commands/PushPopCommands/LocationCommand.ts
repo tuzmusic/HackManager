@@ -22,7 +22,7 @@ export class LocationCommand extends PushPopCommand {
     this.storeSegmentOffsetAddress();
     this.writeThe.storedValue.toLocationProvided('OFFSET');
   
-    // GET THE POPPED VALUE
+    // get the popped value
     this.popStack.toAddressStoredAsVariable('OFFSET');
   };
   
@@ -53,6 +53,5 @@ export class LocationCommand extends PushPopCommand {
     this.storeThe.memoryValue(`store the "${ this.segment }" base address`); // D=A
     this.move.to.variableOrValue(offset, 'move to address representing offset'); // @i
     this.add.valueOfAddress.toStoredValueAndMoveThere('new addr = base addr + offset'); // A=D+A
-    // this.move.using.storedValue.asAddress(); // A=D
   };
 }

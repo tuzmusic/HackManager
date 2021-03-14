@@ -46,6 +46,7 @@ export type BinaryComparisonCommand = keyof typeof comparisons
 export type OperationCmd = BinaryCalculationCommand | BinaryComparisonCommand | UnaryCalculationCommand;
 
 export class OperationCommand extends VMCommand {
+  static ifBoolCounter = 0;
   lines: string[] = [];
   
   // OPERANDS HAVE ALREADY BEEN PUSHED ONTO THE STACK!!!
@@ -71,7 +72,6 @@ export class OperationCommand extends VMCommand {
     // finish off the push
     this.incrementStackPointer();
   }
-  static ifBoolCounter = 0;
   
   private handleComparison(command: BinaryComparisonCommand) {
     const comparison = comparisons[command];
@@ -80,7 +80,7 @@ export class OperationCommand extends VMCommand {
   
     this.addLine('D=M-D', 'store X-Y in D for comparison');
     // prepare jump location
-    this.addJumpDestination(marker('IF_TRUE'));
+    this.move.to.variableOrValue(marker('IF_TRUE'));
   
     // set up the comparison (compare D to 0), which will jump if true
     this.addLine(comparison, `perform comparison: ${ command }`);
