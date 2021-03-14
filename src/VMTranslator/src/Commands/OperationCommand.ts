@@ -88,11 +88,6 @@ export class OperationCommand extends VMCommand {
     // NOTE that all the @'s that manage the conditional jumps mean that we always
     // have to manually move to the top of the stack before we write to memory
   
-    // TODO: Optimize
-    //  Have a single if true/false spot, that uses memory locations and temp storage
-    //  to manage where 0/-1 is written to, and where we jump back to at the end of the
-    //  conditional.
-  
     // if false, store 0 in D
     this.addLabel(marker('IF_FALSE')); // not actually used, but a helpful road sig)n
     this.writeThe.valueProvided.toTopOfStack.withoutIncrementingStackPointer('0');
@@ -105,6 +100,16 @@ export class OperationCommand extends VMCommand {
   
     // marker for endif
     this.addLabel(marker('END_IF'));
+  
+    // OPTIMIZATION NOTE
+    // I have indeed tried writing a single place in the file for "writing true or false onto the stack".
+    // I got very close to it translating correctly.
+    // HOWEVER, assuming my solution was almost correct, it did NOT save many lines!
+    // it appeared to save ONE line for each comparison function, but added 16 lines for the
+    // place that added the logic!
+    // I will say that with a [only somewhat detailed] look at the files, it's REALLY not clear to
+    // me how this difference is created? I guess it's in the added central lines but that doesn't
+    // seem to account for enough of it. OH WELL.
   }
   
   /* prep X as M */
