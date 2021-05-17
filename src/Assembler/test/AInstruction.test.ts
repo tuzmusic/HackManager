@@ -1,6 +1,8 @@
 import { SymbolTable } from '../src/SymbolTable';
 import { AInstruction } from '../src/AInstruction';
 
+// note: camelCase test "descriptions" are leftover from when I was doing this project in C++ with Google Test.
+
 let table: SymbolTable;
 describe('AInstruction', () => {
   
