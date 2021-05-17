@@ -3,6 +3,8 @@ import { HackTask } from '../../common/HackTask';
 import { VMBootstrapper } from './Commands/VMBootstrapper';
 import * as fs from 'fs';
 
+const LOG_LINECOUNT_COMPARISON = false;
+
 export class VMTranslator extends HackTask {
   
   static inExtension = 'vm';
@@ -80,8 +82,8 @@ export class VMTranslator extends HackTask {
   
     let oldRawCount = 0;
   
-    // get line count for previous
-    try { oldRawCount = this.getFileLineCount(rawPath);} catch (e) { }
+    // get line count for previous. fail silently if there is no previous version.
+    try { oldRawCount = this.getFileLineCount(rawPath); } catch (e) { }
   
     const fullCode = fs.readFileSync(this.outPath).toString();
   
@@ -130,7 +132,7 @@ export class VMTranslator extends HackTask {
     fs.writeFileSync(rawPath, rawCode);
     const newRawCount = this.getFileLineCount(rawPath);
   
-    if (oldRawCount) {
+    if (LOG_LINECOUNT_COMPARISON && oldRawCount) {
       const lineDiff = newRawCount - oldRawCount;
       if (lineDiff > 0) console.log(lineDiff, 'lines added');
       if (lineDiff < 0) console.log(-1 * lineDiff, 'lines saved');
